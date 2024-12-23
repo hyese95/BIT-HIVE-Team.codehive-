@@ -49,4 +49,5 @@
 2. 선택 주문취소 기능
 
 ## 🎞️Wireframe
-![Wireframe](https://cdn.discordapp.com/attachments/1298255348230000691/1319594520144511006/9d11204ddc3d59b0.PNG)
+![WireFrame](./![wireFrame](https://))
+
