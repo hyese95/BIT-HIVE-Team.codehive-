@@ -7,12 +7,12 @@
 - 가상계좌를 생성하여 실시간 가격을 기준으로 매수와 매도, 실시간 수익률조회 가능
 
 ## 😎 Contributors
-- [팀장-정혜성](https://github.com/hyese95)
-- [인승엽](https://github.com/realsydrid)
-- [김현기](https://github.com/Kimhyeongi-eng)
-- [시다바리-엄진영](https://github.com/young-5719)
-- [황영중](https://github.com/Arkite124)
-- [이재덕](https://github.com/WATB92)
+- [팀장 - 정혜성](https://github.com/hyese95)
+- [비선실세 - 인승엽](https://github.com/realsydrid)
+- [브레인 - 김현기](https://github.com/Kimhyeongi-eng)
+- [시다바리 - 엄진영](https://github.com/young-5719)
+- [AI고수 - 황영중](https://github.com/Arkite124)
+- [큰형님 - 이재덕](https://github.com/WATB92)
 <br>
 
 ## 2024 12-19 회의록
