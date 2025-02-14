@@ -9,12 +9,19 @@
 ## 😎 Contributors
 - [정혜성](https://github.com/hyese95)
 - [인승엽](https://github.com/realsydrid)
-- [김현기](https://github.com/Kimhyeongi-eng)
 - [엄진영](https://github.com/young-5719)
 - [황영중](https://github.com/Arkite124)
 - [이재덕](https://github.com/WATB92)
-<br>
+- [김현기](https://github.com/Kimhyeongi-eng)
+  <br>
 
+## 🛠️ 기술 스텍
+- 프론트엔드 : React.js, SASS, BOOTSTRAP
+- 백엔드 : SPRING BOOT(JAVA, TOMCAT), WebSocket, JPA, MYBATIS, TYMELEAF
+- 데이터베이스 : MYSQL
+- 실시간 데이터 연동 : Binance API
+- 배포 및 운영 : AWS (EC2, RDS, S3), Docker, Kubernetes
+- 
 ## 2024 12-19 회의록
 
 - 결정된 사안
