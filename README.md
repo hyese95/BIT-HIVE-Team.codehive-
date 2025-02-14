@@ -7,11 +7,11 @@
 - 가상계좌를 생성하여 실시간 가격을 기준으로 매수와 매도, 실시간 수익률조회 가능
 
 ## 😎 Contributors
-- ![Backend](https://img.shields.io/badge/Backend-000000?style=for-the-badge&logo=server&logoColor=white)     [정혜성](https://github.com/hyese95)![Team Leader](https://img.shields.io/badge/Team_Leader-FFD700?style=for-the-badge&logoColor=white)
-- ![Backend](https://img.shields.io/badge/Backend-000000?style=for-the-badge&logo=server&logoColor=white)     [엄진영](https://github.com/young-5719)
-- ![Frontend](https://img.shields.io/badge/Frontend-000000?style=for-the-badge&logo=desktop&logoColor=white)   [인승엽](https://github.com/realsydrid)![Vice Leader](https://img.shields.io/badge/Vice_Leader-808080?style=for-the-badge&logoColor=white)
-- ![Frontend](https://img.shields.io/badge/Frontend-000000?style=for-the-badge&logo=desktop&logoColor=white)   [황영중](https://github.com/Arkite124)
-- ![Frontend](https://img.shields.io/badge/Frontend-000000?style=for-the-badge&logo=desktop&logoColor=white)   [이재덕](https://github.com/WATB92)
+- ![Backend](https://img.shields.io/badge/Backend-000000?style=for-the-badge&logo=ubuntu&logoColor=white)&nbsp;&nbsp;&nbsp;[정혜성](https://github.com/hyese95)🌟
+- ![Backend](https://img.shields.io/badge/Backend-000000?style=for-the-badge&logo=ubuntu&logoColor=white)&nbsp;&nbsp;&nbsp;[엄진영](https://github.com/young-5719)
+- ![Frontend](https://img.shields.io/badge/Frontend-ffffff?style=for-the-badge&logo=google-chrome&logoColor=black)   [인승엽](https://github.com/realsydrid)⚙️
+- ![Frontend](https://img.shields.io/badge/Frontend-ffffff?style=for-the-badge&logo=google-chrome&logoColor=black)   [황영중](https://github.com/Arkite124)
+- ![Frontend](https://img.shields.io/badge/Frontend-ffffff?style=for-the-badge&logo=google-chrome&logoColor=black)   [이재덕](https://github.com/WATB92)
   <br>
 
 ## 🛠️ 기술 스텍
