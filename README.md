@@ -16,7 +16,7 @@
   <br>
 
 ## 🛠️ 기술 스텍
-- 프론트엔드 : React.js, SASS, BOOTSTRAP
+- 프론트엔드 : !React !SASS !Bootstrap
 - 백엔드 : SPRING BOOT(JAVA, TOMCAT), WebSocket, JPA, MYBATIS, TYMELEAF
 - 데이터베이스 : MYSQL
 - 실시간 데이터 연동 : Binance API
