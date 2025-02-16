@@ -98,9 +98,9 @@ CREATE TABLE favorite_markets(
 
 CREATE TABLE favorite_markets_folders(
     list_id	VARCHAR(255) PRIMARY KEY,
-    user_id	VARCHAR(255),
+    user_no	VARCHAR(255),
     list_name VARCHAR(255),
-    FOREIGN KEY(user_id) REFERENCES users(user_id)
+    FOREIGN KEY(user_no) REFERENCES users(user_no)
 );
 
 CREATE TABLE follows(
@@ -120,6 +120,10 @@ CREATE TABLE posts(
     img_url VARCHAR(255)
 );
 
+ALTER TABLE posts
+ADD CONSTRAINT fk_user_no
+FOREIGN KEY (user_no) REFERENCES users(user_no);
+
 CREATE TABLE comments(
     comment_no VARCHAR(255) PRIMARY KEY,
     post_no VARCHAR(255),
@@ -130,6 +134,10 @@ CREATE TABLE comments(
     FOREIGN KEY(post_no) REFERENCES posts(post_no),
     FOREIGN KEY(user_no) REFERENCES users(user_no)
 );
+
+ALTER TABLE comments
+ADD CONSTRAINT fk_parent_comment
+FOREIGN KEY (parent_no) REFERENCES comments(comment_no);
 
 CREATE TABLE chatting_logs(
     chat_no VARCHAR(255) PRIMARY KEY,
