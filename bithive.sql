@@ -86,6 +86,13 @@ CREATE TABLE coin_transactions(
     FOREIGN KEY(user_no) REFERENCES users(user_no)
 );
 
+CREATE TABLE favorite_markets_folders(
+    list_id	VARCHAR(255) PRIMARY KEY,
+    user_no	VARCHAR(255),
+    list_name VARCHAR(255),
+    FOREIGN KEY(user_no) REFERENCES users(user_no)
+);
+
 CREATE TABLE favorite_markets(
     favorite_coin_Id VARCHAR(255) PRIMARY KEY,
     user_no VARCHAR(255),
@@ -94,13 +101,6 @@ CREATE TABLE favorite_markets(
     sort_order Enum('오름차순', '내림차순'),
     FOREIGN KEY(user_no) REFERENCES users(user_no),
     FOREIGN KEY(list_id) REFERENCES favorite_markets_folders(list_id)
-);
-
-CREATE TABLE favorite_markets_folders(
-    list_id	VARCHAR(255) PRIMARY KEY,
-    user_no	VARCHAR(255),
-    list_name VARCHAR(255),
-    FOREIGN KEY(user_no) REFERENCES users(user_no)
 );
 
 CREATE TABLE follows(
