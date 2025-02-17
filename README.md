@@ -34,7 +34,8 @@
 ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)  
 
 ### Real-time Data  
-![Binance API](https://img.shields.io/badge/Binance%20API-FCD535?style=for-the-badge&logo=binance&logoColor=black)  
+![Binance API](https://img.shields.io/badge/Binance%20API-FCD535?style=for-the-badge&logo=binance&logoColor=black)
+![Upbit API](https://img.shields.io/badge/Upbit%20API-1C65C9?style=for-the-badge&logo=upbit&logoColor=white) 
 
 ### Deployment & DevOps  
 ![AWS](https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white)  
