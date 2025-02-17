@@ -14,7 +14,7 @@
 - ![Frontend](https://img.shields.io/badge/Frontend-ffffff?style=for-the-badge&logo=google-chrome&logoColor=black)   [이재덕](https://github.com/WATB92)
   <br>
 
-## 🛠️ 기술 스텍
+## 🛠️ Tech stack
 
 ### Frontend  
 ![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)  
