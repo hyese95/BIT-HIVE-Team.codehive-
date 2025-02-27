@@ -233,3 +233,16 @@ CREATE TABLE answers(
     answer_cont VARCHAR(255),
     FOREIGN KEY(question_no) REFERENCES questions(question_no)
 );
+
+INSERT INTO users (user_no, user_id, password, nickname, email, phone, privacy_agreements, marketing_agreements, created_at, profile_img_url, nationality, gender, theme, birth_date, name, self_introduction, role)
+VALUES ('1', 'jhs', '1234', 'jhs95', 'jhs@example.com',
+        '010-1234-4321', true, true, '2020-02-27 14:30:00', 'test', 'KOREAN',
+        'MALE', 'DARK', '1995-08-24 11:00:00', '정혜성', 'ㅎㅇㅎㅇ', 'MANGER');
+
+INSERT INTO users VALUES
+        ('2', 'isy', '1234', 'isy93', 'isy@example.com',
+    '010-1254-4361', true, true, '2020-02-27 12:30:00', 'test', 'KOREAN',
+    'MALE', 'DARK', '1993-08-24 11:00:00', '인승엽', 'ㅂㅇㅇㅇ', 'MANGER'),
+       ('3', 'ujy', '1234', 'ujy98', 'ujy@example.com',
+        '010-1114-4321', true, true, '2020-02-27 17:30:00', 'test', 'KOREAN',
+        'MALE', 'DARK', '1998-05-24 11:00:00', '엄진영', 'ㅎㅇㅎㅇ', 'MANGER');
