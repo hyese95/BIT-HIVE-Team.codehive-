@@ -23,4 +23,7 @@
   <select id="findAll" resultMap="usersMap">
     SELECT * FROM users
   </select>
+    <select id="findByNo" resultMap="usersMap">
+      SELECT * FROM users WHERE user_no=#{userNo}
+    </select>
 </mapper>

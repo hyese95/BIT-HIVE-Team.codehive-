@@ -7,4 +7,5 @@ import java.util.List;
 @Mapper
 public interface UsersMapper {
     List<UsersModel> findAll();
+    UsersModel findByNo(String userNo);
 }

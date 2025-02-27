@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+    <meta charset="UTF-8">
+    <title>유저 상세</title>
+</head>
+<body>
+  <h1>유저 상세</h1>
+  <div>
+    <p>
+      유저 번호 : <strong th:text="${user.userNo}"></strong>
+    </p>
+    <p>
+      유저 아이디 : <strong th:text="${user.userId}"></strong>
+    </p>
+    <p>
+      비밀번호 : <strong th:text="${user.password}"></strong>
+    </p>
+    <p>
+      닉네임 : <strong th:text="${user.nickname}"></strong>
+    </p>
+    <p>
+      이메일 : <strong th:text="${user.email}"></strong>
+    </p>
+    <p>
+      휴대폰 번호 : <strong th:text="${user.phone}"></strong>
+    </p>
+    <p>
+      개인정보 동의 : <strong th:text="${user.privacyAgreements}"></strong>
+    </p>
+    <p>
+      마케팅수신 동의 : <strong th:text="${user.marketingAgreements}"></strong>
+    </p>
+    <p>
+      가입날짜 : <strong th:text="${user.createdAt}"></strong>
+    </p>
+    <p>
+      프로필 이미지 : <strong th:text="${user.profileImgUrl}"></strong>
+    </p>
+    <p>
+      국적 : <strong th:text="${user.nationality}"></strong>
+    </p>
+    <p>
+      성별 : <strong th:text="${user.gender}"></strong>
+    </p>
+    <p>
+      테마 : <strong th:text="${user.theme}"></strong>
+    </p>
+    <p>
+      생일 : <strong th:text="${user.birthDate}"></strong>
+    </p>
+    <p>
+      이름 : <strong th:text="${user.name}"></strong>
+    </p>
+    <p>
+      자기소개 : <strong th:text="${user.selfIntroduction}"></strong>
+    </p>
+    <p>
+      직책 : <strong th:text="${user.role}"></strong>
+    </p>
+  </div>
+</body>
+</html>
