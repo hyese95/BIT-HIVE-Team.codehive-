@@ -10,16 +10,16 @@ import lombok.Data;
 @Data
 public class UsersModel implements Serializable {
     public enum nationality {
-        KOR, USA, EN, JPA, CHA
+        KOREAN, JAPAN
     }
     public enum gender {
-        M, F
+        MALE, FEMALE
     }
     public enum theme {
-        Dark, Light
+       LIGHT, DARK
     }
     public enum role {
-        admin, user
+        USER, MANGER
     }
     private String userNo;
 
