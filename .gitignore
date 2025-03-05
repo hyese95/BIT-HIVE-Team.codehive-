@@ -4,6 +4,9 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### yaml ###
+src/main/resources/application-dev_db.yaml
+
 ### STS ###
 .apt_generated
 .classpath
@@ -32,3 +35,6 @@ build/
 ### VS Code ###
 .vscode/
 .DS_Store
+
+### pem ###
+.pem
