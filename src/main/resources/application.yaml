@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: l06_spring_jpa_emp_final
+  profiles:
+    include: dev_db
+server:
+  port: 8801
