@@ -60,7 +60,7 @@ CREATE TABLE notification_settings(
 );
 
 CREATE TABLE target_price_alerts(
-    target_price_alerts_id INT AUTO_INCREMENT PRIMARY KEY,
+    target_price_alerts_no INT AUTO_INCREMENT PRIMARY KEY,
     user_no INT NOT NULL,
     market VARCHAR(255) NOT NULL,
     target_price DOUBLE NOT NULL,
@@ -68,7 +68,7 @@ CREATE TABLE target_price_alerts(
 );
 
 CREATE TABLE volatility_alerts(
-    volatility_alerts_id  INT AUTO_INCREMENT PRIMARY KEY,
+    volatility_alerts_no  INT AUTO_INCREMENT PRIMARY KEY,
     user_no INT NOT NULL,
     market VARCHAR(255) NOT NULL,
     FOREIGN KEY(user_no) REFERENCES users(user_no)
@@ -87,20 +87,20 @@ CREATE TABLE coin_transactions(
 );
 
 CREATE TABLE favorite_markets_folders(
-    list_id	INT AUTO_INCREMENT PRIMARY KEY,
+    list_no	INT AUTO_INCREMENT PRIMARY KEY,
     user_no	INT NOT NULL,
     list_name VARCHAR(255),
     FOREIGN KEY(user_no) REFERENCES users(user_no)
 );
 
 CREATE TABLE favorite_markets(
-    favorite_coin_Id INT AUTO_INCREMENT PRIMARY KEY,
+    favorite_coin_no INT AUTO_INCREMENT PRIMARY KEY,
     user_no INT NOT NULL,
     market VARCHAR(255) NOT NULL,
-    list_id INT NOT NULL,
+    list_no INT NOT NULL,
     sort_order VARCHAR(10),
     FOREIGN KEY(user_no) REFERENCES users(user_no),
-    FOREIGN KEY(list_id) REFERENCES favorite_markets_folders(list_id)
+    FOREIGN KEY(list_no) REFERENCES favorite_markets_folders(list_no)
 );
 
 CREATE TABLE follows(
@@ -168,7 +168,7 @@ CREATE TABLE comment_likes(
 );
 
 CREATE TABLE password_change_logs(
-    password_log_id INT AUTO_INCREMENT PRIMARY KEY,
+    password_log_no INT AUTO_INCREMENT PRIMARY KEY,
     user_no INT NOT NULL,
     changed_password VARCHAR(50),
     change_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -176,7 +176,7 @@ CREATE TABLE password_change_logs(
 );
 
 CREATE TABLE login_logs(
-    login_log_id INT AUTO_INCREMENT PRIMARY KEY,
+    login_log_no INT AUTO_INCREMENT PRIMARY KEY,
     user_no INT NOT NULL,
     login_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     FOREIGN KEY(user_no) REFERENCES users(user_no)
@@ -189,7 +189,7 @@ CREATE TABLE exp_activity(
 );
 
 CREATE TABLE exp_logs(
-    exp_log_id INT AUTO_INCREMENT PRIMARY KEY,
+    exp_log_no INT AUTO_INCREMENT PRIMARY KEY,
     user_no INT NOT NULL,
     activity_type VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
