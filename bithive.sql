@@ -28,57 +28,57 @@ SELECT 'CREATING DATABASE STRUCTURE' as 'INFO';
 
 
 CREATE TABLE users(
-    user_no VARCHAR(10) PRIMARY KEY,
-    user_id VARCHAR(50) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    nickname VARCHAR(50) NOT NULL,
+    user_no INT auto_increment PRIMARY KEY,
+    user_id VARCHAR(30) NOT NULL UNIQUE,
+    password VARCHAR(50) NOT NULL,
+    nickname VARCHAR(36) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
-    phone VARCHAR(20) NOT NULL,
+    phone VARCHAR(15) NOT NULL,
     privacy_agreements BOOLEAN NOT NULL DEFAULT false,
     marketing_agreements BOOLEAN NOT NULL DEFAULT false,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     profile_img_url VARCHAR(255),
-    nationality ENUM('KOREAN', 'JAPAN') NOT NULL,
-    gender ENUM('MALE', 'FEMALE') NOT NULL,
-    theme ENUM('LIGHT', 'DARK') NOT NULL DEFAULT 'LIGHT',
-    birth_date TIMESTAMP,
+    nationality VARCHAR(20) NOT NULL,
+    gender VARCHAR(20) NOT NULL,
+    theme VARCHAR(20) NOT NULL DEFAULT 'LIGHT',
+    birth_date DATE NOT NULL,
     name VARCHAR(50) NOT NULL,
-    self_introduction TEXT,
+    self_introduction VARCHAR(150),
     role ENUM('USER', 'MANGER') NOT NULL DEFAULT 'USER'
 );
 
 CREATE TABLE notification_settings(
-    user_no VARCHAR(10) PRIMARY KEY,
-    volatility_yn BOOLEAN,
-    portfolio_yn BOOLEAN,
-    target_price_yn	BOOLEAN,
-    trade_yn BOOLEAN,
-    like_yn	BOOLEAN,
-    comment_yn BOOLEAN,
-    reply_yn BOOLEAN,
-    follower_yn	BOOLEAN
+    user_no INT auto_increment PRIMARY KEY,
+    volatility_yn BOOLEAN DEFAULT FALSE,
+    portfolio_yn BOOLEAN DEFAULT FALSE,
+    target_price_yn	BOOLEAN DEFAULT FALSE,
+    trade_yn BOOLEAN DEFAULT FALSE,
+    like_yn	BOOLEAN DEFAULT FALSE,
+    comment_yn BOOLEAN DEFAULT FALSE,
+    reply_yn BOOLEAN DEFAULT FALSE,
+    follower_yn	BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE target_price_alerts(
-    target_price_alerts_id VARCHAR(255) PRIMARY KEY,
-    user_no VARCHAR(255),
+    target_price_alerts_id INT auto_increment PRIMARY KEY,
+    user_no INT,
     market VARCHAR(255),
     target_price DOUBLE,
     FOREIGN KEY(user_no) REFERENCES users(user_no)
 );
 
 CREATE TABLE volatility_alerts(
-    volatility_alerts_id  VARCHAR(255) PRIMARY KEY,
-    user_no VARCHAR(255),
+    volatility_alerts_id  INT auto_increment PRIMARY KEY,
+    user_no INT,
     market VARCHAR(255),
     FOREIGN KEY(user_no) REFERENCES users(user_no)
 );
 
 CREATE TABLE coin_transactions(
-    trans_no VARCHAR(255) PRIMARY KEY,
-    user_no VARCHAR(255),
+    trans_no INT auto_increment PRIMARY KEY,
+    user_no INT,
     market VARCHAR(255),
-    transaction_type Enum('매수', '매도'),
+    transaction_type VARCHAR(20),
     price DOUBLE,
     transaction_cnt DOUBLE,
     transaction_date TIMESTAMP,
