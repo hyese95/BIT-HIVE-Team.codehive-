@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:fragment="html(content)">
+<head th:replace="fragments/head_fragment :: head">
+</head>
+<body>
+<!-- 상단 네비게이션 -->
+<nav th:replace="fragments/nav_bars :: topNav"></nav>
+
+<!-- 컨텐츠가 들어가는 자리 -->
+<div th:replace="${content}">
+</div>
+
+<!-- 하단 네비게이션 -->
+<nav th:replace="fragments/nav_bars :: bottomNav"></nav>
+</body>
+</html>
