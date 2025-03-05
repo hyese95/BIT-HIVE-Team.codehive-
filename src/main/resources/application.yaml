@@ -1,6 +1,6 @@
 spring:
   application:
-    name: l06_spring_jpa_emp_final
+    name: bit hive
   profiles:
     include: dev_db
 server:
