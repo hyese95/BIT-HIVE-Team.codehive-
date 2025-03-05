@@ -1,6 +1,6 @@
 spring:
   application:
-    name: bit hive
+    name: bit_hive
   profiles:
     include: dev_db
 server:
