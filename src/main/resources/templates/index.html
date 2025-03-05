@@ -1,14 +1,27 @@
 <!DOCTYPE html>
-<html lang="kr">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/default :: html(content=~{::body})}">
 <head>
     <meta charset="UTF-8">
-    <title>Bit-Hive 나는 인승엽이다</title>
+    <title>BitHive</title>
 </head>
 <body>
-    <h1>bitHive 비트코인 모의투자</h1>
-    <hr>
-    <a href="/users/read.do">유저 목록</a>
-    <hr>
-    <a href="/signup.do">회원가입</a>
+<h1 class="mt-5">홈화면</h1>
+<div class="container">
+    <div class="py-3">
+        <a href="/trade/main.do" class="btn btn-secondary">거래소</a>
+    </div>
+    <div class="py-3">
+        <a href="/asset/my_asset.do" class="btn btn-secondary">내자산</a>
+    </div>
+    <div class="py-3">
+        <a href="/community/free_post.do" class="btn btn-secondary">커뮤니티</a>
+    </div>
+    <div class="py-3">
+        <a href="/news/main.do" class="btn btn-secondary">뉴스</a>
+    </div>
+
+</div>
+
 </body>
 </html>
