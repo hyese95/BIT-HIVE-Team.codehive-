@@ -1,25 +1,13 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org" xmlns=""
+      th:replace="~{fragments/default :: html(content=~{::body})}">
+<style>
+    button>a{color:black; text-decoration: none;}
+    #UserRank
+</style>
 <head>
     <meta charset="UTF-8">
     <title>거래소 홈화면</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1em;
-        }
-        thead th {
-            border-bottom: 2px solid #333;
-            padding: 8px;
-            text-align: left;
-            background-color: #f0f0f0;
-        }
-        tbody td {
-            border-bottom: 1px solid #ccc;
-            padding: 8px;
-        }
-    </style>
 </head>
 <body>
 <h1>거래소 홈화면</h1>
@@ -34,12 +22,10 @@
     </tr>
     </thead>
     <tbody>
-    <!-- API 데이터가 여기서 행으로 추가됩니다 -->
     </tbody>
 </table>
 
 <script>
-    // 코인 티커와 한글 이름 매핑
     const coinNameMap = {
         'XRP': '엑스알피',
         'ADA': '에이다',
@@ -225,7 +211,7 @@
                         tr.innerHTML = `
                         <td>${coinName}<br>${ticker}/KRW</td>
                         <td>${(item.trade_price).toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 2})}</td>
-                        <td>${(item.trade_price).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</td><td style="color: ${item.signed_change_rate > 0 ? 'red' : (item.signed_change_rate < 0 ? 'blue' : 'black')}">
+                        <td style="color: ${item.signed_change_rate > 0 ? 'red' : (item.signed_change_rate < 0 ? 'blue' : 'black')}">
                             ${item.signed_change_rate > 0 ? '+' : ''}${(item.signed_change_rate * 100).toFixed(2)}%
                         </td>
                         <td>${(item.acc_trade_price_24h / 1000000).toLocaleString('en-US', {maximumFractionDigits: 0})}백만</td>
