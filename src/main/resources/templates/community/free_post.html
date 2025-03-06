@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/default :: html(content=~{::body})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<nav th:replace="fragments/nav_bars :: communitySubNav"></nav>
+<div class="container">
+<h1>자유게시판</h1>
+</div>
+
+</body>
+</html>
