@@ -227,3 +227,4 @@ CREATE TABLE answers(
     answer_cont TEXT,
     FOREIGN KEY(question_no) REFERENCES questions(question_no)
 );
+
