@@ -35,7 +35,7 @@ public class Post {
     @Column(name = "img_url")
     private String imgUrl;
 
-    @Column(name = "category", length = 20)
+    @Column(name = "category")
     private String category;
 
 
