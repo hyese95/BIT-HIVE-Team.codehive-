@@ -26,42 +26,42 @@ INSERT INTO notification_settings (volatility_yn, portfolio_yn, target_price_yn,
 
 -- target_price_alerts 테이블
 INSERT INTO target_price_alerts (user_no, market, target_price) VALUES
-                                                                    (1, 'BTC/KRW', 50000000),
-                                                                    (2, 'ETH/KRW', 3000000),
-                                                                    (3, 'XRP/KRW', 1000),
-                                                                    (4, 'BTC/KRW', 48000000),
-                                                                    (5, 'ETH/KRW', 2800000),
-                                                                    (1, 'XRP/KRW', 1200),
-                                                                    (2, 'BTC/KRW', 52000000),
-                                                                    (3, 'ETH/KRW', 3200000),
-                                                                    (4, 'XRP/KRW', 800),
-                                                                    (5, 'BTC/KRW', 55000000);
+                                                                    (1, 'BTC-KRW', 50000000),
+                                                                    (2, 'ETH-KRW', 3000000),
+                                                                    (3, 'XRP-KRW', 1000),
+                                                                    (4, 'BTC-KRW', 48000000),
+                                                                    (5, 'ETH-KRW', 2800000),
+                                                                    (1, 'XRP-KRW', 1200),
+                                                                    (2, 'BTC-KRW', 52000000),
+                                                                    (3, 'ETH-KRW', 3200000),
+                                                                    (4, 'XRP-KRW', 800),
+                                                                    (5, 'BTC-KRW', 55000000);
 
 -- volatility_alerts 테이블
 INSERT INTO volatility_alerts (user_no, market) VALUES
-                                                    (1, 'BTC/KRW'),
-                                                    (2, 'ETH/KRW'),
-                                                    (3, 'XRP/KRW'),
-                                                    (4, 'BTC/KRW'),
-                                                    (5, 'ETH/KRW'),
-                                                    (1, 'DOGE/KRW'),
-                                                    (2, 'ADA/KRW'),
-                                                    (3, 'SOL/KRW'),
-                                                    (4, 'MATIC/KRW'),
-                                                    (5, 'DOT/KRW');
+                                                    (1, 'BTC-KRW'),
+                                                    (2, 'ETH-KRW'),
+                                                    (3, 'XRP-KRW'),
+                                                    (4, 'BTC-KRW'),
+                                                    (5, 'ETH-KRW'),
+                                                    (1, 'DOGE-KRW'),
+                                                    (2, 'ADA-KRW'),
+                                                    (3, 'SOL-KRW'),
+                                                    (4, 'MATIC-KRW'),
+                                                    (5, 'DOT-KRW');
 
 -- coin_transactions 테이블
 INSERT INTO coin_transactions (user_no, market, transaction_type, price, transaction_cnt, transaction_date, transaction_state) VALUES
-                                                                                                                                   (1, 'BTC/KRW', 'BUY', 50000000, 0.1, '2024-03-01 10:00:00', 'COMPLETED'),
-                                                                                                                                   (2, 'ETH/KRW', 'SELL', 3000000, 1.0, '2024-03-01 11:00:00', 'COMPLETED'),
-                                                                                                                                   (3, 'XRP/KRW', 'BUY', 1000, 1000, '2024-03-01 12:00:00', 'COMPLETED'),
-                                                                                                                                   (4, 'BTC/KRW', 'BUY', 48000000, 0.2, '2024-03-01 13:00:00', 'COMPLETED'),
-                                                                                                                                   (5, 'ETH/KRW', 'SELL', 2800000, 2.0, '2024-03-01 14:00:00', 'COMPLETED'),
-                                                                                                                                   (1, 'XRP/KRW', 'BUY', 1200, 500, '2024-03-01 15:00:00', 'PENDING'),
-                                                                                                                                   (2, 'BTC/KRW', 'SELL', 52000000, 0.05, '2024-03-01 16:00:00', 'COMPLETED'),
-                                                                                                                                   (3, 'ETH/KRW', 'BUY', 3200000, 0.5, '2024-03-01 17:00:00', 'COMPLETED'),
-                                                                                                                                   (4, 'XRP/KRW', 'SELL', 800, 2000, '2024-03-01 18:00:00', 'PENDING'),
-                                                                                                                                   (5, 'BTC/KRW', 'BUY', 55000000, 0.1, '2024-03-01 19:00:00', 'COMPLETED');
+                                                                                                                                   (1, 'BTC-KRW', 'BUY', 50000000, 0.1, '2024-03-01 10:00:00', 'COMPLETED'),
+                                                                                                                                   (2, 'ETH-KRW', 'SELL', 3000000, 1.0, '2024-03-01 11:00:00', 'COMPLETED'),
+                                                                                                                                   (3, 'XRP-KRW', 'BUY', 1000, 1000, '2024-03-01 12:00:00', 'COMPLETED'),
+                                                                                                                                   (4, 'BTC-KRW', 'BUY', 48000000, 0.2, '2024-03-01 13:00:00', 'COMPLETED'),
+                                                                                                                                   (5, 'ETH-KRW', 'SELL', 2800000, 2.0, '2024-03-01 14:00:00', 'COMPLETED'),
+                                                                                                                                   (1, 'XRP-KRW', 'BUY', 1200, 500, '2024-03-01 15:00:00', 'PENDING'),
+                                                                                                                                   (2, 'BTC-KRW', 'SELL', 52000000, 0.05, '2024-03-01 16:00:00', 'COMPLETED'),
+                                                                                                                                   (3, 'ETH-KRW', 'BUY', 3200000, 0.5, '2024-03-01 17:00:00', 'COMPLETED'),
+                                                                                                                                   (4, 'XRP-KRW', 'SELL', 800, 2000, '2024-03-01 18:00:00', 'PENDING'),
+                                                                                                                                   (5, 'BTC-KRW', 'BUY', 55000000, 0.1, '2024-03-01 19:00:00', 'COMPLETED');
 
 -- favorite_markets_folders 테이블
 INSERT INTO favorite_markets_folders (user_no, list_name) VALUES
@@ -78,16 +78,16 @@ INSERT INTO favorite_markets_folders (user_no, list_name) VALUES
 
 -- favorite_markets 테이블
 INSERT INTO favorite_markets (user_no, market, list_no, sort_order) VALUES
-                                                                        (1, 'BTC/KRW', 1, 'ASC'),
-                                                                        (2, 'ETH/KRW', 2, 'DESC'),
-                                                                        (3, 'XRP/KRW', 3, 'ASC'),
-                                                                        (4, 'ADA/KRW', 4, 'ASC'),
-                                                                        (5, 'DOGE/KRW', 5, 'DESC'),
-                                                                        (1, 'SOL/KRW', 6, 'ASC'),
-                                                                        (2, 'DOT/KRW', 7, 'DESC'),
-                                                                        (3, 'MATIC/KRW', 8, 'ASC'),
-                                                                        (4, 'LINK/KRW', 9, 'DESC'),
-                                                                        (5, 'UNI/KRW', 10, 'ASC');
+                                                                        (1, 'BTC-KRW', 1, 'ASC'),
+                                                                        (2, 'ETH-KRW', 2, 'DESC'),
+                                                                        (3, 'XRP-KRW', 3, 'ASC'),
+                                                                        (4, 'ADA-KRW', 4, 'ASC'),
+                                                                        (5, 'DOGE-KRW', 5, 'DESC'),
+                                                                        (1, 'SOL-KRW', 6, 'ASC'),
+                                                                        (2, 'DOT-KRW', 7, 'DESC'),
+                                                                        (3, 'MATIC-KRW', 8, 'ASC'),
+                                                                        (4, 'LINK-KRW', 9, 'DESC'),
+                                                                        (5, 'UNI-KRW', 10, 'ASC');
 
 -- follows 테이블
 INSERT INTO follows (follower_user_no, following_user_no) VALUES
@@ -103,21 +103,17 @@ INSERT INTO follows (follower_user_no, following_user_no) VALUES
                                                               (5, 2);
 
 -- posts 테이블
-INSERT INTO posts (user_no, post_cont, img_url,category) VALUES
-                                                    (1, '오늘 비트코인 상승장이네요!', '/images/chart1.jpg','free'),
-                                                    (2, '이더리움 2.0 업데이트 후기', '/images/eth2.jpg','free'),
-                                                    (3, '차트 분석 공유합니다', '/images/analysis1.jpg','chart'),
-                                                    (4, '존버는 승리합니다', NULL,'free'),
-                                                    (5, '단타 꿀팁 공유', '/images/tip1.jpg','expert'),
-                                                    (1, '시장 분석 리포트', '/images/report1.jpg','expert'),
-                                                    (2, '신규 코인 리뷰', '/images/review1.jpg','free'),
-                                                    (3, '투자 전략 공유', NULL,'free'),
-                                                    (4, '주말 시장 전망', '/images/weekend.jpg','chart'),
-                                                    (5, '실전 매매 후기', '/images/trading.jpg','pnl'),
-                                                    (1, '손익인증입니다1', '/images/trading.jpg','pnl'),
-                                                    (3, '손익인증입니다2', '/images/trading.jpg','pnl'),
-                                                    (2, '손익인증입니다3', '/images/trading.jpg','pnl'),
-                                                    (1, '손익인증입니다4', '/images/trading.jpg','pnl');
+INSERT INTO posts (user_no, post_cont, img_url) VALUES
+                                                    (1, '오늘 비트코인 상승장이네요!', '/images/chart1.jpg'),
+                                                    (2, '이더리움 2.0 업데이트 후기', '/images/eth2.jpg'),
+                                                    (3, '차트 분석 공유합니다', '/images/analysis1.jpg'),
+                                                    (4, '존버는 승리합니다', NULL),
+                                                    (5, '단타 꿀팁 공유', '/images/tip1.jpg'),
+                                                    (1, '시장 분석 리포트', '/images/report1.jpg'),
+                                                    (2, '신규 코인 리뷰', '/images/review1.jpg'),
+                                                    (3, '투자 전략 공유', NULL),
+                                                    (4, '주말 시장 전망', '/images/weekend.jpg'),
+                                                    (5, '실전 매매 후기', '/images/trading.jpg');
 
 -- comments 테이블 (parent_no는 자기 자신을 참조하도록 설정)
 INSERT INTO comments (post_no, user_no, parent_no, comment_cont) VALUES
