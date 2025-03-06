@@ -6,22 +6,31 @@
     <title>Title</title>
 </head>
 <body>
-
 <div class="container">
-  <form action="">
+<h1>검색 홈</h1>
+  <form th:action="@{search_result.do(category=${category})}" method="post">
     <div>
     <ul>
-      <li><a href="#">통합검색</a></li>
-      <li><a href="#">자유게시판</a></li>
-      <li><a href="#">손익인증</a></li>
-      <li><a href="#">차트분석</a></li>
-      <li><a href="#">전문가 게시판</a></li>
+      <li><a th:href="@{search.do(category=all)}">통합검색</a></li>
+      <li><a th:href="@{search.do(category=free)}">자유게시판</a></li>
+      <li><a th:href="@{search.do(category=pnl)}">손익인증</a></li>
+      <li><a th:href="@{search.do(category=chart)}">차트분석</a></li>
+      <li><a th:href="@{search.do(category=expert)}">전문가 게시판</a></li>
     </ul>
       <label for="keyword">검색</label>
+<!--      <input type="hidden" th:value="${category}">-->
       <input type="text" name="keyword" id="keyword">
+      <button type="submit">검색</button>
     </div>
 
+
   </form>
+    <hr>
+    <div>
+      <h2>최근검색어</h2>
+    </div>
+    <hr>
+  <h2>인기검색어</h2>
 
 </div>
 </body>
