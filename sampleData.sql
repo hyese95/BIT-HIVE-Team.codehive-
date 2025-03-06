@@ -103,17 +103,23 @@ INSERT INTO follows (follower_user_no, following_user_no) VALUES
                                                               (5, 2);
 
 -- posts 테이블
-INSERT INTO posts (user_no, post_cont, img_url) VALUES
-                                                    (1, '오늘 비트코인 상승장이네요!', '/images/chart1.jpg'),
-                                                    (2, '이더리움 2.0 업데이트 후기', '/images/eth2.jpg'),
-                                                    (3, '차트 분석 공유합니다', '/images/analysis1.jpg'),
-                                                    (4, '존버는 승리합니다', NULL),
-                                                    (5, '단타 꿀팁 공유', '/images/tip1.jpg'),
-                                                    (1, '시장 분석 리포트', '/images/report1.jpg'),
-                                                    (2, '신규 코인 리뷰', '/images/review1.jpg'),
-                                                    (3, '투자 전략 공유', NULL),
-                                                    (4, '주말 시장 전망', '/images/weekend.jpg'),
-                                                    (5, '실전 매매 후기', '/images/trading.jpg');
+INSERT INTO posts (user_no, post_cont, img_url,category) VALUES
+                                                    (1, '오늘 비트코인 상승장이네요!', '/images/chart1.jpg','free'),
+                                                    (2, '이더리움 2.0 업데이트 후기', '/images/eth2.jpg','free'),
+                                                    (3, '차트 분석 공유합니다', '/images/analysis1.jpg','chart'),
+                                                    (4, '존버는 승리합니다', NULL,'pnl'),
+                                                    (5, '단타 꿀팁 공유', '/images/tip1.jpg','expert'),
+                                                    (1, '시장 분석 리포트', '/images/report1.jpg','expert'),
+                                                    (2, '신규 코인 리뷰', '/images/review1.jpg','free'),
+                                                    (3, '투자 전략 공유', NULL,'free'),
+                                                    (4, '주말 시장 전망', '/images/weekend.jpg','free'),
+                                                    (5, '손익 인증합니다1', '/images/trading.jpg','pnl'),
+                                                    (3, '손익 인증합니다2', '/images/trading.jpg','pnl'),
+                                                    (2, '손익 인증합니다3', '/images/trading.jpg','pnl'),
+                                                    (1, '손익 인증합니다4', '/images/trading.jpg','pnl'),
+                                                    (4, '손익 인증합니다5', '/images/trading.jpg','pnl'),
+                                                    (3, '손익 인증합니다6', '/images/trading.jpg','pnl'),
+                                                    (2, '손익 인증합니다7', '/images/trading.jpg','pnl');
 
 -- comments 테이블 (parent_no는 자기 자신을 참조하도록 설정)
 INSERT INTO comments (post_no, user_no, parent_no, comment_cont) VALUES
