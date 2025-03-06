@@ -118,6 +118,7 @@ CREATE TABLE posts(
     post_cont TEXT,
     post_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     img_url VARCHAR(255),
+    category VARCHAR(20),
     FOREIGN KEY (user_no) REFERENCES users(user_no)
 );
 
