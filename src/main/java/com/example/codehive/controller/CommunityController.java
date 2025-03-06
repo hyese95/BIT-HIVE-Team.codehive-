@@ -40,7 +40,9 @@ public class CommunityController {
                                @RequestParam (required = false) String keyword) {
 
         List<Post> searchResult=postService.findByCategoryWithKeyword(category,keyword);
+
         model.addAttribute("searchResult", searchResult);
+        model.addAttribute("postService", postService);
 
 
         return "community/search_result";
