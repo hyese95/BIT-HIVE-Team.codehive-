@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns=""
+      th:replace="~{fragments/default :: html(content=~{::body})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="container">
+  <h1>검색결과</h1>
+    <div th:each="p : ${searchResult} ">
+        <div class="card">
+            <img th:src="@{${p.user.profileImgUrl}}" alt="">
+            <span th:text="${p.user.nickname}"></span>
+            <span th:text="${p.postCreatedAt}"></span>
+            <p th:text="${p.postCont}"></p>
+        </div>
+
+
+    </div>
+</div>
+</body>
+</html>
