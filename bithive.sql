@@ -127,7 +127,7 @@ CREATE TABLE comments(
     post_no INT NOT NULL,
     user_no INT NOT NULL,
     comment_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    parent_no INT NOT NULL,
+    parent_no INT,
     comment_cont VARCHAR(255) NOT NULL,
     FOREIGN KEY(post_no) REFERENCES posts(post_no),
     FOREIGN KEY(user_no) REFERENCES users(user_no),
