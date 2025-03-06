@@ -8,19 +8,25 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "post_likes", schema = "bithive")
+@IdClass(PostLikeId.class)
 public class PostLike {
-    @EmbeddedId
-    private PostLikeId id;
+    @Id
+    @Column(name = "user_no", nullable = false)
+    private Integer userNo;
+    @Id
+    @Column(name = "post_no", nullable = false)
+    private Integer postNo;
+
 
     @MapsId("userNo")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_no", nullable = false)
-    private User userNo;
+    private User user;
 
-    @MapsId("postNo")
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "post_no", nullable = false)
-    private Post postNo;
+    private Post post;
 
     @Column(name = "like_type")
     private Boolean likeType;

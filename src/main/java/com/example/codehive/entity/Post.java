@@ -7,6 +7,8 @@ import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -35,5 +37,11 @@ public class Post {
 
     @Column(name = "category", length = 20)
     private String category;
+
+
+    @OneToMany(mappedBy = "post")
+    private List<PostLike> postLikes=new ArrayList<>();
+
+
 
 }

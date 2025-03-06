@@ -11,7 +11,7 @@
   <form th:action="@{search_result.do(category=${category})}" method="post">
     <div>
     <ul>
-      <li><a th:href="@{search.do(category=all)}">통합검색</a></li>
+      <li><a th:href="@{search.do(category=all)}" >통합검색</a></li>
       <li><a th:href="@{search.do(category=free)}">자유게시판</a></li>
       <li><a th:href="@{search.do(category=pnl)}">손익인증</a></li>
       <li><a th:href="@{search.do(category=chart)}">차트분석</a></li>
