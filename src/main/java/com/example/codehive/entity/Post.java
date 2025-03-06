@@ -3,12 +3,14 @@ package com.example.codehive.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
 
 @Getter
 @Setter
+@ToString
 @Entity
 @Table(name = "posts", schema = "bithive")
 public class Post {
@@ -18,7 +20,7 @@ public class Post {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_no", nullable = false)
-    private User userNo;
+    private User user;
 
     @Lob
     @Column(name = "post_cont")
@@ -30,5 +32,8 @@ public class Post {
 
     @Column(name = "img_url")
     private String imgUrl;
+
+    @Column(name = "category")
+    private String category;
 
 }
