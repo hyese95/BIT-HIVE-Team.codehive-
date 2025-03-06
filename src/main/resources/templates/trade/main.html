@@ -9,7 +9,55 @@
 
 <div class="container">
 <h1>거래소 홈화면</h1>
-</div>
 
+    <div id="data"></div>
+    <table id="tickerTable">
+        <thead>
+        <tr>
+            <th>코인명</th>
+            <th>현재가</th>
+            <th>전일대비</th>
+            <th>거래대금</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- API 데이터가 여기서 행으로 추가됩니다 -->
+        </tbody>
+    </table>
+
+    <script>
+        // Upbit API URL
+        const apiUrl = 'https://api.upbit.com/v1/ticker/all?quote_currencies=KRW,BTC';
+
+        fetch(apiUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                const tbody = document.querySelector('#tickerTable tbody');
+
+                data.forEach(item => {
+                    // "KRW"로 시작하는 market만 처리
+                    if (item.market.startsWith('KRW')) {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                        <td>${item.market}</td>
+                        <td>${(item.trade_price).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</td>
+                        <td>${(item.change_rate * 100).toFixed(2)}%</td>
+                        <td>${(item.acc_trade_price_24h / 1000000).toLocaleString('en-US', {maximumFractionDigits: 0})}백만</td>
+                    `;
+                        tbody.appendChild(tr);
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                document.getElementById('tickerTable').innerHTML = '<tr><td colspan="4">데이터를 불러오는 중 오류가 발생했습니다.</td></tr>';
+            });
+    </script>
+</div>
 </body>
 </html>
