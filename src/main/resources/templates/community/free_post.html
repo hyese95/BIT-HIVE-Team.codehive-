@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns=""
       th:replace="~{fragments/default :: html(content=~{::body})}">
 <style>
-    button>a{color:black; text-decoration: none;}
+    label>button>a{color:black; text-decoration: none;}
     #UserRank
 </style>
 <head>
@@ -15,17 +15,6 @@
     <a href="/community/search.do">검색</a>
 <h1>자유게시판</h1>
     <div>
-        <form action="#">
-            <div class="form-group">
-                <ul style="display: flex; flex-wrap: wrap;">
-                    <li class="UserRank"><a href="#">유저 닉네임<img src="/img/user_icon/user_icon_default.png" alt="유저1등"></a></li>
-                    <li class="UserRank"><a href="#">유저 닉네임<img src="/img/user_icon/user_icon_default.png" alt="유저2등"></a></li>
-                    <li class="UserRank"><a href="#">유저 닉네임<img src="/img/user_icon/user_icon_default.png" alt="유저3등"></a></li>
-                </ul>
-            </div>
-        </form>
-    </div>
-    <div>
         <form th:action="@{/community}"  method="post">
 
             <div class="form-group" style="justify-content: space-between;">
@@ -33,21 +22,35 @@
                 <textarea class="form-control" rows="10" style="width: 1200px; height: 500px;position: relative;
                 user-select: none; justify-content: center; align-items: center;"
                 placeholder="로그인 후 이용해주세요!" ></textarea>
-                <button type="submit" ><a href="#" th:icon="@{../static/img/ImageIcon/ImageIcon.png}">이미지 첨부</a></button>
+                <button type="submit" ><a href="#"><img src="/img/ImageIcon/ImageIcon.png" alt="이미지" style="width: 20px; height: 20px">이미지 첨부</a></button>
                 <button type="submit" style=" position: absolute;">
-                    <a href="#" style="text-decoration: none;">게시하기</a>
+                    <a href="#" >게시하기</a>
                 </button>
-                    </label>
+                </label>
             </div>
 
         </form>
     </div>
     <div>
-      <div>
-
-      </div>
+        <table style="width:100%; justify-content: space-between;">
+            <thead>
+            <tr>
+                <th>내용</th>
+                <th>이미지</th>
+                <th>작성 일자</th>
+            </tr>
+            </thead>
+            <tbody  th:each="postpage : ${postPage}">
+            <tr>
+                <td th:text="${postpage.getPostCont()}"></td>
+                <td><img th:src="#{/images/img/ImageIcon/ImageIcon.png}" alt="blcok"></td>
+                <td th:text="${postpage.getPostCreatedAt()}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
    </div>
-</div>
 
 </body>
+
 </html>
