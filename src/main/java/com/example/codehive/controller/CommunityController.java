@@ -12,4 +12,9 @@ public class CommunityController {
     public String freePost() {
         return "community/free_post";
     }
+
+    @GetMapping("search.do")
+    public String search() {
+        return "community/search";
+    }
 }
