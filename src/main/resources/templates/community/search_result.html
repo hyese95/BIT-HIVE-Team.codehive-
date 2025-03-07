@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns=""
+      th:replace="~{fragments/default :: html(content=~{::body})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="container">
+  <h1>검색결과</h1>
+    <div th:each="p : ${searchResult} ">
+        <div>
+            <a href="#">
+            <img th:src="@{${p.user.profileImgUrl}}" alt="" style="width: 40px; height: 40px;">
+            <span th:text="${p.user.nickname}"></span>
+            <span th:text="${p.postCreatedAt}"></span>
+            </a>
+            <div style="border: 1px solid red">
+            <a href="#"  >
+            <span th:text="${p.postCont}"></span>
+                <span th:text="${postService.getLikeSum(p)}"></span>
+                <span th:text="${postService.getDislikeSum(p)}"></span>
+            </a>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+</body>
+</html>
