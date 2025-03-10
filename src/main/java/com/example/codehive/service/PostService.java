@@ -13,4 +13,5 @@ public interface PostService {
     int getLikeSum(Post post);
     int getDislikeSum(Post post);
    Page<Post> ReadAllByCategory(Pageable pageable,String category);
+   List<Post> getPostById(int id);
 }

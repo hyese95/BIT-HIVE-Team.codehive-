@@ -34,7 +34,13 @@ public class PostServiceImp implements PostService {
         posts = postRepository.findAllByCategory(pageable, category);
         return posts;
     }
-        @Override
+
+    @Override
+    public List<Post> getPostById(int id) {
+        return postRepository.findByUserNo(id);
+    }
+
+    @Override
     public int getLikeSum(Post post) {
         int likeSum = 0;
         List<PostLike> postLikes = postRepository.findLikesByPostNo(post.getId());

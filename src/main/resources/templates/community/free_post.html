@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns=""
       th:replace="~{fragments/default :: html(content=~{::body})}">
 <style>
-    label>button>a{color:black; text-decoration: none;}
+    form>div>label>button>a{color:black; text-decoration: none;}
     #UserRank
 </style>
 <head>
@@ -20,36 +20,53 @@
             <div class="form-group" style="justify-content: space-between;">
                 <label>
                 <textarea class="form-control" rows="10" style="width: 1200px; height: 500px;position: relative;
-                user-select: none; justify-content: center; align-items: center;"
+                user-select: none; align-items: center;"
                 placeholder="로그인 후 이용해주세요!" ></textarea>
-                <button type="submit" ><a href="#"><img src="/img/ImageIcon/ImageIcon.png" alt="이미지" style="width: 20px; height: 20px">이미지 첨부</a></button>
-                <button type="submit" style=" position: absolute;">
-                    <a href="#" >게시하기</a>
-                </button>
+                    <span>
+                        <button type="submit" ><a href="#"><img src="/img/ImageIcon/ImageIcon.png" alt="이미지" style="width: 20px; height: 20px">이미지 첨부</a></button>
+                    </span>
+                    <span><button type="submit" style=" position: absolute;">
+                            <a href="#" >게시하기</a></button>
+                    </span>
                 </label>
             </div>
 
         </form>
     </div>
-    <div>
-        <table style="width:100%; justify-content: space-between;">
-            <thead>
-            <tr>
-                <th>내용</th>
-                <th>이미지</th>
-                <th>작성 일자</th>
-            </tr>
-            </thead>
-            <tbody  th:each="postpage : ${postPage}">
-            <tr>
-                <td th:text="${postpage.getPostCont()}"></td>
-                <td><img th:src="#{/images/img/ImageIcon/ImageIcon.png}" alt="blcok"></td>
-                <td th:text="${postpage.getPostCreatedAt()}"></td>
-            </tr>
-            </tbody>
-        </table>
+    <h2 class="mb-4">게시글 목록</h2>
+    <div th:if="${postPage.isEmpty()}">
+        <p>게시글이 없습니다.</p>
     </div>
-   </div>
+    <div class="list-group" th:each="post : ${postPage.content}">
+        <div class="list-group-item">
+            <div class="d-flex align-items-center mb-2">
+                <img src="/img/user_icon/user_icon_default.png" alt="프로필 이미지" class="rounded-circle" width="50" height="50">
+                <div class="ms-3">
+                    <h5 class="mb-0" th:text="${post.user.nickname}">유저 닉네임</h5>
+                    <small class="text-muted" th:text="'Lv ' + ${post.user.id}"></small>
+                </div>
+            </div>
+            <p th:text="${post.postCont}">게시글 내용</p>
+            <small class="text-muted" th:text="${#temporals.format(post.postCreatedAt, 'yyyy-MM-dd')}">작성일자</small>
+        </div>
+    </div>
+
+    <!-- 페이징 처리 -->
+    <div class="pagination" style="justify-content: center;">
+        <a th:if="${postPage.hasPrevious()}"
+           th:href="@{/community/free_post.do(page=${postPage.number - 1})}" th:text="${postPage.number}+'page '">
+        </a>
+        <a th:if="${postPage.hasPrevious()}" th:href="@{/community/free_post.do(page=${postPage.number - 1})}"> 이전</a>
+        <span th:text="${postPage.number + 1}"></span> / <span th:text="${postPage.totalPages}"></span>
+        <a th:if="${postPage.hasNext()}" th:href="@{/community/free_post.do(page=${postPage.number + 1})}">다음</a>
+        <a th:if="${postPage.hasNext()}" th:href="@{/community/free_post.do(page=${postPage.number + 1})}"
+        th:text="${postPage.number + 2}+'page '"></a>
+    </div>
+</div>
+<br>
+<br>
+<br>
+<br>
 
 </body>
 

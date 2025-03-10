@@ -1,7 +1,9 @@
 package com.example.codehive.controller;
 
 import com.example.codehive.entity.Post;
+import com.example.codehive.entity.User;
 import com.example.codehive.service.PostService;
+import com.example.codehive.service.UserService;
 import lombok.AllArgsConstructor;
 import com.example.codehive.entity.Post;
 import com.example.codehive.repository.PostRepository;
@@ -32,11 +34,14 @@ import java.util.Map;
 @AllArgsConstructor
 public class CommunityController {
     private final PostService postService;
+    private final UserService userService;
 
     @GetMapping("/free_post.do")
-    public String freePost(Post post, Model model) {
-        Page<Post> postPage=postService.ReadAllByCategory( PageRequest.of(0, 10), "free");
-        model.addAttribute("postPage",postPage);
+    public String freePost(Model model, @RequestParam(defaultValue = "0") int page) {
+        Page<Post> postPage = postService.ReadAllByCategory(PageRequest.of(page, 10), "free");
+        List<User> users = userService.findAll();
+        model.addAttribute("postPage", postPage);
+        model.addAttribute("userList", users);
         return "community/free_post";
     }
 
