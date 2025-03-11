@@ -1,17 +1,72 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org/"
       th:replace="~{fragments/default :: html(content=~{::body})}">
+<style>
+    button>a {
+        color:black; text-decoration: none;
+    }
+</style>
 <head>
     <meta charset="UTF-8">
     <title>코인 주문 페이지</title>
 </head>
 <body>
-<h1>매수</h1>
-<p><span id="coinTicker"></span></p>
-<script>
-    const params = new URLSearchParams(window.location.search);
-    const coin = params.get('coin');
-    document.getElementById('coinTicker').innerText = coin || "코인정보가 없습니다.";
-</script>
+<div class="container">
+    <h1>주문</h1>
+    <p id="tradeprice"></p>
+    <div id="coindiv">
+    </div>
+    <p><a href="buy.html">매수</a>  <a href="sell.html">매도</a>  <a href="history.html">내역</a></p>
+    <form id="buyform" action="buy.html" method="post">
+        <p>
+            <label>
+            지정 <input type="radio" name="market" checked>
+            시장 <input type="radio" name="market">
+            </label>
+        </p>
+        <p>주문가능: 원</p>
+        <p>
+            <label>
+                <input type="text" placeholder="수량">
+            </label>
+        </p>
+        <p>
+            <label>
+                <input type="text" placeholder="가격">
+            </label>
+        </p>
+        <p><button type="reset">초기화</button></p>
+        <p><button type="submit">매수</button></p>
+    </form>
+    <script>
+        async function loadCoin() {
+            let coindiv = document.getElementById("coindiv");
+            let tradeprice = document.getElementById("tradeprice");
+            let url = "https://api.upbit.com/v1/orderbook?markets=KRW-BTC&level=0";
+            let url2 = "https://api.upbit.com/v1/candles/seconds?market=KRW-BTC"
+            const response = await fetch(url);
+            const response2 = await fetch(url2);
+            const responseJson = await response.json();
+            const responseJson2 = await response2.json();
+            // 테스트
+            // coindiv.innerText=responseJson[0].orderbook_units[0].ask_price;
+            const orderbook = responseJson[0].orderbook_units;
+            const price = responseJson2[0].trade_price;
+            tradeprice.innerText = price;
+            html = ""
+            for (o of orderbook.reverse()) {
+                html += "<p>매수" + o.ask_price + " 잔량 : " + o.ask_size.toFixed(3) + "</p>"
+                coindiv.innerHTML = html;
+            }
+            html += "<hr>"
+            for (o of orderbook) {
+                html += "<p>매도" + o.bid_price + " 잔량 : " + o.bid_size.toFixed(3) + "</p>"
+                coindiv.innerHTML = html;
+            }
+        }
+        loadCoin();
+        // setInterval(loadCoin, 1000);
+    </script>
+</div>
 </body>
 </html>
