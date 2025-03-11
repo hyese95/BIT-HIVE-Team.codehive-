@@ -3,31 +3,48 @@
       th:replace="~{fragments/default :: html(content=~{::body})}">
 <head>
     <meta charset="UTF-8">
-    <title>거래소 홈화면</title>
+    <title>코인 관심목록</title>
 </head>
 <body class="container">
 <h1>거래소 홈</h1>
+<p>
+    id:<span th:text="${favorite.userNo}"></span>
+</p>
+<p>
+    <span th:text="${favorite.market}"></span>
+</p>
+<p>
+    <span th:text="${#strings.substringBefore(favorite.market, '-KRW')}"></span>
+</p>
 <table>
     <thead class="HoldingInterestCategories">
-    <p><a href="#">원화</a></p>
-    <p><a th:href="@{/trade/{id}/favorite_coin.do(id=${2})}">관심</a></p>
+    <p><a href="/trade/main.do">원화</a></p>
+    <p><a href="#">관심</a></p>
     <p><a href="/trade/holding_coin.do">보유</a></p>
     </thead>
 </table>
 
 <table id="tickerTable" class="table table-hover">
     <thead class="table-dark">
-        <tr>
-            <th>코인명</th>
-            <th>현재가</th>
-            <th>전일대비</th>
-            <th>거래대금</th>
-        </tr>
+    <tr>
+        <th>코인명</th>
+        <th>현재가</th>
+        <th>전일대비</th>
+        <th>거래대금</th>
+    </tr>
     </thead>
     <tbody>
     </tbody>
 </table>
+<table>
+    <thead id="favoriteCoin">
+
+    </thead>
+</table>
 <script>
+    const USER_ID = [[${favorite.id}]]
+    const favoriteCoin = document.getElementById('favoriteCoin')
+
     // 코인명 클릭했을 시 매수,매도 페이지로 이동시켜주는 함수
     function goToChart(coinTicker) {
         // 예: 차트 상세 페이지 URL이 /chart 라고 가정하고, coin 파라미터에 티커를 전달
@@ -80,7 +97,6 @@
                             ${item.signed_change_rate > 0 ? '+' : ''}${(item.signed_change_rate * 100).toFixed(2)}%
                         </td>
                         <td>${(item.acc_trade_price_24h / 1000000).toLocaleString('en-US', {maximumFractionDigits: 0})}백만</td>
-                        <td><button>즐겨찾기</button></td>
                     `;
                     tbody.appendChild(tr);
                 }
@@ -91,6 +107,8 @@
             console.error('Error fetching data:', error);
             document.getElementById('tickerTable').innerHTML = '<tr><td colspan="4">데이터를 불러오는 중 오류가 발생했습니다.</td></tr>';
         });
+
+
 </script>
 </body>
 </html>
