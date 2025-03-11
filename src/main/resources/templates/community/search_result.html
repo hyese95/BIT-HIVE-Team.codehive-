@@ -7,25 +7,140 @@
 </head>
 <body>
 <div class="container">
-  <h1>검색결과</h1>
-    <div th:each="p : ${searchResult} ">
+    <h1>검색결과</h1>
+    <p th:if="${searchResult.size()} == 0">검색 결과가 없습니다.</p>
+
+    <!--    통합검색   -->
+    <div th:if="${category.equals('all')}">
+        <p th:text="'검색키워드 : '+${keyword}"></p>
         <div>
-            <a href="#">
-            <img th:src="@{${p.user.profileImgUrl}}" alt="" style="width: 40px; height: 40px;">
-            <span th:text="${p.user.nickname}"></span>
-            <span th:text="${p.postCreatedAt}"></span>
-            </a>
-            <div style="border: 1px solid red">
-            <a href="#"  >
-            <span th:text="${p.postCont}"></span>
-                <span th:text="${postService.getLikeSum(p)}"></span>
-                <span th:text="${postService.getDislikeSum(p)}"></span>
-            </a>
+            <p>자유게시판</p>
+            <div th:each="p : ${searchResult} ">
+                <div th:if="${p.category.equals('free')}">
+                    <a href="#">
+                        <img th:src="@{${p.user.profileImgUrl}}" alt="" style="width: 40px; height: 40px;">
+                        <span th:text="${p.user.nickname}"></span>
+                        <span th:text="${p.postCreatedAt}"></span>
+                    </a>
+                    <div style="border: 1px solid red">
+                        <a href="#">
+                            <span th:text="${p.postCont}"></span>
+                            <span th:text="${postService.getLikeSum(p)}"></span>
+                            <span th:text="${postService.getDislikeSum(p)}"></span>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
+        <form th:action="@{search_result.do(category='free')}" method="post">
+            <input type="hidden" name="keyword"  th:value="${keyword}">
+            <input type="hidden" value="free">
+            <button type="submit">자유게시판 검색결과 전체보기</button>
+        </form>
+        <hr>
 
+        <div>
+            <p>손익인증게시판</p>
+            <div th:each="p : ${searchResult} ">
+                <div th:if="${p.category.equals('pnl')}">
+                    <a href="#">
+                        <img th:src="@{${p.user.profileImgUrl}}" alt="" style="width: 40px; height: 40px;">
+                        <span th:text="${p.user.nickname}"></span>
+                        <span th:text="${p.postCreatedAt}"></span>
+                    </a>
+                    <div style="border: 1px solid red">
+                        <a href="#">
+                            <span th:text="${p.postCont}"></span>
+                            <span th:text="${postService.getLikeSum(p)}"></span>
+                            <span th:text="${postService.getDislikeSum(p)}"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <form th:action="@{search_result.do(category='pnl')}" method="post">
+            <input type="hidden" name="keyword"  th:value="${keyword}">
+            <input type="hidden" value="pnl">
+            <button type="submit">손익인증게시판 검색결과 전체보기</button>
+        </form>
+        <hr>
+
+        <div>
+            <p>차트분석게시판</p>
+            <div th:each="p : ${searchResult} ">
+                <div th:if="${p.category.equals('chart')}">
+                    <a href="#">
+                        <img th:src="@{${p.user.profileImgUrl}}" alt="" style="width: 40px; height: 40px;">
+                        <span th:text="${p.user.nickname}"></span>
+                        <span th:text="${p.postCreatedAt}"></span>
+                    </a>
+                    <div style="border: 1px solid red">
+                        <a href="#">
+                            <span th:text="${p.postCont}"></span>
+                            <span th:text="${postService.getLikeSum(p)}"></span>
+                            <span th:text="${postService.getDislikeSum(p)}"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <form th:action="@{search_result.do(category='chart')}" method="post">
+            <input type="hidden" name="keyword"  th:value="${keyword}">
+            <input type="hidden" value="chart">
+            <button type="submit">차트분석게시판 검색결과 전체보기</button>
+        </form>
+        <hr>
+
+        <div>
+            <p>전문가게시판</p>
+            <div th:each="p : ${searchResult} ">
+                <div th:if="${p.category.equals('expert')}">
+                    <a href="#">
+                        <img th:src="@{${p.user.profileImgUrl}}" alt="" style="width: 40px; height: 40px;">
+                        <span th:text="${p.user.nickname}"></span>
+                        <span th:text="${p.postCreatedAt}"></span>
+                    </a>
+                    <div style="border: 1px solid red">
+                        <a href="#">
+                            <span th:text="${p.postCont}"></span>
+                            <span th:text="${postService.getLikeSum(p)}"></span>
+                            <span th:text="${postService.getDislikeSum(p)}"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <form th:action="@{search_result.do(category='expert')}" method="post">
+            <input type="hidden" name="keyword"  th:value="${keyword}">
+            <input type="hidden" value="expert">
+            <button type="submit">전문가게시판 검색결과 전체보기</button>
+        </form>
 
     </div>
+
+    <!--    카테고리별 검색   -->
+    <div th:if="!${category.equals('all')}">
+        <p th:text="'검색키워드 : '+${keyword}"></p>
+        <p th:text="${categoryKrName}"></p>
+        <div th:each="p : ${searchResult} ">
+            <div>
+                <a href="#">
+                    <img th:src="@{${p.user.profileImgUrl}}" alt="" style="width: 40px; height: 40px;">
+                    <span th:text="${p.user.nickname}"></span>
+                    <span th:text="${p.postCreatedAt}"></span>
+                </a>
+                <div style="border: 1px solid red">
+                    <a href="#">
+                        <span th:text="${p.postCont}"></span>
+                        <span th:text="${postService.getLikeSum(p)}"></span>
+                        <span th:text="${postService.getDislikeSum(p)}"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 </div>
 </body>
 </html>
