@@ -9,13 +9,9 @@
 <h1>거래소 홈</h1>
 <table>
     <thead class="HoldingInterestCategories">
-    <tr>
-        <th>원화</th>
-        <th>보유</th>
-        <th>관심</th>
-    </tr>
     </thead>
 </table>
+
 <table id="tickerTable" class="table table-hover">
     <thead class="table-dark">
     <tr>
@@ -29,9 +25,15 @@
     </tbody>
 </table>
 <script>
+
+    // 코인명 클릭했을 시 매수,매도 페이지로 이동시켜주는 함수
     function goToChart(coinTicker) {
+        // 예: 차트 상세 페이지 URL이 /chart 라고 가정하고, coin 파라미터에 티커를 전달
         window.location.href = '/trade/buy.do?coin=' + coinTicker;
     }
+
+
+    // 코인 한글 명을 받아오기 위한 api
     Promise.all([
         fetch('https://api.upbit.com/v1/market/all?is_details=true')
             .then(response => {
@@ -40,6 +42,7 @@
                 }
                 return response.json();
             }),
+        // 거래대금, 현재가를 가져오기 위한 api
         fetch('https://api.upbit.com/v1/ticker/all?quote_currencies=KRW,BTC')
             .then(response => {
                 if (!response.ok) {
@@ -48,19 +51,26 @@
                 return response.json();
             })
     ])
+        // marketData 를 이용해 티커와 한글 이름의 매핑 객체를 생성
         .then(([marketData, tickerData]) => {
             const coinNameMapping = {};
             marketData.forEach(item => {
                 if (item.market.startsWith('KRW-')) {
+                    // "KRW-" 부분을 제거하여 티커만 남김
                     const ticker = item.market.replace('KRW-', '');
                     coinNameMapping[ticker] = item.korean_name;
                 }
             });
+
             const tbody = document.querySelector('#tickerTable tbody');
+
+            // tickerData 의 각 항목에 대해 표 행을 생성, KRW 로 시작하는 코인만 찾아내고 KRW로 시작하는 코인의 KRW 부분만 지움
             tickerData.forEach(item => {
                 if (item.market.startsWith('KRW')) {
                     const ticker = item.market.replace("KRW-", "");
                     const coinName = coinNameMapping[ticker] || ticker;
+
+                    // api 로 출력해 낼 tr 첫번째부터 순서대로 코인명, 현재가, 전일대비, 거래대금
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td onclick="goToChart('${ticker}')" style="cursor: pointer;">${coinName}<br>${ticker}/KRW</td>
@@ -77,6 +87,7 @@
                 }
             });
         })
+        // 에러 메시지
         .catch(error => {
             console.error('Error fetching data:', error);
             document.getElementById('tickerTable').innerHTML = '<tr><td colspan="4">데이터를 불러오는 중 오류가 발생했습니다.</td></tr>';
