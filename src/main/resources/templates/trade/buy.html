@@ -1,15 +1,17 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns=""
+<html xmlns:th="http://www.thymeleaf.org/"
       th:replace="~{fragments/default :: html(content=~{::body})}">
-<style>
-    button>a{color:black; text-decoration: none;}
-    #UserRank
-</style>
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>코인 주문 페이지</title>
 </head>
 <body>
-
+<h1>매수</h1>
+<p><span id="coinTicker"></span></p>
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const coin = params.get('coin');
+    document.getElementById('coinTicker').innerText = coin || "코인정보가 없습니다.";
+</script>
 </body>
 </html>
