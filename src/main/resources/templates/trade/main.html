@@ -1,19 +1,24 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns=""
+<html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{fragments/default :: html(content=~{::body})}">
-<style>
-    button>a{color:black; text-decoration: none;}
-    #UserRank
-</style>
 <head>
     <meta charset="UTF-8">
     <title>거래소 홈화면</title>
 </head>
-<body>
-<h1>거래소 홈화면</h1>
+<body class="container">
+<h1>거래소 홈</h1>
+    <table>
+        <thead class="HoldingInterestCategories">
+            <tr>
+                <th>원화</th>
+                <th>보유</th>
+                <th>관심</th>
+            </tr>
+        </thead>
+    </table>
 
-<table id="tickerTable">
-    <thead>
+<table id="tickerTable" class="table table-hover">
+    <thead class="table-dark">
     <tr>
         <th>코인명</th>
         <th>현재가</th>
@@ -26,191 +31,47 @@
 </table>
 
 <script>
-    const coinNameMap = {
-        'XRP': '엑스알피',
-        'ADA': '에이다',
-        'BTC': '비트코인',
-        'KAITO': '카이토',
-        'SOL': '솔라나',
-        'ETH': '이더리움',
-        'ONDO': '온도파이낸스',
-        'USDT': '테더',
-        'BCH': '비트코인캐시',
-        'DOGE': '도지코인',
-        'HBAR': '헤데라',
-        'BERA': '베라체인',
-        'TRUMP': '오피셜트럼프',
-        'LAYER': '솔레이어',
-        'SUI': '수이',
-        'STMX': '스톰엑스',
-        'STPT': '에스티피',
-        'LINK': '체인링크',
-        'COW': '카우프로토콜',
-        'WAVES': '웨이브',
-        'MOVE': '무브먼트',
-        'ENS': '이더리움네임서비스',
-        'ETC': '이더리움클래식',
-        'AAVE': '에이브',
-        'VANA': '바나',
-        'ARB': '아비트럼',
-        'CRO': '크로노스',
-        'MBL': '무비블록',
-        'XLM': '스텔라루멘',
-        'UXLINK': '유엑스링크',
-        'SHIB': '시바이누',
-        'NEAR': '니어프로토콜',
-        'BSV': '비트코인에스브이',
-        'JUP': '주피터',
-        'BTT': '비트토렌트',
-        'SEI': '세이',
-        'AVAX': '아발란체',
-        'APT': '앱토스',
-        'XEC': '이캐시',
-        'ALGO': '알고랜드',
-        'STX': '스택스',
-        'VIRTUAL': '버추얼프로토콜',
-        'TRX': '트론',
-        'JTO': '지토',
-        'IOTA': '아이오타',
-        'ANIME': '애니메코인',
-        'PEPE': '페페',
-        'VTHO': '비토르토큰',
-        'DOT': '폴카닷',
-        'SAND': '샌드박스',
-        'HIFI': '하이파이',
-        'ONT': '온톨로지',
-        'ORBS': '오브스',
-        'MINA': '미나',
-        'ICX': '아이콘',
-        'LOOM': '룸네트워크',
-        'XTZ': '테조스',
-        'CELO': '셀로',
-        'SAFE': '세이프',
-        'ONG': '온톨로지가스',
-        'ZIL': '질리카',
-        'EGLD': '멀티버스엑스',
-        '1INCH': '1인치네트워크',
-        'GRS': '그로스톨코인',
-        'JST': '저스트',
-        'HPO': '히포크랏',
-        'BAT': '베이직어텐션토큰',
-        'META': '메타디움',
-        'MNT': '맨틀',
-        'KNC': '카이버네트워크',
-        'ARDR': '아더',
-        'IOST': '아이오에스티',
-        'TOKAMAK': '토카막네트워크',
-        'POWR': '파워렛저',
-        'T': '쓰레스홀드',
-        'STEEM': '스팀',
-        'SXP': '솔라',
-        'ANKR': '앵커',
-        'BOUNTY': '체인바운티',
-        'ELF': '엘프',
-        'ASTR': '아스타',
-        'PUNDIX': '펀디엑스',
-        'WAXP': '왁스',
-        'CVC': '시빅',
-        'USDC': '유에스디코인',
-        'FCT2': '피르마체인',
-        'AXS': '엑시인피니티',
-        'STRAX': '스트라티스',
-        'MASK': '마스크네트워크',
-        'GAS': '가스',
-        'MANA': '디센트럴랜드',
-        'BORA': '보라',
-        'MED': '메디블록',
-        'TAIKO': '타이코',
-        'QKC': '쿼크체인',
-        'RENDER': '렌더토큰',
-        'MLK': '밀크',
-        'ZRX': '제로엑스',
-        'G': '그래비티',
-        'STORJ': '스토리지',
-        'IMX': '이뮤터블엑스',
-        'MTL': '메탈',
-        'THETA': '쎄타토큰',
-        'LSK': '리스크',
-        'ZETA': '제타체인',
-        'CBK': '코박토큰',
-        'INJ': '인젝티브',
-        'TFUEL': '쎄타퓨엘',
-        'CKB': '너보스',
-        'BLAST': '블라스트',
-        'BONK': '봉크',
-        'PYTH': '피스네트워크',
-        'STG': '스타게이트파이낸스',
-        'FLOW': '플로우',
-        'ID': '스페이스아이디',
-        'AUCTION': '바운스토큰',
-        'ZRO': '레이어제로',
-        'MOC': '모스코인',
-        'AHT': '아하토큰',
-        'CHZ': '칠리즈',
-        'W': '웜홀',
-        'POLYX': '폴리매쉬',
-        'ATH': '에이셔',
-        'HUNT': '헌트',
-        'IQ': '아이큐',
-        'NEO': '네오',
-        'GMT': '스테픈',
-        'DRIFT': '드리프트',
-        'MVL': '엠블',
-        'UNI': '유니스왑',
-        'EOS': '이오스',
-        'GAME2': '게임빌드',
-        'ARK': '아크',
-        'AERGO': '아르고',
-        'BIGTIME': '빅타임',
-        'PENDLE': '펜들',
-        'AQT': '알파쿼크',
-        'HIVE': '하이브',
-        'MOCA': '모카네트워크',
-        'BEAM': '빔',
-        'ATOM': '코스모스',
-        'GRT': '더그래프',
-        'GLM': '골렘',
-        'XEM': '넴',
-        'SONIC': '소닉SVM',
-        'POL': '폴리곤에코시스템토큰',
-        'DKA': '디카르고',
-        'CTC': '크레딧코인',
-        'ME': '매직에덴',
-        'QTUM': '퀀텀',
-        'SNT': '스테이터스네트워크토큰',
-        'VET': '비체인',
-        'BLUR': '블러',
-        'AGLD': '어드벤처골드',
-        'CARV': '카브',
-        'STRIKE': '스트라이크',
-        'KAVA': '카바',
-        'TT': '썬더코어',
-        'SC': '시아코인',
-        'AKT': '아카시네트워크'
-    };
-    function fetchTickerData() {
-        const apiUrl = 'https://api.upbit.com/v1/ticker/all?quote_currencies=KRW,BTC';
+    function goToChart(coinTicker) {
+        window.location.href = '/trade/buy.do?coin=' + coinTicker;
+    }
+        Promise.all([
+            fetch('https://api.upbit.com/v1/market/all?is_details=true')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                }),
+            fetch('https://api.upbit.com/v1/ticker/all?quote_currencies=KRW,BTC')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+        ])
+            .then(([marketData, tickerData]) => {
+                const coinNameMapping = {};
+                marketData.forEach(item => {
+                    if (item.market.startsWith('KRW-')) {
+                        const ticker = item.market.replace('KRW-', '');
+                        coinNameMapping[ticker] = item.korean_name;
+                    }
+                });
 
-        fetch(apiUrl)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
                 const tbody = document.querySelector('#tickerTable tbody');
-                tbody.innerHTML = '';
-
-                data.forEach(item => {
+                tickerData.forEach(item => {
                     if (item.market.startsWith('KRW')) {
                         const ticker = item.market.replace("KRW-", "");
-                        const coinName = coinNameMap[ticker] || ticker;
+                        const coinName = coinNameMapping[ticker] || ticker;
 
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
-                        <td>${coinName}<br>${ticker}/KRW</td>
-                        <td>${(item.trade_price).toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 2})}</td>
+                        <td onclick="goToChart('${ticker}')" style="cursor: pointer;">${coinName}<br>${ticker}/KRW</td>
+                        <td>${(item.trade_price).toLocaleString('en-US', {
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 2
+                        })}</td>
                         <td style="color: ${item.signed_change_rate > 0 ? 'red' : (item.signed_change_rate < 0 ? 'blue' : 'black')}">
                             ${item.signed_change_rate > 0 ? '+' : ''}${(item.signed_change_rate * 100).toFixed(2)}%
                         </td>
@@ -224,9 +85,6 @@
                 console.error('Error fetching data:', error);
                 document.getElementById('tickerTable').innerHTML = '<tr><td colspan="4">데이터를 불러오는 중 오류가 발생했습니다.</td></tr>';
             });
-    }
-    fetchTickerData();
-    setInterval(fetchTickerData, 500);
 </script>
 </body>
 </html>

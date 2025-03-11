@@ -7,9 +7,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/trade")
 public class TradeController {
+
     @GetMapping("main.do")
     public String main() {
         return "trade/main";
     }
 
+    @GetMapping("buy.do")
+    public String coinOrder() {
+        return "trade/buy";
+    }
 }
