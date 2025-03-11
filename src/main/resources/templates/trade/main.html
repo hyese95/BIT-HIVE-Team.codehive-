@@ -32,7 +32,6 @@
     function goToChart(coinTicker) {
         window.location.href = '/trade/buy.do?coin=' + coinTicker;
     }
-
     Promise.all([
         fetch('https://api.upbit.com/v1/market/all?is_details=true')
             .then(response => {
@@ -57,13 +56,11 @@
                     coinNameMapping[ticker] = item.korean_name;
                 }
             });
-
             const tbody = document.querySelector('#tickerTable tbody');
             tickerData.forEach(item => {
                 if (item.market.startsWith('KRW')) {
                     const ticker = item.market.replace("KRW-", "");
                     const coinName = coinNameMapping[ticker] || ticker;
-
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td onclick="goToChart('${ticker}')" style="cursor: pointer;">${coinName}<br>${ticker}/KRW</td>
