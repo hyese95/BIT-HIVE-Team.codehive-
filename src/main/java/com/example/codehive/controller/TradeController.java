@@ -13,8 +13,8 @@ public class TradeController {
         return "trade/main";
     }
 
-    @GetMapping("coin_order.do")
+    @GetMapping("buy.do")
     public String coinOrder() {
-        return "trade/coin_order";
+        return "trade/buy";
     }
 }

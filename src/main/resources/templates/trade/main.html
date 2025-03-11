@@ -7,6 +7,15 @@
 </head>
 <body class="container">
 <h1>거래소 홈</h1>
+    <table>
+        <thead class="HoldingInterestCategories">
+            <tr>
+                <th>원화</th>
+                <th>보유</th>
+                <th>관심</th>
+            </tr>
+        </thead>
+    </table>
 
 <table id="tickerTable" class="table table-hover">
 <!--
@@ -31,65 +40,69 @@ table table-striped table-hover
     // 차트 페이지로 이동하는 함수 (전역 스코프에 선언)
     function goToChart(coinTicker) {
         // 예: 차트 상세 페이지 URL이 /chart 라고 가정하고, coin 파라미터에 티커를 전달
-        window.location.href = '/trade/coin_order.do?coin=' + coinTicker;
-        // http://localhost:8801/trade/main.do
-        // http://localhost:8801/chart?coin=XRP
+        window.location.href = '/trade/buy.do?coin=' + coinTicker;
     }
 
-    // 두 API를 병렬로 호출하기 위해 Promise.all을 사용
-    Promise.all([
-        fetch('https://api.upbit.com/v1/market/all?is_details=true')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            }),
-        fetch('https://api.upbit.com/v1/ticker/all?quote_currencies=KRW,BTC')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-    ])
-        .then(([marketData, tickerData]) => {
-            // marketData를 이용해 티커와 한글 이름의 매핑 객체를 생성
-            const coinNameMapping = {};
-            marketData.forEach(item => {
-                if (item.market.startsWith('KRW-')) {
-                    // "KRW-" 부분을 제거하여 티커만 남김
-                    const ticker = item.market.replace('KRW-', '');
-                    coinNameMapping[ticker] = item.korean_name;
-                }
-            });
 
-            const tbody = document.querySelector('#tickerTable tbody');
 
-            // tickerData의 각 항목에 대해 표 행을 생성
-            tickerData.forEach(item => {
-                if (item.market.startsWith('KRW')) {
-                    const ticker = item.market.replace("KRW-", "");
-                    // market API에서 받아온 한글 이름을 사용, 없으면 티커를 그대로 사용
-                    const coinName = coinNameMapping[ticker] || ticker;
 
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
+        // 두 API를 병렬로 호출하기 위해 Promise.all을 사용
+        Promise.all([
+            fetch('https://api.upbit.com/v1/market/all?is_details=true')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                }),
+            fetch('https://api.upbit.com/v1/ticker/all?quote_currencies=KRW,BTC')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+        ])
+            .then(([marketData, tickerData]) => {
+                // marketData를 이용해 티커와 한글 이름의 매핑 객체를 생성
+                const coinNameMapping = {};
+                marketData.forEach(item => {
+                    if (item.market.startsWith('KRW-')) {
+                        // "KRW-" 부분을 제거하여 티커만 남김
+                        const ticker = item.market.replace('KRW-', '');
+                        coinNameMapping[ticker] = item.korean_name;
+                    }
+                });
+
+                const tbody = document.querySelector('#tickerTable tbody');
+
+                // tickerData의 각 항목에 대해 표 행을 생성
+                tickerData.forEach(item => {
+                    if (item.market.startsWith('KRW')) {
+                        const ticker = item.market.replace("KRW-", "");
+                        // market API에서 받아온 한글 이름을 사용, 없으면 티커를 그대로 사용
+                        const coinName = coinNameMapping[ticker] || ticker;
+
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
                         <td onclick="goToChart('${ticker}')" style="cursor: pointer;">${coinName}<br>${ticker}/KRW</td>
-                        <td>${(item.trade_price).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</td>
+                        <td>${(item.trade_price).toLocaleString('en-US', {
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 2
+                        })}</td>
                         <td style="color: ${item.signed_change_rate > 0 ? 'red' : (item.signed_change_rate < 0 ? 'blue' : 'black')}">
                             ${item.signed_change_rate > 0 ? '+' : ''}${(item.signed_change_rate * 100).toFixed(2)}%
                         </td>
-                        <td>${(item.acc_trade_price_24h / 1000000).toLocaleString('en-US', { maximumFractionDigits: 0 })}백만</td>
+                        <td>${(item.acc_trade_price_24h / 1000000).toLocaleString('en-US', {maximumFractionDigits: 0})}백만</td>
                     `;
-                    tbody.appendChild(tr);
-                }
+                        tbody.appendChild(tr);
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                document.getElementById('tickerTable').innerHTML = '<tr><td colspan="4">데이터를 불러오는 중 오류가 발생했습니다.</td></tr>';
             });
-        })
-        .catch(error => {
-            console.error('Error fetching data:', error);
-            document.getElementById('tickerTable').innerHTML = '<tr><td colspan="4">데이터를 불러오는 중 오류가 발생했습니다.</td></tr>';
-        });
 </script>
 </body>
 </html>
