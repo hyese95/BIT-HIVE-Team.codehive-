@@ -18,7 +18,6 @@
       <li><a th:href="@{search.do(category=expert)}">전문가 게시판</a></li>
     </ul>
       <label for="keyword">검색</label>
-<!--      <input type="hidden" th:value="${category}">-->
       <input type="text" name="keyword" id="keyword">
       <button type="submit">검색</button>
     </div>
@@ -28,6 +27,14 @@
     <hr>
     <div>
       <h2>최근검색어</h2>
+      <div  th:each="c : ${keywordCookies}">
+      <form th:action="@{/community/search_result.do(category='all')}" method="post">
+        <input type="hidden" th:value="${c}" name="keyword">
+        <button th:text="${c}" type="submit"></button>
+        <a th:href="@{/community/search/cookie.do(keyword=${c},category=${category})}">삭제</a>
+      </form>
+      </div>
+      <a th:if="${keywordCookies.size()}!=0" th:href="@{/community/search/cookie.do(deleteAll=true,category=${category})}">전체삭제</a>
     </div>
     <hr>
   <h2>인기검색어</h2>
