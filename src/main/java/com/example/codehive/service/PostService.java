@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 public interface PostService {
-    List<Post>findByCategoryWithKeyword(String category,String keyword);
-    int getLikeSum(Post post);
-    int getDislikeSum(Post post);
+    Page<Post>readByCategoryWithKeyword(String category,String keyword, Pageable pageable);
    Page<Post> ReadAllByCategory(Pageable pageable,String category);
 }

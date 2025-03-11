@@ -1,5 +1,7 @@
 package com.example.codehive.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,6 +21,7 @@ public class Post {
     @Id
     @Column(name = "post_no", nullable = false)
     private Integer id;
+
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_no", nullable = false)

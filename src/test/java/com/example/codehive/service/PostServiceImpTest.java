@@ -23,4 +23,14 @@ class PostServiceImpTest {
         Page <Post> postPage=(postService.ReadAllByCategory(pageable,"free"));
         System.out.println(postPage.getContent());
     }
+
+    @Test
+    @Transactional
+    void findByCategoryWithKeyword() {
+        Pageable pageable = PageRequest.of(0, 2);
+        String category="%";
+        String keyword="인증";
+        Page<Post> postPage=postService.readByCategoryWithKeyword(category, keyword, pageable);
+        System.out.println(postPage.getContent());
+    }
 }

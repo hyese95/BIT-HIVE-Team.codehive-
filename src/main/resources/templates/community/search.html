@@ -7,37 +7,46 @@
 </head>
 <body>
 <div class="container">
-<h1>검색 홈</h1>
-  <form th:action="@{search_result.do(category=${category})}" method="post">
-    <div>
-    <ul>
-      <li><a th:href="@{search.do(category=all)}" >통합검색</a></li>
-      <li><a th:href="@{search.do(category=free)}">자유게시판</a></li>
-      <li><a th:href="@{search.do(category=pnl)}">손익인증</a></li>
-      <li><a th:href="@{search.do(category=chart)}">차트분석</a></li>
-      <li><a th:href="@{search.do(category=expert)}">전문가 게시판</a></li>
-    </ul>
-      <label for="keyword">검색</label>
-      <input type="text" name="keyword" id="keyword">
-      <button type="submit">검색</button>
-    </div>
+    <h1>검색 홈</h1>
 
-
-  </form>
-    <hr>
     <div>
-      <h2>최근검색어</h2>
-      <div  th:each="c : ${keywordCookies}">
-      <form th:action="@{/community/search_result.do(category='all')}" method="post">
-        <input type="hidden" th:value="${c}" name="keyword">
-        <button th:text="${c}" type="submit"></button>
-        <a th:href="@{/community/search/cookie.do(keyword=${c},category=${category})}">삭제</a>
-      </form>
-      </div>
-      <a th:if="${keywordCookies.size()}!=0" th:href="@{/community/search/cookie.do(deleteAll=true,category=${category})}">전체삭제</a>
+        <ul>
+            <li><a th:href="@{search.do(category=all)}">통합검색</a></li>
+            <li><a th:href="@{search.do(category=free)}">자유게시판</a></li>
+            <li><a th:href="@{search.do(category=pnl)}">손익인증</a></li>
+            <li><a th:href="@{search.do(category=chart)}">차트분석</a></li>
+            <li><a th:href="@{search.do(category=expert)}">전문가 게시판</a></li>
+        </ul>
+        <form onsubmit="search(event)">
+            <label for="keyword">검색</label>
+            <input type="text" name="keyword" id="keyword">
+            <button type="submit">검색</button>
+        </form>
     </div>
+    <script>
+        function search(event) {
+
+            event.preventDefault();
+            const keyword = document.getElementById('keyword').value;
+            const category = new URLSearchParams(window.location.search).get('category') || 'all';
+            window.location.href = `/community/search_result.do?category=${category}&keyword=${keyword}`;
+
+        }
+    </script>
     <hr>
-  <h2>인기검색어</h2>
+    <!--    <div>-->
+    <!--      <h2>최근검색어</h2>-->
+    <!--      <div  th:each="c : ${keywordCookies}">-->
+    <!--      <form th:action="@{/community/search_result.do(category='all')}" method="post">-->
+    <!--        <input type="hidden" th:value="${c}" name="keyword">-->
+    <!--        <button th:text="${c}" type="submit"></button>-->
+    <!--        <a th:href="@{/community/search/cookie.do(keyword=${c},category=${category})}">삭제</a>-->
+    <!--      </form>-->
+    <!--      </div>-->
+    <!--      <a th:if="${keywordCookies.size()}!=0" th:href="@{/community/search/cookie.do(deleteAll=true,category=${category})}">전체삭제</a>-->
+    <!--    </div>-->
+    <hr>
+    <h2>인기검색어</h2>
 
 </div>
 </body>
