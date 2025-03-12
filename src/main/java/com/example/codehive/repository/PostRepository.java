@@ -28,6 +28,6 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     List<Post> findByUserNo(@Param("Id") int Id);
 
     @Query("SELECT p from Post p JOIN fetch p.id where p.id = :postNo")
-    Post findPostById(int id);
+    Post findPostById(int postNo);
 }
 
