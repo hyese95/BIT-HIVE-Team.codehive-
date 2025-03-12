@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
+///community/postDetail.do
 @Controller
 @RequestMapping("/community")
 @AllArgsConstructor
@@ -49,11 +49,12 @@ public class CommunityController {
         return "community/free_post";
     }
 
-    @GetMapping("postDetail.do")
-    public String detail(Model model
+    @GetMapping("/postDetail.do")
+    public String detail(Model model,
+                         @RequestParam (defaultValue = "1")int postNo
                          ) {
-        System.out.println("받은 아이디는" + 6);
-        Post post=postService.getPostByPostId(6);
+        System.out.println("받은 아이디는" + postNo);
+        Post post=postService.getPostByPostId(postNo);
         model.addAttribute("post", post);
         return "community/postDetail";
     }
