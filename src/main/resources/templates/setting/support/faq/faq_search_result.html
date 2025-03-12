@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/"
+      th:replace="~{fragments/default :: html(content=~{::body})}">
+<head>
+    <meta charset="UTF-8">
+    <title>검색</title>
+</head>
+<body>
+    <div class="container">
+        <h1>검색결과</h1>
+        <h2 th:text="'&quot'+${keyword}+'&quot'+'에 대한 검색결과 가 나와야되는데 왜 안나오노 시발'"></h2>
+        <div th:each="s : ${faqs}">
+            <strong th:text="${s.faqTitle}"></strong>
+            <p th:text="${s.faqCont}"></p>
+    </div>
+</body>
+</html>

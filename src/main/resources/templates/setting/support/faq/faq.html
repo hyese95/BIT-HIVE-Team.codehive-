@@ -8,9 +8,21 @@
 <body>
     <div class="container">
         <h1>자주하는 질문</h1>
+        <form onsubmit="search(event)">
+            <label for="keyword">검색</label>
+            <input type="text" name="keyword" id="keyword">
+            <button type="submit">검색</button>
+        </form>
         <div th:each="f : ${faq}">
             <a th:href="@{/setting/support/faq/faq_detail.do(faqNo=${f.id})}" th:text="${f.faqTitle}"></a>
         </div>
     </div>
+    <script>
+        function search(event) {
+            event.preventDefault();
+            const keyword=document.getElementById("keyword").value;
+            window.location.href=`/setting/support/faq/faq_search_result.do?keyword=${keyword}`
+        }
+    </script>
 </body>
 </html>

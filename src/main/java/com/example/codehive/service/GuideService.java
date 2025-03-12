@@ -7,4 +7,5 @@ import java.util.List;
 public interface GuideService {
     List<Guide> readAll();
     Guide readById(long id);
+    List<Guide> readByKeyword(String keyword);
 }

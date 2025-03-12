@@ -19,4 +19,9 @@ public class FaqServiceImp implements FaqService {
     public Faq readById(long id) {
         return faqRepository.findById(id);
     }
+
+    @Override
+    public List<Faq> readByKeyword(String keyword) {
+        return faqRepository.findByKeyword(keyword);
+    }
 }

@@ -20,5 +20,10 @@ public class GuideServiceImp implements GuideService {
     public Guide readById(long id) {
         return guideRepository.findById(id);
     }
+
+    @Override
+    public List<Guide> readByKeyword(String keyword) {
+        return guideRepository.findByKeyword(keyword);
+    }
 }
 

@@ -52,4 +52,18 @@ public class SettingController {
         model.addAttribute("faq", faq);
         return "setting/support/faq/faq_detail";
     }
+    @GetMapping("/support/notice/notice_search_result.do")
+    public String noticeSearchResult(Model model, @RequestParam String keyword) {
+        List<Guide> guides=guideService.readByKeyword(keyword);
+        model.addAttribute("guides", guides);
+        model.addAttribute("keyword", keyword);
+        return "setting/support/notice/notice_search_result";
+    }
+    @GetMapping("/support/faq/faq_search_result.do")
+    public String faqSearchResult(Model model, @RequestParam String keyword) {
+        List<Faq> faqs=faqService.readByKeyword(keyword);
+        model.addAttribute("faqs", faqs);
+        model.addAttribute("keyword", keyword);
+        return "setting/support/faq/faq_search_result";
+    }
 }

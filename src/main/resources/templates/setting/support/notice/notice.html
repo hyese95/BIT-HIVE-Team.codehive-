@@ -8,9 +8,21 @@
 <body>
     <div class="container">
         <h1>공지사항</h1>
+        <form onsubmit="search(event)">
+            <label for="keyword">검색</label>
+            <input type="text" name="keyword" id="keyword">
+            <button type="submit">검색</button>
+        </form>
         <div th:each="g : ${guides}">
             <a th:href="@{/setting/support/notice/notice_detail.do(guideNo=${g.id})}" th:text="${g.guideTitle}"></a>
         </div>
     </div>
+    <script>
+        function search(event) {
+            event.preventDefault();
+            const keyword=document.getElementById("keyword").value;
+            window.location.href=`/setting/support/notice/notice_search_result.do?keyword=${keyword}`
+        }
+    </script>
 </body>
 </html>

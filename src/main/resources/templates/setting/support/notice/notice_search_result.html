@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/"
+      th:replace="~{fragments/default :: html(content=~{::body})}">
+<head>
+    <meta charset="UTF-8">
+    <title>검색</title>
+</head>
+<body>
+    <div class="container">
+        <h1>검색결과</h1>
+        <h2 th:text="'&quot'+${keyword}+'&quot'+'에 대한 검색결과'"></h2>
+      <div th:each="s : ${guides}">
+          <strong th:text="${s.guideTitle}"></strong>
+          <p th:text="${s.guideCont}"></p>
+      </div>
+    </div>
+</body>
+</html>

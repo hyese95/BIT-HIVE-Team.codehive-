@@ -7,4 +7,5 @@ import java.util.List;
 public interface FaqService {
     List<Faq> readAll();
     Faq readById(long id);
+    List<Faq> readByKeyword(String keyword);
 }
