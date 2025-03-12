@@ -10,7 +10,7 @@
 <div>
     <p>보유자산</p>
     <div th:each="a : ${myAsset}">
-        <p th:text="${a.userNo}"></p>
+        <p th:text="${a}"></p>
     </div>
 <!--데이터베이스에서 유저가 보유하고 있는 자산들의 총합 구하기
 유저 자산 수익 계산 구매 평단가 - 현재가
