@@ -3,10 +3,12 @@ package com.example.codehive.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @Entity
+@ToString
 @Table(name = "post_likes", schema = "bithive")
 @IdClass(PostLikeId.class)
 public class PostLike {
@@ -21,11 +23,13 @@ public class PostLike {
     @MapsId("userNo")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_no", nullable = false)
+    @ToString.Exclude
     private User user;
 
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "post_no", nullable = false)
+    @ToString.Exclude
     private Post post;
 
     @Column(name = "like_type")

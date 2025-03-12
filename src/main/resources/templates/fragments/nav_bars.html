@@ -33,7 +33,7 @@
           <a class="nav-link fw-bold fs-5" href="/asset/my_asset.do">내자산</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link fw-bold fs-5" href="/community/free_post.do">커뮤니티</a>
+          <a class="nav-link fw-bold fs-5" th:href="@{/community/free_post.do(page=0)}">커뮤니티</a>
         </li>
         <li class="nav-item">
           <a class="nav-link fw-bold fs-5" href="/news/main.do">뉴스</a>
@@ -72,7 +72,7 @@
     <div class="collapse navbar-collapse">
       <ul class="navbar-nav w-100 justify-content-evenly">
         <li class="nav-item">
-          <a class="nav-link fw-medium" href="/community/free_post.do">자유게시판</a>
+          <a class="nav-link fw-medium" th:href="@{/community/free_post.do(page=0)}">자유게시판</a>
         </li>
         <li class="nav-item">
           <a class="nav-link fw-medium" href="/community/pnl_post.do">손익인증</a>

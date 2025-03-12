@@ -8,9 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class PostServiceImpTest {
@@ -20,7 +17,14 @@ class PostServiceImpTest {
     @Transactional
     void readAllByCategory() {
         Pageable pageable = PageRequest.of(0, 10);
-        Page <Post> postPage=(postService.ReadAllByCategory(pageable,"free"));
+        Page <Post> postPage=(postService.readAllByCategory(pageable,"free"));
         System.out.println(postPage.getContent());
+    }
+    @Test
+    @Transactional
+    void postLikeCount() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Post> postPage=(postService.readAllByCategory(pageable,"free"));
+        System.out.println(postPage);
     }
 }

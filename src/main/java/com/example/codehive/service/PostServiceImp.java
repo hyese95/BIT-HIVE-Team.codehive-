@@ -29,7 +29,7 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
-    public Page<Post> ReadAllByCategory(Pageable pageable,String category) {
+    public Page<Post> readAllByCategory(Pageable pageable, String category) {
         Page<Post> posts;
         posts = postRepository.findAllByCategory(pageable, category);
         return posts;

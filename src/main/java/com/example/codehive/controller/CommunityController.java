@@ -5,29 +5,16 @@ import com.example.codehive.entity.User;
 import com.example.codehive.service.PostService;
 import com.example.codehive.service.UserService;
 import lombok.AllArgsConstructor;
-import com.example.codehive.entity.Post;
-import com.example.codehive.repository.PostRepository;
-import com.example.codehive.service.PostService;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/community")
@@ -36,11 +23,24 @@ public class CommunityController {
     private final PostService postService;
     private final UserService userService;
 
+    @GetMapping("/api/free_posts")
+    @ResponseBody
+    public ResponseEntity<Page<Post>> getFreePosts(@RequestParam(defaultValue = "0") int page,
+                                   @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Post> posts= postService.readAllByCategory(pageable, "free");
+        return ResponseEntity.ok(posts);
+    }
     @GetMapping("/free_post.do")
-    public String freePost(Model model, @RequestParam(defaultValue = "0") int page) {
-        Page<Post> postPage = postService.ReadAllByCategory(PageRequest.of(page, 10), "free");
+    public String freePost(Model model,
+                           @PageableDefault(size = 10) Pageable pageable,
+                           @RequestParam(defaultValue = "0") int page) {
+
+        pageable = PageRequest.of(page, 10); // 기본 페이지 값 설정
+        Page<Post> freePostPage = postService.readAllByCategory(pageable, "free");
+
         List<User> users = userService.findAll();
-        model.addAttribute("postPage", postPage);
+        model.addAttribute("freePostPage", freePostPage);
         model.addAttribute("userList", users);
         return "community/free_post";
     }
@@ -73,5 +73,6 @@ public class CommunityController {
     public String pnlPost() {
         return "community/pnl_post";
     }
+
 
 }

@@ -23,6 +23,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("select pl from PostLike pl where pl.post.id = :postNo ")
     List<PostLike> findLikesByPostNo(int postNo);
 
+    @Query("select p from Post p where p.category=:category order by p.postCreatedAt DESC")
     Page<Post> findAllByCategory(Pageable pageable,String category);
 
     @Query("SELECT p FROM Post p JOIN FETCH p.user WHERE p.user.id = :Id")

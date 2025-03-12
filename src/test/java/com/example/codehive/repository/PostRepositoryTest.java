@@ -35,4 +35,5 @@ class PostRepositoryTest {
         List<Post> posts = postRepository.findByKeyword("시장");
         System.out.println(posts);
     }
+
 }
