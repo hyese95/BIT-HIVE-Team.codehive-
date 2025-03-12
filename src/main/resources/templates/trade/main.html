@@ -7,19 +7,34 @@
 </head>
 <body class="container">
 <h1>거래소 홈</h1>
+<div>
+    <p>보유자산</p>
+    <div th:each="a : ${myAsset}">
+        <p th:text="${a}"></p>
+    </div>
+<!--데이터베이스에서 유저가 보유하고 있는 자산들의 총합 구하기
+유저 자산 수익 계산 구매 평단가 - 현재가
+수익률 계산
+-->
+
+</div>
+
 <table>
     <thead class="HoldingInterestCategories">
+    <p><a href="#">원화</a></p>
+    <p><a href="/trade/favorite_coin.do">관심</a></p>
+    <p><a href="/trade/holding_coin.do">보유</a></p>
     </thead>
 </table>
 
 <table id="tickerTable" class="table table-hover">
     <thead class="table-dark">
-    <tr>
-        <th>코인명</th>
-        <th>현재가</th>
-        <th>전일대비</th>
-        <th>거래대금</th>
-    </tr>
+        <tr>
+            <th>코인명</th>
+            <th>현재가</th>
+            <th>전일대비</th>
+            <th>거래대금</th>
+        </tr>
     </thead>
     <tbody>
     </tbody>
@@ -28,7 +43,7 @@
 
     // 코인명 클릭했을 시 매수,매도 페이지로 이동시켜주는 함수
     function goToChart(coinTicker) {
-        // 예: 차트 상세 페이지 URL 이 /chart 라고 가정하고, coin 파라미터에 티커를 전달
+        // 예: 차트 상세 페이지 URL이 /chart 라고 가정하고, coin 파라미터에 티커를 전달
         window.location.href = '/trade/buy.do?coin=' + coinTicker;
     }
 
@@ -82,6 +97,7 @@
                             ${item.signed_change_rate > 0 ? '+' : ''}${(item.signed_change_rate * 100).toFixed(2)}%
                         </td>
                         <td>${(item.acc_trade_price_24h / 1000000).toLocaleString('en-US', {maximumFractionDigits: 0})}백만</td>
+                        <td><input class="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..."></td>
                     `;
                     tbody.appendChild(tr);
                 }

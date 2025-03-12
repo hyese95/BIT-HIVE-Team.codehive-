@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/default :: html(content=~{::body})}">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<div class="container">
+  <h1>관심 목록</h1>
+  <div th:each="f : ${favoriteMarketList}">
+    <p th:text="${f.market.replace('-KRW','')}"></p>
+  </div>
+
+</div>
+</body>
+</html>

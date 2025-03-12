@@ -3,11 +3,13 @@ package com.example.codehive.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.time.Instant;
 
 @Getter
 @Setter
+@ToString
 @Entity
 @Table(name = "coin_transactions", schema = "bithive")
 public class CoinTransaction {
@@ -15,9 +17,12 @@ public class CoinTransaction {
     @Column(name = "trans_no", nullable = false)
     private Integer id;
 
+    @Column(name = "user_no",nullable = false)
+    private int userNo;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_no", nullable = false)
-    private User userNo;
+    @JoinColumn(name = "user_no", nullable = false, insertable = false, updatable = false)
+    private User user;
 
     @Column(name = "market", nullable = false)
     private String market;
