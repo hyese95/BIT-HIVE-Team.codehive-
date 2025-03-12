@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/"
+      th:replace="~{fragments/default :: html(content=~{::body})}">
+<head>
+    <meta charset="UTF-8">
+    <title>공지사항</title>
+</head>
+<body>
+    <div class="container">
+        <h2 th:text="${guide.guideTitle}"></h2>
+        <p th:text="${guide.guideCont}"></p>
+    </div>
+</body>
+</html>

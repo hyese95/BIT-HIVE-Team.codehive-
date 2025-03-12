@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/"
+      th:replace="~{fragments/default :: html(content=~{::body})}">
+<head>
+    <meta charset="UTF-8">
+    <title>자주하는 질문</title>
+</head>
+<body>
+    <div class="container">
+        <h1>자주하는 질문</h1>
+        <div th:each="f : ${faq}">
+            <a th:href="@{/setting/support/faq/faq_detail.do(faqNo=${f.id})}" th:text="${f.faqTitle}"></a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/"
+      th:replace="~{fragments/default :: html(content=~{::body})}">
+<head>
+    <meta charset="UTF-8">
+    <title>자주하는 질문</title>
+</head>
+<body>
+    <div class="container">
+        <h2 th:text="${faq.faqTitle}"></h2>
+        <p th:text="${faq.faqCont}"></p>
+    </div>
+</body>
+</html>

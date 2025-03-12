@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/"
+      th:replace="~{fragments/default :: html(content=~{::body})}">
+<head>
+    <meta charset="UTF-8">
+    <title>공지사항</title>
+</head>
+<body>
+    <div class="container">
+        <h1>공지사항</h1>
+        <div th:each="g : ${guides}">
+            <a th:href="@{/setting/support/notice/notice_detail.do(guideNo=${g.id})}" th:text="${g.guideTitle}"></a>
+        </div>
+    </div>
+</body>
+</html>
