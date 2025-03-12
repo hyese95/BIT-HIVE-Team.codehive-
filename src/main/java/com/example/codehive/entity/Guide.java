@@ -11,7 +11,9 @@ import java.time.Instant;
 @Setter
 @Entity
 @Table(name = "guides", schema = "bithive")
-public class Guide {
+public class
+
+Guide {
     @Id
     @Column(name = "guide_no", nullable = false)
     private Integer id;

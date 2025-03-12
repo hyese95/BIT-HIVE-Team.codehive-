@@ -20,16 +20,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/community")
@@ -55,7 +52,9 @@ public class CommunityController {
     @GetMapping("search_result.do")
     public String search_result(Model model,
                                 @RequestParam(defaultValue = "all") String category,
-                                @RequestParam String keyword
+                                @RequestParam String keyword,
+                                HttpServletRequest request,
+                                HttpServletResponse response
     ) {
         Pageable pageable;
         if (category.equals("all")) { //통합검색
@@ -75,6 +74,9 @@ public class CommunityController {
         }
         model.addAttribute("category", category);
         model.addAttribute("keyword", keyword);
+
+
+
         return "community/search_result";
     }
 

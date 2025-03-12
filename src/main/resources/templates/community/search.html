@@ -30,10 +30,15 @@
             const keyword = document.getElementById('keyword').value;
             const category = new URLSearchParams(window.location.search).get('category') || 'all';
             window.location.href = `/community/search_result.do?category=${category}&keyword=${keyword}`;
+            //search_result.do?keyword='이용방법';
 
         }
     </script>
     <hr>
+    <h2>최근검색어</h2>
+
+
+
     <!--    <div>-->
     <!--      <h2>최근검색어</h2>-->
     <!--      <div  th:each="c : ${keywordCookies}">-->
