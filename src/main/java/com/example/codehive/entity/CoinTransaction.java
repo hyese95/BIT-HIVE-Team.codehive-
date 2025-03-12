@@ -15,9 +15,12 @@ public class CoinTransaction {
     @Column(name = "trans_no", nullable = false)
     private Integer id;
 
+    @Column(name = "user_no",nullable = false)
+    private int userNo;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_no", nullable = false)
-    private User userNo;
+    private User user;
 
     @Column(name = "market", nullable = false)
     private String market;
