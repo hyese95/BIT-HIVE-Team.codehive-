@@ -9,9 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -36,8 +39,10 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
-    public List<Post> getPostById(int id) {
-        return postRepository.findByUserNo(id);
+    public Post getPostByPostId(int id) {
+        Post posts;
+        posts=postRepository.findPostById(id);
+        return posts;
     }
 
     @Override
@@ -49,8 +54,6 @@ public class PostServiceImp implements PostService {
                 likeSum+=1;
             }
         }
-
-
 
         return likeSum;
     }

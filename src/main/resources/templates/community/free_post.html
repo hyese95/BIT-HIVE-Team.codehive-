@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns=""
       th:replace="~{fragments/default :: html(content=~{::body})}">
-<style>
-    form>div>label>button>a{color:black; text-decoration: none;}
-</style>
+
 <head>
     <meta charset="UTF-8">
     <title>자유게시판</title>
@@ -20,7 +18,7 @@
                 <label>
                 <textarea class="form-control" rows="10" style="width: 1200px; height: 500px;position: relative;
                 user-select: none; align-items: center;"
-                placeholder="로그인 후 이용해주세요!" ></textarea>
+                placeholder="로그인 후 이용해주세요!" name="textarea" ></textarea>
                     <span>
                         <button type="submit" ><a href="#"><img src="/img/ImageIcon/ImageIcon.png" alt="이미지" style="width: 20px; height: 20px">이미지 첨부</a></button>
                     </span>
@@ -38,6 +36,7 @@
     </div>
     <div id="postContainer">
     <div class="list-group" th:each="post : ${freePostPage.content}" style="padding-bottom: 15px;">
+        <a th:href="@{/community/postDetails.do(postNo=${post.id})}">
         <div class="list-group-item" >
             <div class="d-flex align-items-center mb-2">
                 <img src="/img/user_icon/user_icon_default.png" alt="프로필 이미지" class="rounded-circle" width="50" height="50">
@@ -51,6 +50,7 @@
             <span th:text="싫어요 + ${post.DislikeCount}"></span>
             <small class="text-muted" th:text="${#temporals.format(post.postCreatedAt, 'yyyy-MM-dd')}">작성일자</small>
         </div>
+        </a>
     </div>
     </div>
 
@@ -72,12 +72,11 @@
 <br>
 <br>
 <script>
-    console.log("아잉")
     let page = 1;
     const pageSize = 10;
     let loading = false;
     let pageableBtn = document.getElementById("pageableBtn");
-        document.getElementById("pageableBtn").addEventListener("click",async function () {
+        pageableBtn.addEventListener("click",async function () {
             if (loading) return;
             loading = true;
 
@@ -93,18 +92,20 @@
                     let postContainer = document.getElementById("postContainer");
                     data.content.forEach(post => {
                         let postItem = document.createElement("div");
+                        postItem.setAttribute("class", "list-group");
+                        postItem.setAttribute("style", "padding-bottom: 15px");
                         postItem.innerHTML = `
-    <div class="list-group" style="padding-bottom: 15px;">
+    <div class="list-group-item" style="padding-bottom: 15px;" style="padding-bottom: 15px;">
                             <div class="d-flex align-items-center mb-2">
                 <img src="/img/user_icon/user_icon_default.png" alt="프로필 이미지" class="rounded-circle" width="50" height="50">
                 <div class="ms-3">
-                    <h5 class="mb-0"> ${post.user.nickname}</h5>
-                    <small class="text-muted"> Lv ${post.user.id}</small>
+                    <h5 class="mb-0"> ${post.userNickname}</h5>
+                    <small class="text-muted"> Lv ${post.userId}</small>
                 </div>
             </div>
             <p>${post.postCont}</p>
             <span>좋아요: ${post.likeCount}</span>
-            <span>싫어요: ${post.DislikeCount}</span>
+            <span>싫어요: ${post.dislikeCount}</span>
             <small class="text-muted"> ${post.postCreatedAt.substring(0, 10)}</small>
 </div>`;
                         postContainer.appendChild(postItem);

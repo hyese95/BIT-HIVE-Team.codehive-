@@ -24,7 +24,7 @@ public class PostLike {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_no", nullable = false)
     @ToString.Exclude
-    private User user;
+    private User users;
 
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

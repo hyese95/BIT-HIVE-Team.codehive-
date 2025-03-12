@@ -21,7 +21,7 @@ class PostRepositoryTest {
     @Test
     @Transactional
     void findById() {
-        System.out.println(postRepository.findById(1L));
+        System.out.println(postRepository.findById(1));
     }
 
 
