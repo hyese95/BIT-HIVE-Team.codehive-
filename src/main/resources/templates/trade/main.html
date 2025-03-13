@@ -10,11 +10,14 @@
 <div>
     <p>보유자산</p>
     <div th:each="a : ${myAsset}">
+        <p th:text="${#numbers.formatDecimal(a.price * a.transactionCnt, 1, 'POINT', 0, 'POINT')}"></p>
         <p th:text="${a}"></p>
     </div>
-<!--데이터베이스에서 유저가 보유하고 있는 자산들의 총합 구하기
-유저 자산 수익 계산 구매 평단가 - 현재가
-수익률 계산
+<!--
+user : 1
+user : 1 에 대한 CoinTransaction 을 리스트로 출력 후
+해당 CoinTransaction
+상태 panding 인 것은 걸러서 원화로 받기
 -->
 
 </div>

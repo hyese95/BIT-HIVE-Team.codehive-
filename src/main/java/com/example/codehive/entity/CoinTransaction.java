@@ -31,7 +31,7 @@ public class CoinTransaction {
     private String transactionType;
 
     @Column(name = "price", nullable = false)
-    private Double price;
+    private Long price;
 
     @Column(name = "transaction_cnt", nullable = false)
     private Double transactionCnt;

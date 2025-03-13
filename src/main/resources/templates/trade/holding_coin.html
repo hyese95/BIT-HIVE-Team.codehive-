@@ -3,9 +3,14 @@
       th:replace="~{fragments/default :: html(content=~{::body})}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>보유 자산</title>
 </head>
 <body>
-
+<div>
+    <h1>보유자산</h1>
+    <div th:each="f : ${myAssetList}">
+        <p th:text="${f.market.replace('-KRW','')}"></p>
+    </div>
+</div>
 </body>
 </html>
