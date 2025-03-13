@@ -12,7 +12,7 @@
     <div class="container">
         <div id="postCont" class="d-flex align-items-center mb-2" style="width: 70%; height: 300px; border: 1px solid black;">
             <div style="display: flex; flex-direction: row ;justify-content: space-between">
-                <img src="/img/user_icon/user_icon_green.png" alt="이미지" style="width: 20px; height: 20px">
+                <img src="/img/user_icon/user_icon_green.png" alt="이미지" style="width: 30px; height: 30px">
                 <span th:text="${post.user.nickname}"></span>
 
             <h1 th:text="${post.postCont}">게시글 세부내용!</h1>
@@ -25,8 +25,21 @@
                 <span th:text="댓글 +${post.id}+개">댓글 갯수</span>
             </div>
         </div>
-        <div id="comment" style="width: 70%; height: 30px; border: 1px solid black; border-radius: 5px;">
-            <span style="font-size: 20px">댓글 예상</span>
+        <div id="comment" style="width: 70%; height: fit-content; border: 1px solid black;
+        display: flex;border-radius: 5px; padding : 1.25em; justify-content: space-between">
+            <div style="display: flex; flex-direction: column;">
+            <div style="display: flex; flex-direction: column;">
+            <img src="/img/user_icon/user_icon_default.png" alt="" style="width: 30px; height: 30px">
+            <span th:text="${post.user.nickname}"></span>
+                </div>
+            <div>
+            <span style="font-size: 1.25em; " >댓글 예상</span>
+            </div>
+            </div>
+                <div>
+                    <span th:text="좋아요+${post.likeCount}"></span>
+                    <span th:text="싫어요+${post.dislikeCount}"></span>
+                </div>
         </div>
 </div>
 </body>
