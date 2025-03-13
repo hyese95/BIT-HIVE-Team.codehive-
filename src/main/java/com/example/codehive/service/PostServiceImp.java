@@ -25,7 +25,7 @@ public class PostServiceImp implements PostService {
     @Override
     public Page<Post> readByCategoryWithKeyword(String category, String keyword, Pageable pageable) {
         if (category.equals("all")) {
-            category="%";
+            category = "%";
         }
         return postRepository.findByCategoryWithKeyword(category, keyword, pageable);
     }
@@ -40,35 +40,7 @@ public class PostServiceImp implements PostService {
     @Override
     public Post getPostByPostId(int id) {
         Post posts;
-        posts=postRepository.findPostById(id);
+        posts = postRepository.findPostById(id);
         return posts;
-    }
-
-    @Override
-    public int getLikeSum(Post post) {
-        int likeSum = 0;
-        List<PostLike> postLikes = postRepository.findLikesByPostNo(post.getId());
-        for (PostLike postLike : postLikes) {
-            if(postLike.getLikeType().equals(true)) {
-                likeSum+=1;
-            }
-        }
-
-        return likeSum;
-    }
-
-    @Override
-    public int getDislikeSum(Post post) {
-        int dislikeSum = 0;
-        List<PostLike> postLikes = postRepository.findLikesByPostNo(post.getId());
-        for (PostLike postLike : postLikes) {
-            if(postLike.getLikeType().equals(false)) {
-                dislikeSum+=1;
-            }
-        }
-
-
-
-        return dislikeSum;
     }
 }

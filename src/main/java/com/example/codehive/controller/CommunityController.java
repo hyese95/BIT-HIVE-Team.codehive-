@@ -4,38 +4,20 @@ import com.example.codehive.dto.PostDto;
 import com.example.codehive.entity.Post;
 import com.example.codehive.entity.User;
 import com.example.codehive.service.PostService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import com.example.codehive.service.UserService;
 import lombok.AllArgsConstructor;
-import com.example.codehive.entity.Post;
 import com.example.codehive.repository.PostRepository;
-import com.example.codehive.service.PostService;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-///community/postDetail.do
-import java.util.*;
-
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 @Controller
 @RequestMapping("/community")

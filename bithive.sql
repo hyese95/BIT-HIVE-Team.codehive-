@@ -81,7 +81,7 @@ CREATE TABLE coin_transactions(
     transaction_type VARCHAR(20) NOT NULL,
     price DOUBLE NOT NULL,
     transaction_cnt DOUBLE NOT NULL,
-    transaction_date TIMESTAMP NOT NULL,
+    transaction_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     transaction_state VARCHAR(20),
     FOREIGN KEY(user_no) REFERENCES users(user_no)
 );

@@ -46,8 +46,8 @@
                 </div>
             </div>
             <p th:text="${post.postCont}">게시글 내용</p>
-            <span th:text="좋아요 + ${post.likeCount}"></span>
-            <span th:text="싫어요 + ${post.DislikeCount}"></span>
+            <span th:text="좋아요"></span>
+            <span th:text="싫어요"></span>
             <small class="text-muted" th:text="${#temporals.format(post.postCreatedAt, 'yyyy-MM-dd')}">작성일자</small>
         </div>
         </a>

@@ -50,10 +50,5 @@ public class Post {
     @ToString.Exclude
     private List<PostLike> postLikes=new ArrayList<>();
 
-    @Formula("(SELECT COUNT(*) FROM post_likes l WHERE l.post_no=post_no AND l.like_type=true)")
-    private int likeCount;
-
-    @Formula("(SELECT COUNT(*) FROM post_likes l WHERE l.post_no=post_no AND l.like_type=false)")
-    private int DislikeCount;
 
 }

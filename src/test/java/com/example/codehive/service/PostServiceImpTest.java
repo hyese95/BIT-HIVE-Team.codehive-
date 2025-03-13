@@ -20,7 +20,7 @@ class PostServiceImpTest {
     @Transactional
     void readAllByCategory() {
         Pageable pageable = PageRequest.of(0, 10);
-        Page <Post> postPage=(postService.ReadAllByCategory(pageable,"free"));
+        Page <Post> postPage=(postService.readAllByCategory(pageable,"free"));
         System.out.println(postPage.getContent());
     }
     @Test
