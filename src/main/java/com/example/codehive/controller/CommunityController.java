@@ -129,11 +129,4 @@ public class CommunityController {
         Page<Post> postPage = postService.readByCategoryWithKeyword(category, keyword, pageable);
         return postPage.map(PostDto::new);
     }
-
-
-    @GetMapping("/pnl_post.do")
-    public String pnlPost() {
-        return "community/pnl_post";
-    }
-
 }
