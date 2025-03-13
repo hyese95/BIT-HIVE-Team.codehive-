@@ -1,10 +1,14 @@
 package com.example.codehive.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Formula;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -22,6 +26,8 @@ public class Post {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_no", nullable = false)
+    @JsonBackReference
+    @ToString.Exclude
     private User user;
 
     @Lob
@@ -40,8 +46,9 @@ public class Post {
 
 
     @OneToMany(mappedBy = "post")
+    @JsonBackReference
+    @ToString.Exclude
     private List<PostLike> postLikes=new ArrayList<>();
-
 
 
 }

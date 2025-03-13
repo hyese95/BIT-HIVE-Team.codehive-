@@ -1,146 +1,133 @@
 package com.example.codehive.controller;
 
+import com.example.codehive.dto.PostDto;
 import com.example.codehive.entity.Post;
+import com.example.codehive.entity.User;
 import com.example.codehive.service.PostService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import com.example.codehive.service.UserService;
 import lombok.AllArgsConstructor;
-import com.example.codehive.entity.Post;
 import com.example.codehive.repository.PostRepository;
-import com.example.codehive.service.PostService;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/community")
 @AllArgsConstructor
 public class CommunityController {
     private final PostService postService;
+    private final UserService userService;
+    private final PostRepository postRepository;
 
+    @GetMapping("/api/free_posts")
+    @ResponseBody
+    public Page<PostDto> loadMoreFreePosts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size, Pageable pageable) {
+        pageable = PageRequest.of(page, size);
+        Page<Post> postPage=postService.readAllByCategory(pageable,"free");
+        return postPage.map(PostDto::new);
+    }
     @GetMapping("/free_post.do")
-    public String freePost(Post post, Model model) {
-        Page<Post> postPage = postService.ReadAllByCategory(PageRequest.of(0, 10), "free");
-        model.addAttribute("postPage", postPage);
+    public String freePost(Model model,
+                           @PageableDefault(size = 10) Pageable pageable,
+                           @RequestParam(defaultValue = "0") int page) {
+
+        pageable = PageRequest.of(page, 10); // 기본 페이지 값 설정
+        Page<Post> freePostPage = postService.readAllByCategory(pageable, "free");
+
+        List<User> user = userService.findAll();
+        model.addAttribute("freePostPage", freePostPage);
+        model.addAttribute("userList", user);
         return "community/free_post";
     }
 
-    @GetMapping("search.do")
-    public String search(@RequestParam(required = false, defaultValue = "all") String category,
-                         Model model,
-                         HttpServletRequest req) {
-        Cookie[] cookies = req.getCookies();
-        List<String> keywordCookies = new ArrayList<>();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().contains("keyword")) {
-                    keywordCookies.add(cookie.getValue());
-                }
-            }
-        }
+    @GetMapping("/api/pnl_posts")
+    @ResponseBody
+    public Page<PostDto> loadMorePnlPosts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size, Pageable pageable) {
+        pageable = PageRequest.of(page, size);
+        Page<Post> postPage=postService.readAllByCategory(pageable,"pnl");
+        return postPage.map(PostDto::new);
+    }
+    @GetMapping("/pnl_post.do")
+    public String pnlPost(Model model,
+                           @PageableDefault(size = 10) Pageable pageable,
+                           @RequestParam(defaultValue = "0") int page) {// 기본 페이지 값 설정
+        pageable = PageRequest.of(page, 10);
+        Page<Post> pnlPostPage = postService.readAllByCategory(pageable, "pnl");
+        List<User> user = userService.findAll();
+        model.addAttribute("pnlPostPage", pnlPostPage);
+        model.addAttribute("userList", user);
+        return "community/pnl_post";
+    }
 
-        model.addAttribute("keywordCookies", keywordCookies);
-        model.addAttribute("category", category);
+    @GetMapping("/postDetail.do")
+    public String detail(Model model,
+                         @RequestParam int postNo
+                         ) {
+        System.out.println("받은 아이디는" + postNo);
+        Post post=postService.getPostByPostId(postNo);
+        model.addAttribute("post", post);
+        return "community/postDetail";
+    }
+
+    @GetMapping("search.do")
+    public String search(Model model,
+                         @RequestParam(defaultValue = "all") String category
+    ) {
         return "community/search";
     }
 
-    @PostMapping("search_result.do")
-    public String searchResult(Model model,
-                               @RequestParam(required = false, defaultValue = "all") String category,
-                               @RequestParam(required = false) String keyword,
-                               HttpServletRequest req,
-                               HttpServletResponse resp) {
-        Cookie[] cookies = req.getCookies();
-        int cookiesLength = 0;
-
-        boolean isExist = false;
-        if (cookies != null) {
-            cookiesLength = cookies.length;
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().contains("keyword") && cookie.getValue().equals(keyword)) {
-                    isExist = true;
-                    break;
-                }
-            }
+    @GetMapping("search_result.do")
+    public String search_result(Model model,
+                                @RequestParam(defaultValue = "all") String category,
+                                @RequestParam String keyword,
+                                HttpServletRequest request,
+                                HttpServletResponse response
+    ) {
+        Pageable pageable;
+        if (category.equals("all")) { //통합검색
+            pageable = PageRequest.of(0, 2);
+            Page<Post> freePostPage = postService.readByCategoryWithKeyword("free", keyword, pageable);
+            Page<Post> pnlPostPage = postService.readByCategoryWithKeyword("pnl", keyword, pageable);
+            Page<Post> chartPostPage = postService.readByCategoryWithKeyword("chart", keyword, pageable);
+            Page<Post> expertPostPage = postService.readByCategoryWithKeyword("expert", keyword, pageable);
+            model.addAttribute("freePostPage", freePostPage);
+            model.addAttribute("pnlPostPage", pnlPostPage);
+            model.addAttribute("chartPostPage", chartPostPage);
+            model.addAttribute("expertPostPage", expertPostPage);
+        } else { //카테고리검색
+            pageable = PageRequest.of(0, 2);
+            Page<Post> postPage = postService.readByCategoryWithKeyword(category, keyword, pageable);
+            model.addAttribute("postPage", postPage);
         }
-        if (!isExist) {
-            int i = cookiesLength + 1;
-            Cookie cookie = new Cookie("keyword" + i, keyword);
-            cookie.setMaxAge(60 * 60 * 24);
-            cookie.setPath("/community");
-            resp.addCookie(cookie);
-        }
-
-
-        List<Post> searchResult = postService.findByCategoryWithKeyword(category, keyword);
-        String categoryKrName = switch (category) {
-            case "free" -> "자유게시판";
-            case "pnl" -> "손익인증게시판";
-            case "expert" -> "전문가게시판";
-            case "chart" -> "차트분석게시판";
-            default -> "통합검색";
-        };
-
-        model.addAttribute("categoryKrName", categoryKrName);
         model.addAttribute("category", category);
         model.addAttribute("keyword", keyword);
-        model.addAttribute("searchResult", searchResult);
-        model.addAttribute("postService", postService);
+
 
 
         return "community/search_result";
     }
 
-    @GetMapping("/search/cookie.do")
-    public String searchCookieController(Model model,
-                                         HttpServletResponse resp,
-                                         HttpServletRequest req,
-                                         @RequestParam(required = false, defaultValue = "all") String category,
-                                         @RequestParam(required = false) String keyword,
-                                         @RequestParam(required = false) boolean deleteAll) {
-        Cookie[] cookies = req.getCookies();
-        Cookie cookie;
-        for (Cookie c : cookies) {
-            if (c.getName().contains("keyword") && c.getValue().equals(keyword)) {
-                cookie=c;
-                c.setPath("/community");
-                c.setMaxAge(0);
-                resp.addCookie(c);
-                break;
-            }
-        }
-
-        if (deleteAll) {
-            for (Cookie c : cookies) {
-                if (c.getName().contains("keyword")) {
-                    c.setPath("/community");
-                    c.setMaxAge(0);
-                    resp.addCookie(c);
-                }
-            }
-        }
-
-        return "redirect:/community/search.do?category=" + category;
+    @GetMapping("api/search")
+    @ResponseBody
+    public Page<PostDto> loadMoreSearchResult(@RequestParam String category,
+                                              @RequestParam String keyword,
+                                              @RequestParam int page
+    ) {
+        Pageable pageable = PageRequest.of(page, 2);
+        Page<Post> postPage = postService.readByCategoryWithKeyword(category, keyword, pageable);
+        return postPage.map(PostDto::new);
     }
 
 

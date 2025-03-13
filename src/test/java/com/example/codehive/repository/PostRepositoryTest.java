@@ -4,6 +4,7 @@ import com.example.codehive.entity.Post;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +22,6 @@ class PostRepositoryTest {
     @Test
     @Transactional
     void findById() {
-        System.out.println(postRepository.findById(1L));
     }
 
 
@@ -31,8 +31,6 @@ class PostRepositoryTest {
         System.out.println(postRepository.findAllByCategory(Pageable.ofSize(1), "free").getContent());
     }
 
-    void findByKeyword() {
-        List<Post> posts = postRepository.findByKeyword("시장");
-        System.out.println(posts);
-    }
+
+
 }

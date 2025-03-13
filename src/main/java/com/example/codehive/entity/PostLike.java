@@ -1,12 +1,15 @@
 package com.example.codehive.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @Entity
+@ToString
 @Table(name = "post_likes", schema = "bithive")
 @IdClass(PostLikeId.class)
 public class PostLike {
@@ -26,6 +29,7 @@ public class PostLike {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "post_no", nullable = false)
+    @ToString.Exclude
     private Post post;
 
     @Column(name = "like_type")

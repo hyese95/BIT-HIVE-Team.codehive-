@@ -63,18 +63,42 @@ VALUES (1, 'BTC-KRW'),
        (5, 'DOT-KRW');
 
 -- coin_transactions 테이블
-INSERT INTO coin_transactions (user_no, market, transaction_type, price, transaction_cnt, transaction_date,
-                               transaction_state)
-VALUES (1, 'BTC-KRW', 'BUY', 50000000, 0.1, '2024-03-01 10:00:00', 'COMPLETED'),
-       (2, 'ETH-KRW', 'SELL', 3000000, 1.0, '2024-03-01 11:00:00', 'COMPLETED'),
-       (3, 'XRP-KRW', 'BUY', 1000, 1000, '2024-03-01 12:00:00', 'COMPLETED'),
-       (4, 'BTC-KRW', 'BUY', 48000000, 0.2, '2024-03-01 13:00:00', 'COMPLETED'),
-       (5, 'ETH-KRW', 'SELL', 2800000, 2.0, '2024-03-01 14:00:00', 'COMPLETED'),
-       (1, 'XRP-KRW', 'BUY', 1200, 500, '2024-03-01 15:00:00', 'PENDING'),
-       (2, 'BTC-KRW', 'SELL', 52000000, 0.05, '2024-03-01 16:00:00', 'COMPLETED'),
-       (3, 'ETH-KRW', 'BUY', 3200000, 0.5, '2024-03-01 17:00:00', 'COMPLETED'),
-       (4, 'XRP-KRW', 'SELL', 800, 2000, '2024-03-01 18:00:00', 'PENDING'),
-       (5, 'BTC-KRW', 'BUY', 55000000, 0.1, '2024-03-01 19:00:00', 'COMPLETED');
+INSERT INTO coin_transactions (user_no, market, transaction_type, price, transaction_cnt, transaction_state)
+VALUES
+-- 초기 충전과 거래들 무작위로 섞음
+(3, 'KRW-KRW', 'BUY', 1, 8000000, 'COMPLETED'),
+(1, 'BTC-KRW', 'BUY', 77500000, 0.1, 'COMPLETED'),
+(4, 'KRW-KRW', 'BUY', 1, 20000000, 'COMPLETED'),
+(2, 'ETH-KRW', 'BUY', 4320000, 1.0, 'COMPLETED'),
+(5, 'SOL-KRW', 'BUY', 168500, 20, 'COMPLETED'),
+(1, 'KRW-KRW', 'BUY', 1, 10000000, 'COMPLETED'),
+(3, 'XRP-KRW', 'BUY', 780, 5000, 'COMPLETED'),
+(2, 'SOL-KRW', 'SELL', 169000, 5, 'COMPLETED'),
+(4, 'BTC-KRW', 'BUY', 77800000, 0.15, 'COMPLETED'),
+(1, 'ETH-KRW', 'SELL', 4380000, 0.5, 'COMPLETED'),
+(5, 'KRW-KRW', 'BUY', 1, 15000000, 'COMPLETED'),
+(2, 'KRW-KRW', 'BUY', 1, 5000000, 'COMPLETED'),
+(3, 'MATIC-KRW', 'BUY', 1560, 1000, 'COMPLETED'),
+(1, 'BTC-KRW', 'SELL', 77900000, 0.03, 'COMPLETED'),
+(4, 'XRP-KRW', 'BUY', 785, 10000, 'COMPLETED'),
+(5, 'ETH-KRW', 'BUY', 4350000, 0.8, 'COMPLETED'),
+(2, 'BTC-KRW', 'BUY', 77600000, 0.05, 'COMPLETED'),
+(3, 'SOL-KRW', 'BUY', 167500, 15, 'COMPLETED'),
+(1, 'KRW-KRW', 'BUY', 1, 5000000, 'COMPLETED'),
+(4, 'MATIC-KRW', 'SELL', 1570, 500, 'COMPLETED'),
+(5, 'XRP-KRW', 'SELL', 790, 5000, 'COMPLETED'),
+(2, 'ETH-KRW', 'BUY', 4340000, 0.3, 'COMPLETED'),
+(3, 'BTC-KRW', 'BUY', 77750000, 0.08, 'COMPLETED'),
+(1, 'SOL-KRW', 'BUY', 168000, 10, 'COMPLETED'),
+(4, 'ETH-KRW', 'BUY', 4370000, 1.2, 'COMPLETED'),
+(5, 'BTC-KRW', 'SELL', 77850000, 0.05, 'COMPLETED'),
+
+-- 대기 주문들
+(2, 'BTC-KRW', 'BUY', 77400000, 0.1, 'PENDING'),
+(4, 'ETH-KRW', 'SELL', 4400000, 0.5, 'PENDING'),
+(1, 'SOL-KRW', 'BUY', 167000, 10, 'PENDING'),
+(5, 'XRP-KRW', 'BUY', 775, 5000, 'PENDING'),
+(3, 'MATIC-KRW', 'BUY', 1550, 2000, 'PENDING');
 
 -- favorite_markets_folders 테이블
 INSERT INTO favorite_markets_folders (user_no, list_name)

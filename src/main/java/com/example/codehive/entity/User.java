@@ -1,5 +1,6 @@
 package com.example.codehive.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 @Setter
 @ToString
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "users", schema = "bithive")
 public class User {
     @Id
