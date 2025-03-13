@@ -2,8 +2,12 @@ package com.example.codehive.controller;
 
 import com.example.codehive.entity.Faq;
 import com.example.codehive.entity.Guide;
+import com.example.codehive.entity.Question;
+import com.example.codehive.entity.User;
+import com.example.codehive.repository.QuestionRepository;
 import com.example.codehive.service.FaqService;
 import com.example.codehive.service.GuideService;
+import com.example.codehive.service.QuestionServiceImp;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +23,8 @@ import java.util.List;
 public class SettingController {
     private final GuideService guideService;
     private final FaqService faqService;
+    private final QuestionRepository questionRepository;
+    private final QuestionServiceImp questionServiceImp;
 
     @GetMapping("/main.do")
     public String main() {
@@ -65,5 +71,17 @@ public class SettingController {
         model.addAttribute("faqs", faqs);
         model.addAttribute("keyword", keyword);
         return "setting/support/faq/faq_search_result";
+    }
+    @GetMapping("/support/qna/qna.do")
+    public String qna(Model model) {
+        List<Question> questions=questionServiceImp.readByUserNo(1);
+        model.addAttribute("questions", questions);
+        return "setting/support/qna/qna";
+    }
+    @GetMapping("/support/qna/qna_complete.do")
+    public String qnaComplete(Model model) {
+        List<Question> questions=questionServiceImp.readByUserNo(1);
+        model.addAttribute("questions", questions);
+        return "setting/support/qna/qna_complete";
     }
 }

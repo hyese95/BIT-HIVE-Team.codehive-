@@ -7,13 +7,9 @@
 </head>
 <body>
     <div class="container">
-        <h1>답변대기</h1>
+        <h1>답변완료</h1>
         <a href="/setting/support/qna/qna.do">답변대기</a>&nbsp;&nbsp;&nbsp;
         <a href="/setting/support/qna/qna_complete.do">답변완료</a>
-        <hr>
-        <div th:each="q : ${questions}">
-            <a th:href="@{/setting/support/qna/qna_detail.html}"></a>
-        </div>
     </div>
 </body>
 </html>
