@@ -23,7 +23,6 @@ class PostServiceImpTest {
         Page <Post> postPage=(postService.ReadAllByCategory(pageable,"free"));
         System.out.println(postPage.getContent());
     }
-
     @Test
     @Transactional
     void findByCategoryWithKeyword() {

@@ -22,7 +22,6 @@ class PostRepositoryTest {
     @Test
     @Transactional
     void findById() {
-        System.out.println(postRepository.findById(1L));
     }
 
 
@@ -31,6 +30,7 @@ class PostRepositoryTest {
     void findAllByCategory() {
         System.out.println(postRepository.findAllByCategory(Pageable.ofSize(1), "free").getContent());
     }
+
 
 
 }
