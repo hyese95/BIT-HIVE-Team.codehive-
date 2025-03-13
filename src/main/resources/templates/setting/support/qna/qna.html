@@ -12,7 +12,7 @@
         <a href="/setting/support/qna/qna_complete.do">답변완료</a>
         <hr>
         <div th:each="q : ${questions}">
-            <a th:href="@{/setting/support/qna/qna_detail.html}"></a>
+            <a th:href="@{/setting/support/qna/qna_detail.do(questionNo=${q.id})}" th:text="${q.questionTitle}"></a>
         </div>
     </div>
 </body>

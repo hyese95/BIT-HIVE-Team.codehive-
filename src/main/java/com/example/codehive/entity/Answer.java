@@ -18,7 +18,7 @@ public class Answer {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "question_no", nullable = false)
-    private Question questionNo;
+    private Question question;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "answer_created_at", nullable = false)

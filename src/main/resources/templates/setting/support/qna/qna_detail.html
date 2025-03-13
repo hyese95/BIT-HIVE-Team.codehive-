@@ -7,7 +7,19 @@
 </head>
 <body>
     <div class="container">
-        <h1>ddd</h1>
+        <a href="/setting/support/qna/qna.do">답변대기</a>&nbsp;&nbsp;&nbsp;
+        <a href="/setting/support/qna/qna_complete.do">답변완료</a>
+        <hr>
+        <h2>문의제목</h2>
+        <h3 th:text="${question.questionTitle}"></h3>
+        <p>문의내용</p>
+        <p th:text="${question.questionCont}"></p>
+        <p>작성시간</p>
+        <p th:text="${question.questionCreatedAt}"></p>
+        <hr>
+        <h2>답변내용</h2>
+        <p th:if="${answer}!=null" th:text="${answer.answerCont}"></p>
+        <p th:if="${answer}==null">답변 아직 못했다 기달려라 빡치게하지말고</p>
     </div>
 </body>
 </html>

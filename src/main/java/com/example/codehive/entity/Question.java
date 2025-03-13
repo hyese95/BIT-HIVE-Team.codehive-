@@ -16,8 +16,9 @@ public class Question {
     @Column(name = "question_no", nullable = false)
     private Integer id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_no", nullable = false)
-    private int userNo;
+    private User user;
 
     @Lob
     @Column(name = "question_cont")
