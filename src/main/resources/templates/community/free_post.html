@@ -36,7 +36,7 @@
     </div>
     <div id="postContainer">
     <div class="list-group" th:each="post:${freePostPage.content}" style="padding-bottom: 15px;">
-        <a th:href="@{'/community/postDetail.do'(id=${post.id})}">
+        <a th:href="@{'/community/postDetail.do'(postNo=${post.id})}">
         <div class="list-group-item" >
             <div class="d-flex align-items-center mb-2">
                 <img src="/img/user_icon/user_icon_default.png" alt="프로필 이미지" class="rounded-circle" width="50" height="50">

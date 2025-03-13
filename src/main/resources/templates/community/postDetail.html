@@ -11,13 +11,18 @@
 <!--<p th:text="${post.postCont}"></p>-->
     <div class="container">
         <div id="postCont" class="d-flex align-items-center mb-2" style="width: 70%; height: 300px; border: 1px solid black;">
-            <div style="display: flex;justify-content: space-between">
+            <div style="display: flex; flex-direction: row ;justify-content: space-between">
+                <img src="/img/user_icon/user_icon_green.png" alt="이미지" style="width: 20px; height: 20px">
+                <span th:text="${post.user.nickname}"></span>
+
             <h1 th:text="${post.postCont}">게시글 세부내용!</h1>
-                <span th:text="${post.postCreatedAt}">2022-02-02</span>
+                <span th:text="${#temporals.format(post.postCreatedAt, 'yyyy-MM-dd')}">2022-02-02</span>
             </div>
+
             <div style="justify-content: flex-end">
                 <span th:text="좋아요 +${post.likeCount}">좋아요</span>
                 <span th:text="싫어요 +${post.dislikeCount}">싫어요</span>
+                <span th:text="댓글 +${post.id}+개">댓글 갯수</span>
             </div>
         </div>
         <div id="comment" style="width: 70%; height: 30px; border: 1px solid black; border-radius: 5px;">
