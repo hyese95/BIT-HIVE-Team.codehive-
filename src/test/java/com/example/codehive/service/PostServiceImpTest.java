@@ -32,4 +32,12 @@ class PostServiceImpTest {
         Page<Post> postPage=postService.readByCategoryWithKeyword(category, keyword, pageable);
         System.out.println(postPage.getContent());
     }
+
+    @Test
+    @Transactional
+    void getPostByPostId() {
+
+       Post post=postService.getPostByPostId(1)
+;        System.out.println(post);
+    }
 }

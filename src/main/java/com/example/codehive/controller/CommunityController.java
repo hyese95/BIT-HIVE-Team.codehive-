@@ -32,6 +32,7 @@ public class CommunityController {
     public Page<PostDto> loadMoreFreePosts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size, Pageable pageable) {
+        pageable = PageRequest.of(page, size);
         Page<Post> postPage=postService.readAllByCategory(pageable,"free");
         return postPage.map(PostDto::new);
     }
@@ -43,15 +44,36 @@ public class CommunityController {
         pageable = PageRequest.of(page, 10); // 기본 페이지 값 설정
         Page<Post> freePostPage = postService.readAllByCategory(pageable, "free");
 
-        List<User> users = userService.findAll();
+        List<User> user = userService.findAll();
         model.addAttribute("freePostPage", freePostPage);
-        model.addAttribute("userList", users);
+        model.addAttribute("userList", user);
         return "community/free_post";
+    }
+
+    @GetMapping("/api/pnl_posts")
+    @ResponseBody
+    public Page<PostDto> loadMorePnlPosts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size, Pageable pageable) {
+        pageable = PageRequest.of(page, size);
+        Page<Post> postPage=postService.readAllByCategory(pageable,"pnl");
+        return postPage.map(PostDto::new);
+    }
+    @GetMapping("/pnl_post.do")
+    public String pnlPost(Model model,
+                           @PageableDefault(size = 10) Pageable pageable,
+                           @RequestParam(defaultValue = "0") int page) {// 기본 페이지 값 설정
+        pageable = PageRequest.of(page, 10);
+        Page<Post> pnlPostPage = postService.readAllByCategory(pageable, "pnl");
+        List<User> user = userService.findAll();
+        model.addAttribute("pnlPostPage", pnlPostPage);
+        model.addAttribute("userList", user);
+        return "community/pnl_post";
     }
 
     @GetMapping("/postDetail.do")
     public String detail(Model model,
-                         @RequestParam (defaultValue = "1")int postNo
+                         @RequestParam int postNo
                          ) {
         System.out.println("받은 아이디는" + postNo);
         Post post=postService.getPostByPostId(postNo);
