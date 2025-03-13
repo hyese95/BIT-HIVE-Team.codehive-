@@ -27,4 +27,12 @@ class PostServiceImpTest {
         Page<Post> postPage=(postService.readAllByCategory(pageable,"free"));
         System.out.println(postPage);
     }
+
+    @Test
+    @Transactional
+    void getPostByPostId() {
+
+       Post post=postService.getPostByPostId(1)
+;        System.out.println(post);
+    }
 }
