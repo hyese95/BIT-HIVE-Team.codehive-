@@ -46,4 +46,11 @@ public class TradeController {
 
     return "trade/favorite_coin";
     }
+
+    @GetMapping("/holding_coin.do")
+    public String holdingCoin(Model model) {
+        List<FavoriteMarket> myAssetList = favoriteCoinMarketService.readByUserNo(1);
+        model.addAttribute("myAssetList", myAssetList);
+        return "trade/holding_coin";
+    }
 }
