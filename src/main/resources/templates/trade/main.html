@@ -9,19 +9,11 @@
 <h1>거래소 홈</h1>
 <div>
     <p>보유자산</p>
-    <div th:each="a : ${myAsset}">
-        <p th:text="${#numbers.formatDecimal(a.price * a.transactionCnt, 1, 'POINT', 0, 'POINT')}"></p>
-        <p th:text="${a}"></p>
-    </div>
-<!--
-user : 1
-user : 1 에 대한 CoinTransaction 을 리스트로 출력 후
-해당 CoinTransaction
-상태 panding 인 것은 걸러서 원화로 받기
--->
-
+<!--    <div th:each="a : ${myAsset}">-->
+<!--        <p th:text="${#numbers.formatDecimal(a.price * a.transactionCnt, 1, 'POINT', 0, 'POINT')}"></p>-->
+<!--        <p th:text="${a}"></p>-->
+<!--    </div>-->
 </div>
-
 <table>
     <thead class="HoldingInterestCategories">
     <p><a href="#">원화</a></p>
@@ -49,8 +41,6 @@ user : 1 에 대한 CoinTransaction 을 리스트로 출력 후
         // 예: 차트 상세 페이지 URL이 /chart 라고 가정하고, coin 파라미터에 티커를 전달
         window.location.href = '/trade/buy.do?coin=' + coinTicker;
     }
-
-
     // 코인 한글 명을 받아오기 위한 api
     Promise.all([
         fetch('https://api.upbit.com/v1/market/all?is_details=true')
@@ -100,7 +90,7 @@ user : 1 에 대한 CoinTransaction 을 리스트로 출력 후
                             ${item.signed_change_rate > 0 ? '+' : ''}${(item.signed_change_rate * 100).toFixed(2)}%
                         </td>
                         <td>${(item.acc_trade_price_24h / 1000000).toLocaleString('en-US', {maximumFractionDigits: 0})}백만</td>
-                        <td><input class="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..."></td>
+
                     `;
                     tbody.appendChild(tr);
                 }

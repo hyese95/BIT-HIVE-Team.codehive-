@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @SpringBootTest
 class FavoriteMarketRepositoryTest {
 
@@ -16,7 +18,7 @@ class FavoriteMarketRepositoryTest {
     @Test
     @Transactional
     void findById() {
-        FavoriteMarket fav = favoriteMarketRepository.findById(3);
+        Optional<FavoriteMarket> fav = favoriteMarketRepository.findById(7);
         System.out.println(fav.toString());
     }
 

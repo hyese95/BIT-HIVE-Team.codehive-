@@ -12,12 +12,10 @@ import java.util.List;
 public class FavoriteCoinMarketServiceImp implements FavoriteCoinMarketService {
     private final FavoriteMarketRepository favoriteMarketRepository;
 
-
     @Override
     public List<FavoriteMarket> readAll() {
         return favoriteMarketRepository.findByUserNo(1);
     }
-
     @Override
     public List<FavoriteMarket> readByUserNo(int userNo) {
         return favoriteMarketRepository.findByUserNo(userNo);
