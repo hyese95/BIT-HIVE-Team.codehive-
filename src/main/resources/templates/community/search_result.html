@@ -4,25 +4,40 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
 </head>
 <body>
+
 <div class="container">
     <h1>검색결과</h1>
     <!--    카테고리 선택된 검색결과-->
     <div th:if="${category!='all'}">
-        <h2 th:text="${category}+' 검색결과'"></h2>
+        <h2 th:text="'검색키워드: '+${keyword}"></h2>
+        <div class="sort-options">
+            <button class="sort-btn active" data-sort="latest" onclick="handleSort(this)">최신순</button>
+            <button class="sort-btn" data-sort="daily" onclick="handleSort(this)">일간 인기순</button>
+            <button class="sort-btn" data-sort="weekly" onclick="handleSort(this)">주간 인기순</button>
+            <button class="sort-btn" data-sort="monthly" onclick="handleSort(this)">월간 인기순</button>
+        </div>
+
+        <h3 th:text="${category}+' 검색결과'"></h3>
         <div th:each="p : ${postPage.content}">
-            <p th:text="'ㅁ'+${p.postCont}"></p>
+            <p th:text="'게시글번호 : ' +${p.Id}"></p>
+            <p th:text="'게시글내용 : '+${p.postCont}"></p>
         </div>
         <div id="moreResultDiv">
 
         </div>
         <button onclick="loadMore()">더보기</button>
     </div>
+    <script>
+
+    </script>
 
     <!--통합검색결과-->
     <div th:if="${category=='all'}">
-        <h2>통합검색</h2>
+        <h2 th:text="'검색키워드: '+${keyword}"></h2>
+
         <div>
             <h3>자유게시판 검색결과</h3>
             <div th:each="p : ${freePostPage.content}">
@@ -60,15 +75,42 @@
     const keyword = urlParams.get('keyword')
     let page = 0;
     let html = ""
+    async function handleSort(clickedBtn) {
+        // 활성화된 버튼 스타일 변경
+        document.querySelectorAll('.sort-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        clickedBtn.classList.add('active');
+        const sortType = clickedBtn.dataset.sort;
+        console.log(sortType)
+        const response = await fetch(`/community/api/search?category=${category}&keyword=${keyword}&sortType=${sortType}&page=0`);
+        const responseJson = await response.json();
+
+        // 결과 초기화 및 업데이트
+        html = "";
+        const contents = responseJson.content;
+        for (const c of contents) {
+            html += `<div>
+            <p>게시글 번호 : ${c.id}</p>
+            <p>게시글 내용 : ${c.postCont}</p>
+            <p>좋아요 수 : ${c.likeCount}</p>
+        </div>`;
+        }
+        moreResultDiv.innerHTML = html;
+        page = 0; // 페이지 초기화
+    }
 
     async function loadMore() {
-        page++
-        console.log(page)
-        const response = await fetch(`/community/api/search?category=${category}&keyword=${keyword}&page=${page}`)
-        const responseJson = await response.json()
-        const contents = responseJson.content
-        for (c of contents) {
-            html += `<p>ㅁ${c.postCont}</p>`
+        page++;
+        const activeSort = document.querySelector('.sort-btn.active').dataset.sort;
+        const response = await fetch(`/community/api/search?category=${category}&keyword=${keyword}&sortType=${activeSort}&page=${page}`);
+        const responseJson = await response.json();
+        const contents = responseJson.content;
+        for (const c of contents) {
+            html += `<div>
+            <p>게시글 번호 : ${c.id}</p>
+            <p>게시글 내용 : ${c.postCont}</p>
+        </div>`;
         }
         moreResultDiv.innerHTML = html;
     }

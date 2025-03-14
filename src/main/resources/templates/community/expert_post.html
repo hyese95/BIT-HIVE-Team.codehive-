@@ -4,13 +4,13 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>자유게시판</title>
+    <title>전문가 포럼 게시판</title>
 </head>
 <body>
 <nav th:replace="fragments/nav_bars :: communitySubNav"></nav>
 <div class="container">
     <a href="/community/search.do">검색</a>
-<h1>자유게시판</h1>
+<h1>전문가 포럼 게시판</h1>
     <div>
         <form th:action="@{/community}"  method="post">
 
@@ -44,6 +44,7 @@
                     <h5 class="mb-0">
                         <span th:text="${post.userNickname}">유저 닉네임</span>
                         <!-- 이미지가 있으면 아이콘 표시 -->
+                        <span th:text="${post.imgUrl}"></span>
                         <img th:if="${post.imgUrl != null}" src="/img/ImageIcon/ImageIcon.png"
                              alt="이미지 있음" width="20" height="20" style="margin-left: 5px;">
                     </h5>
@@ -71,14 +72,12 @@
 <!--        <a th:if="${postPage.hasNext()}" th:href="@{/community/free_post.do(page=${postPage.number + 1})}"-->
 <!--        th:text="${postPage.number + 2}+'page '"></a>-->
 <!--    </div>-->
-
     <p id="noMorePostsMessage" style="text-align: center; display: none; font-weight: bold; color: gray; margin-top: 20px;">
         더 이상 게시글이 없습니다.
         <button onclick="scrollToTop()" style="padding: 10px 15px; font-size: 16px; cursor: pointer;">
-        맨위로 가기 ↑
-    </button>
+            맨위로 가기 ↑
+        </button>
     </p>
-</div>
 <br>
 <br>
 <br>
@@ -89,13 +88,13 @@
     let allPostsLoaded = false;
     function scrollToTop() {
         window.scrollTo({ top: 0, behavior: "smooth" });
-    }// 모든 게시글을 불러왔는지 체크// 모든 게시글을 불러왔는지 체크
+    }// 모든 게시글을 불러왔는지 체크
 
     async function loadMorePosts() {
         if (loading || allPostsLoaded) return;
         loading = true;
 
-        await fetch(`/community/api/free_posts?page=${page}&size=${pageSize}`)
+        await fetch(`/community/api/expert_posts?page=${page}&size=${pageSize}`)
             .then(response => response.json())
             .then(data => {
                 if (data.content.length === 0) {

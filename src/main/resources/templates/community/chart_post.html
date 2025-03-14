@@ -4,13 +4,13 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>자유게시판</title>
+    <title>차트 분석 게시판</title>
 </head>
 <body>
 <nav th:replace="fragments/nav_bars :: communitySubNav"></nav>
 <div class="container">
     <a href="/community/search.do">검색</a>
-<h1>자유게시판</h1>
+<h1>차트 분석 게시판</h1>
     <div>
         <form th:action="@{/community}"  method="post">
 
@@ -71,13 +71,12 @@
 <!--        <a th:if="${postPage.hasNext()}" th:href="@{/community/free_post.do(page=${postPage.number + 1})}"-->
 <!--        th:text="${postPage.number + 2}+'page '"></a>-->
 <!--    </div>-->
-
     <p id="noMorePostsMessage" style="text-align: center; display: none; font-weight: bold; color: gray; margin-top: 20px;">
-        더 이상 게시글이 없습니다.
-        <button onclick="scrollToTop()" style="padding: 10px 15px; font-size: 16px; cursor: pointer;">
+    더 이상 게시글이 없습니다.
+    <button onclick="scrollToTop()" style="padding: 10px 15px; font-size: 16px; cursor: pointer;">
         맨위로 가기 ↑
     </button>
-    </p>
+</p>
 </div>
 <br>
 <br>
@@ -86,16 +85,15 @@
     let page = 1;
     const pageSize = 10;
     let loading = false;
-    let allPostsLoaded = false;
-    function scrollToTop() {
+    let allPostsLoaded = false;     function scrollToTop() {
         window.scrollTo({ top: 0, behavior: "smooth" });
-    }// 모든 게시글을 불러왔는지 체크// 모든 게시글을 불러왔는지 체크
+    }// 모든 게시글을 불러왔는지 체크
 
     async function loadMorePosts() {
         if (loading || allPostsLoaded) return;
         loading = true;
 
-        await fetch(`/community/api/free_posts?page=${page}&size=${pageSize}`)
+        await fetch(`/community/api/chart_posts?page=${page}&size=${pageSize}`)
             .then(response => response.json())
             .then(data => {
                 if (data.content.length === 0) {

@@ -8,4 +8,5 @@ public interface UserService {
     List<User> findAll();
     List<User> findAllByUserNo(int userNo);
     List<User> findAllByUserNameLike(String userName);
+    User findNicknameByUserNo(int userNo);
 }
