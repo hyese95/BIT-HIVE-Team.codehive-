@@ -134,6 +134,7 @@ public class CommunityController {
     public String search(Model model,
                          @RequestParam(defaultValue = "all") String category
     ) {
+
         return "community/search";
     }
 
