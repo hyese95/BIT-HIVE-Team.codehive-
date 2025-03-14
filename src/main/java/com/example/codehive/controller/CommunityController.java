@@ -10,22 +10,25 @@ import jakarta.servlet.http.HttpServletResponse;
 import com.example.codehive.service.UserService;
 import lombok.AllArgsConstructor;
 import com.example.codehive.repository.PostRepository;
+import org.springframework.data.domain.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.stereotype.Component;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Iterator;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.function.Function;
 import java.util.Set;
 
-@Slf4j
 @Controller
 @RequestMapping("/community")
 @AllArgsConstructor
@@ -40,10 +43,10 @@ public class CommunityController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size, Pageable pageable) {
         pageable = PageRequest.of(page, size);
-        Page<Post> postPage = postService.readAllByCategory(pageable, "free");
-        return postPage.map(PostDto::new);
+        Page<Post> postPage=postService.readAllByCategory(pageable,"free");
+        Page<PostDto> postDtoPage= postPage.map(PostDto::new);
+        return postDtoPage;
     }
-
     @GetMapping("/free_post.do")
     public String freePost(Model model,
                            @PageableDefault(size = 10) Pageable pageable,
@@ -53,7 +56,8 @@ public class CommunityController {
         Page<Post> freePostPage = postService.readAllByCategory(pageable, "free");
 
         List<User> user = userService.findAll();
-        model.addAttribute("freePostPage", freePostPage);
+        Page<PostDto> postDto = freePostPage.map(PostDto::new);
+        model.addAttribute("postDto", postDto);
         model.addAttribute("userList", user);
         return "community/free_post";
     }
@@ -67,17 +71,64 @@ public class CommunityController {
         Page<Post> postPage = postService.readAllByCategory(pageable, "pnl");
         return postPage.map(PostDto::new);
     }
-
     @GetMapping("/pnl_post.do")
     public String pnlPost(Model model,
                           @PageableDefault(size = 10) Pageable pageable,
-                          @RequestParam(defaultValue = "0") int page) {// 기본 페이지 값 설정
-        pageable = PageRequest.of(page, 10);
+                          @RequestParam(defaultValue = "0") int page) {
         Page<Post> pnlPostPage = postService.readAllByCategory(pageable, "pnl");
         List<User> user = userService.findAll();
-        model.addAttribute("pnlPostPage", pnlPostPage);
+        User userName1=userService.findNicknameByUserNo(1);
+        User userName2=userService.findNicknameByUserNo(2);
+        User userName3=userService.findNicknameByUserNo(3);
+        Page<PostDto> postDto = pnlPostPage.map(PostDto::new);
+        model.addAttribute("userName1", userName1);
+        model.addAttribute("userName2", userName2);
+        model.addAttribute("userName3", userName3);
+        model.addAttribute("postDto", postDto);
         model.addAttribute("userList", user);
         return "community/pnl_post";
+    }
+    @GetMapping("/api/chart_posts")
+    @ResponseBody
+    public Page<PostDto> loadMoreChartPosts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size, Pageable pageable) {
+        pageable = PageRequest.of(page, size);
+        Page<Post> postPage=postService.readAllByCategory(pageable,"chart");
+        return postPage.map(PostDto::new);
+    }
+    @GetMapping("/chart_post.do")
+    public String chartPost(Model model,
+                           @PageableDefault(size = 10) Pageable pageable,
+                           @RequestParam(defaultValue = "0") int page) {
+        pageable = PageRequest.of(page, 10); // 기본 페이지 값 설정
+        Page<Post> chartPostPage = postService.readAllByCategory(pageable, "chart");
+        List<User> user = userService.findAll();
+        Page<PostDto> postDto = chartPostPage.map(PostDto::new);
+        model.addAttribute("postDto", postDto);
+        model.addAttribute("userList", user);
+        return "community/chart_post";
+    }
+    @GetMapping("/api/expert_posts")
+    @ResponseBody
+    public Page<PostDto> loadMoreExpertPosts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size, Pageable pageable) {
+        pageable = PageRequest.of(page, size);
+        Page<Post> postPage=postService.readAllByCategory(pageable,"expert");
+        return postPage.map(PostDto::new);
+    }
+    @GetMapping("/expert_post.do")
+    public String expertPost(Model model,
+                           @PageableDefault(size = 10) Pageable pageable,
+                           @RequestParam(defaultValue = "0") int page) {
+        pageable = PageRequest.of(page, 10); // 기본 페이지 값 설정
+        Page<Post> expertPostPage = postService.readAllByCategory(pageable, "expert");
+        List<User> user = userService.findAll();
+        Page<PostDto> postDto = expertPostPage.map(PostDto::new);
+        model.addAttribute("postDto", postDto);
+        model.addAttribute("userList", user);
+        return "community/expert_post";
     }
 
     @GetMapping("/postDetail.do")
@@ -85,8 +136,9 @@ public class CommunityController {
                          @RequestParam int postNo
     ) {
         System.out.println("받은 아이디는" + postNo);
-        Post post = postService.getPostByPostId(postNo);
-        model.addAttribute("post", post);
+        Post post=postService.getPostByPostId(postNo);
+        PostDto postDto=new PostDto(post);
+        model.addAttribute("post", postDto);
         return "community/postDetail";
     }
 
@@ -234,4 +286,11 @@ public class CommunityController {
         System.out.println("###############"+postPage);
         return postPage.map(PostDto::new);
     }
+
+
+    @GetMapping("/pnl_post.do")
+    public String pnlPost() {
+        return "community/pnl_post";
+    }
+
 }

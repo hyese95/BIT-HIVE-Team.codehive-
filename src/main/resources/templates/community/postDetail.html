@@ -13,7 +13,7 @@
         <div id="postCont" class="d-flex align-items-center mb-2" style="width: 70%; height: 300px; border: 1px solid black;">
             <div style="display: flex; flex-direction: row ;justify-content: space-between">
                 <img src="/img/user_icon/user_icon_green.png" alt="이미지" style="width: 20px; height: 20px">
-                <span th:text="${post.user.nickname}"></span>
+                <span th:text="${post.userNickname}"></span>
 
             <h1 th:text="${post.postCont}">게시글 세부내용!</h1>
                 <span th:text="${#temporals.format(post.postCreatedAt, 'yyyy-MM-dd')}">2022-02-02</span>

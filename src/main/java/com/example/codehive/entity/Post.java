@@ -44,11 +44,7 @@ public class Post {
     @Column(name = "category")
     private String category;
 
-
     @OneToMany(mappedBy = "post")
-    @JsonBackReference
     @ToString.Exclude
     private List<PostLike> postLikes=new ArrayList<>();
-
-
 }
