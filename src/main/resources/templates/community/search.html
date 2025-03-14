@@ -35,24 +35,48 @@
         }
     </script>
     <hr>
-    <h2>최근검색어</h2>
-
-
-
-    <!--    <div>-->
-    <!--      <h2>최근검색어</h2>-->
-    <!--      <div  th:each="c : ${keywordCookies}">-->
-    <!--      <form th:action="@{/community/search_result.do(category='all')}" method="post">-->
-    <!--        <input type="hidden" th:value="${c}" name="keyword">-->
-    <!--        <button th:text="${c}" type="submit"></button>-->
-    <!--        <a th:href="@{/community/search/cookie.do(keyword=${c},category=${category})}">삭제</a>-->
-    <!--      </form>-->
-    <!--      </div>-->
-    <!--      <a th:if="${keywordCookies.size()}!=0" th:href="@{/community/search/cookie.do(deleteAll=true,category=${category})}">전체삭제</a>-->
-    <!--    </div>-->
+    <div>
+        <h2>최근검색어</h2>
+        <div th:if="${keywordSet}!=null" th:each="c : ${keywordSet}" class="recentKeywordDiv">
+            <a th:href="@{http://localhost:8801/community/search_result.do(keyword=${c})}" th:text="${c}"></a>
+            <button th:attr="data-keyword=${c}" onclick="deleteKeyword(this.getAttribute('data-keyword'))">삭제</button>
+        </div>
+        <button th:if="${keywordSet}!=null" id="deleteAllBtn" onclick="deleteAllKeywords(event)">전체삭제</button>
+    </div>
     <hr>
     <h2>인기검색어</h2>
 
 </div>
+<script>
+    const deleteKeyword = async (keyword) => {
+        let url = `/community/search/cookieDelete.do?keyword=${keyword}`;
+        const response = await fetch(url);
+        if (response.ok) {
+            const buttonElement = document.querySelector(`button[data-keyword="${keyword}"]`);
+            const parentDiv = buttonElement.closest('div');
+            parentDiv.remove();
+            const remainingKeywords = document.querySelectorAll('[data-keyword]');
+            if (remainingKeywords.length === 0) {
+                const deleteAllBtn = document.getElementById('deleteAllBtn')
+                deleteAllBtn.remove();
+            }
+        }
+    }
+
+
+    const deleteAllKeywords = async (event) => {
+        event.preventDefault();
+        const URL = '/community/search/deleteAllKeywordCookie';
+        const response = await fetch(URL);
+        if (response.ok) {
+            const recentKeywordDivs = document.getElementsByClassName("recentKeywordDiv");
+            while (recentKeywordDivs.length > 0) {
+                recentKeywordDivs[0].remove();
+            }
+            const deleteAllBtn = document.getElementById("deleteAllBtn");
+            deleteAllBtn.style.display = "none";
+        }
+    }
+</script>
 </body>
 </html>

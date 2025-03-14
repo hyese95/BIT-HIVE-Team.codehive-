@@ -8,6 +8,7 @@
 <body>
 <div class="container">
     <h1>검색결과</h1>
+    <h2 th:text="'검색키워드: '+${keyword}"></h2>
     <!--    카테고리 선택된 검색결과-->
     <div th:if="${category!='all'}">
         <h2 th:text="${category}+' 검색결과'"></h2>
