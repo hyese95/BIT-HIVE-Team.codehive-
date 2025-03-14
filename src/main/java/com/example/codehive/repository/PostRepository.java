@@ -11,20 +11,28 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
 import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("select p from Post p where (:category='%' or p.category = :category)" +
-            " and p.postCont like %:keyword%")
+            " and p.postCont like %:keyword% order by p.postCreatedAt DESC")
     @EntityGraph(attributePaths = {"postLikes"})
     Page<Post> findByCategoryWithKeyword(String category, String keyword, Pageable pageable);
 
+    @Query("SELECT p FROM Post p WHERE (:category='%' or p.category = :category) " +
+            "and p.postCont like %:keyword% " +
+            "and p.postCreatedAt >= :startDate " +
+            "ORDER BY SIZE(p.postLikes) DESC")
+    Page<Post> findByCategoryWithKeywordAndPeriod(String category, String keyword,
+                                                  @Param("startDate") Instant startDate,
+                                                  Pageable pageable);
 
     @Query("select pl from PostLike pl where pl.post.id = :postNo ")
     List<PostLike> findLikesByPostNo(int postNo);
 
     @Query("select p from Post p where p.category=:category order by p.postCreatedAt DESC")
-    Page<Post> findAllByCategory(Pageable pageable,String category);
+    Page<Post> findAllByCategory(Pageable pageable, String category);
 
     @Query("SELECT p FROM Post p JOIN FETCH p.user WHERE p.user.id = :Id")
     List<Post> findByUserNo(@Param("Id") int Id);

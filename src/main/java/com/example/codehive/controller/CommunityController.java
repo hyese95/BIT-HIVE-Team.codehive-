@@ -108,6 +108,7 @@ public class CommunityController {
     public String search_result(Model model,
                                 @RequestParam(defaultValue = "all") String category,
                                 @RequestParam String keyword,
+                                @RequestParam(required = false) String sortType,
                                 HttpServletRequest request,
                                 HttpServletResponse response
     ) {
@@ -195,6 +196,7 @@ public class CommunityController {
         }
 
     }
+
     @GetMapping("/search/deleteAllKeywordCookie")
     public ResponseEntity<Void> deleteAllKeywordsCookie(HttpServletResponse response,
                                                         HttpServletRequest request
@@ -220,10 +222,16 @@ public class CommunityController {
     @ResponseBody
     public Page<PostDto> loadMoreSearchResult(@RequestParam String category,
                                               @RequestParam String keyword,
-                                              @RequestParam int page
+                                              @RequestParam int page,
+                                              @RequestParam(required = false, defaultValue = "null") String sortType
     ) {
         Pageable pageable = PageRequest.of(page, 2);
-        Page<Post> postPage = postService.readByCategoryWithKeyword(category, keyword, pageable);
+        Page<Post> postPage = postService.readByCategoryWithKeyword(category, keyword, sortType, pageable);
+        System.out.println("category"+category);
+        System.out.println("keyword"+keyword);
+        System.out.println("page"+page);
+        System.out.println("sortType"+sortType);
+        System.out.println("###############"+postPage);
         return postPage.map(PostDto::new);
     }
 }

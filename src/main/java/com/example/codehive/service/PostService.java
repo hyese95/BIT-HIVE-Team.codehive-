@@ -11,6 +11,7 @@ import java.util.Map;
 
 public interface PostService {
     Page<Post>readByCategoryWithKeyword(String category,String keyword, Pageable pageable);
+    Page<Post> readByCategoryWithKeyword(String category, String keyword, String sortType, Pageable pageable);
     Page<Post> readAllByCategory(Pageable pageable, String category);
     Post getPostByPostId(int id);
 }

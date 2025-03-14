@@ -26,41 +26,41 @@ VALUES ('user1', 'pass123', '비트맨', 'user1@example.com', '010-1111-1111', t
 INSERT INTO notification_settings (volatility_yn, portfolio_yn, target_price_yn, trade_yn, like_yn, comment_yn,
                                    reply_yn, follower_yn)
 VALUES (true, true, true, true, true, true, true, true),
-       (true, false, true, true, false, true, true, false),
-       (false, true, true, false, true, true, false, true),
-       (true, true, false, true, true, false, true, true),
-       (false, false, true, true, true, true, true, false),
-       (true, true, true, false, false, true, true, true),
-       (false, true, false, true, true, true, false, true),
-       (true, false, true, true, true, false, true, false),
-       (true, true, true, true, false, true, true, true),
-       (false, true, true, false, true, true, true, true);
+                                                                                                                                           (true, false, true, true, false, true, true, false),
+                                                                                                                                           (false, true, true, false, true, true, false, true),
+                                                                                                                                           (true, true, false, true, true, false, true, true),
+                                                                                                                                           (false, false, true, true, true, true, true, false),
+                                                                                                                                           (true, true, true, false, false, true, true, true),
+                                                                                                                                           (false, true, false, true, true, true, false, true),
+                                                                                                                                           (true, false, true, true, true, false, true, false),
+                                                                                                                                           (true, true, true, true, false, true, true, true),
+                                                                                                                                           (false, true, true, false, true, true, true, true);
 
 -- target_price_alerts 테이블
 INSERT INTO target_price_alerts (user_no, market, target_price)
 VALUES (1, 'BTC-KRW', 50000000),
-       (2, 'ETH-KRW', 3000000),
-       (3, 'XRP-KRW', 1000),
-       (4, 'BTC-KRW', 48000000),
-       (5, 'ETH-KRW', 2800000),
-       (1, 'XRP-KRW', 1200),
-       (2, 'BTC-KRW', 52000000),
-       (3, 'ETH-KRW', 3200000),
-       (4, 'XRP-KRW', 800),
-       (5, 'BTC-KRW', 55000000);
+                                                                    (2, 'ETH-KRW', 3000000),
+                                                                    (3, 'XRP-KRW', 1000),
+                                                                    (4, 'BTC-KRW', 48000000),
+                                                                    (5, 'ETH-KRW', 2800000),
+                                                                    (1, 'XRP-KRW', 1200),
+                                                                    (2, 'BTC-KRW', 52000000),
+                                                                    (3, 'ETH-KRW', 3200000),
+                                                                    (4, 'XRP-KRW', 800),
+                                                                    (5, 'BTC-KRW', 55000000);
 
 -- volatility_alerts 테이블
 INSERT INTO volatility_alerts (user_no, market)
 VALUES (1, 'BTC-KRW'),
-       (2, 'ETH-KRW'),
-       (3, 'XRP-KRW'),
-       (4, 'BTC-KRW'),
-       (5, 'ETH-KRW'),
-       (1, 'DOGE-KRW'),
-       (2, 'ADA-KRW'),
-       (3, 'SOL-KRW'),
-       (4, 'MATIC-KRW'),
-       (5, 'DOT-KRW');
+                                                    (2, 'ETH-KRW'),
+                                                    (3, 'XRP-KRW'),
+                                                    (4, 'BTC-KRW'),
+                                                    (5, 'ETH-KRW'),
+                                                    (1, 'DOGE-KRW'),
+                                                    (2, 'ADA-KRW'),
+                                                    (3, 'SOL-KRW'),
+                                                    (4, 'MATIC-KRW'),
+                                                    (5, 'DOT-KRW');
 
 -- coin_transactions 테이블
 DELETE FROM coin_transactions;
@@ -200,41 +200,41 @@ VALUES
 -- favorite_markets_folders 테이블
 INSERT INTO favorite_markets_folders (user_no, list_name)
 VALUES (1, '관심코인'),
-       (2, '단기투자'),
-       (3, '장기투자'),
-       (4, '알트코인'),
-       (5, '메인코인'),
-       (1, '급등코인'),
-       (2, '저평가코인'),
-       (3, '신규상장'),
-       (4, '디파이'),
-       (5, 'NFT');
+                                                              (2, '단기투자'),
+                                                              (3, '장기투자'),
+                                                              (4, '알트코인'),
+                                                              (5, '메인코인'),
+                                                              (1, '급등코인'),
+                                                              (2, '저평가코인'),
+                                                              (3, '신규상장'),
+                                                              (4, '디파이'),
+                                                              (5, 'NFT');
 
 -- favorite_markets 테이블
 INSERT INTO favorite_markets (user_no, market, list_no, sort_order)
 VALUES (1, 'BTC-KRW', 1, 'ASC'),
-       (2, 'ETH-KRW', 2, 'DESC'),
-       (3, 'XRP-KRW', 3, 'ASC'),
-       (4, 'ADA-KRW', 4, 'ASC'),
-       (5, 'DOGE-KRW', 5, 'DESC'),
-       (1, 'SOL-KRW', 6, 'ASC'),
-       (2, 'DOT-KRW', 7, 'DESC'),
-       (3, 'MATIC-KRW', 8, 'ASC'),
-       (4, 'LINK-KRW', 9, 'DESC'),
-       (5, 'UNI-KRW', 10, 'ASC');
+                                                                        (2, 'ETH-KRW', 2, 'DESC'),
+                                                                        (3, 'XRP-KRW', 3, 'ASC'),
+                                                                        (4, 'ADA-KRW', 4, 'ASC'),
+                                                                        (5, 'DOGE-KRW', 5, 'DESC'),
+                                                                        (1, 'SOL-KRW', 6, 'ASC'),
+                                                                        (2, 'DOT-KRW', 7, 'DESC'),
+                                                                        (3, 'MATIC-KRW', 8, 'ASC'),
+                                                                        (4, 'LINK-KRW', 9, 'DESC'),
+                                                                        (5, 'UNI-KRW', 10, 'ASC');
 
 -- follows 테이블
 INSERT INTO follows (follower_user_no, following_user_no)
 VALUES (1, 2),
-       (1, 3),
-       (2, 1),
-       (3, 1),
-       (4, 1),
-       (5, 1),
-       (2, 3),
-       (3, 4),
-       (4, 5),
-       (5, 2);
+                                                              (1, 3),
+                                                              (2, 1),
+                                                              (3, 1),
+                                                              (4, 1),
+                                                              (5, 1),
+                                                              (2, 3),
+                                                              (3, 4),
+                                                              (4, 5),
+                                                              (5, 2);
 
 -- posts 테이블 (2024-02-07부터 2024-03-07까지, 총 90개)
 INSERT INTO posts (user_no, post_cont, img_url, category, post_created_at)
@@ -406,15 +406,15 @@ VALUES (1, 2, NULL, '드디어 올 것이 왔네요!', '2024-02-07 10:30:45'),
 -- chatting_logs 테이블
 INSERT INTO chatting_logs (user_no, content)
 VALUES (1, '안녕하세요'),
-       (2, '차트 어떻게 보시나요?'),
-       (3, '지금 매수하기 좋은 타이밍 같아요'),
-       (4, '장기 투자 추천드립니다'),
-       (5, '오늘 시장이 좋네요'),
-       (1, '새로운 코인 상장 소식입니다'),
-       (2, '투자 조심하세요'),
-       (3, '좋은 정보 감사합니다'),
-       (4, '다들 화이팅하세요'),
-       (5, '매수 타이밍 찾는 중');
+                                                 (2, '차트 어떻게 보시나요?'),
+                                                 (3, '지금 매수하기 좋은 타이밍 같아요'),
+                                                 (4, '장기 투자 추천드립니다'),
+                                                 (5, '오늘 시장이 좋네요'),
+                                                 (1, '새로운 코인 상장 소식입니다'),
+                                                 (2, '투자 조심하세요'),
+                                                 (3, '좋은 정보 감사합니다'),
+                                                 (4, '다들 화이팅하세요'),
+                                                 (5, '매수 타이밍 찾는 중');
 
 -- post_likes 테이블
 INSERT INTO post_likes (user_no, post_no, like_type)
@@ -423,22 +423,22 @@ VALUES (1, 1, true),
        (3, 1, false),
        (4, 1, true),
        (5, 1, true),
-       (1, 2, true),
+                                                         (1, 2, true),
        (2, 2, false),
        (3, 2, true),
-       (4, 2, true),
+                                                         (4, 2, true),
        (1, 3, true),
        (2, 3, true),
        (3, 3, true),
        (4, 3, false),
-       (5, 3, true),
-       (2, 4, true),
+                                                         (5, 3, true),
+                                                         (2, 4, true),
        (3, 4, false),
        (4, 4, true),
        (5, 4, true),
        (1, 5, false),
        (2, 5, true),
-       (3, 5, true),
+                                                         (3, 5, true),
        (4, 5, true),
        (1, 6, true),
        (2, 6, true),
@@ -827,15 +827,15 @@ VALUES (1, 1, true),
 -- post_bookmarks 테이블
 INSERT INTO post_bookmarks (user_no, post_no)
 VALUES (1, 2),
-       (2, 1),
-       (3, 4),
-       (4, 3),
-       (5, 1),
-       (1, 5),
-       (2, 3),
-       (3, 2),
-       (4, 5),
-       (5, 4);
+                                                  (2, 1),
+                                                  (3, 4),
+                                                  (4, 3),
+                                                  (5, 1),
+                                                  (1, 5),
+                                                  (2, 3),
+                                                  (3, 2),
+                                                  (4, 5),
+                                                  (5, 4);
 
 -- comment_likes 테이블
 INSERT INTO comment_likes (user_no, comment_no, like_type)
@@ -872,15 +872,15 @@ VALUES (1, 1, true),
 -- password_change_logs 테이블
 INSERT INTO password_change_logs (user_no, changed_password)
 VALUES (1, 'newpass123'),
-       (2, 'newpass456'),
-       (3, 'newpass789'),
-       (4, 'newpass321'),
-       (5, 'newpass654'),
-       (1, 'newpass987'),
-       (2, 'newpass147'),
-       (3, 'newpass258'),
-       (4, 'newpass369'),
-       (5, 'newpass741');
+                                                                 (2, 'newpass456'),
+                                                                 (3, 'newpass789'),
+                                                                 (4, 'newpass321'),
+                                                                 (5, 'newpass654'),
+                                                                 (1, 'newpass987'),
+                                                                 (2, 'newpass147'),
+                                                                 (3, 'newpass258'),
+                                                                 (4, 'newpass369'),
+                                                                 (5, 'newpass741');
 
 -- login_logs 테이블
 INSERT INTO login_logs (user_no)
@@ -898,80 +898,80 @@ VALUES (1),
 -- exp_activity 테이블
 INSERT INTO exp_activity (activity_type, exp_amount, description)
 VALUES ('LOGIN', 10, '일일 로그인'),
-       ('POST_WRITE', 20, '게시글 작성'),
-       ('COMMENT_WRITE', 5, '댓글 작성'),
-       ('TRADE', 15, '거래 완료'),
-       ('FOLLOW', 5, '팔로우하기'),
-       ('RECEIVE_LIKE', 2, '좋아요 받기'),
-       ('SHARE_POST', 10, '게시글 공유'),
-       ('COMPLETE_PROFILE', 50, '프로필 완성'),
-       ('FIRST_TRADE', 100, '첫 거래 완료'),
-       ('DAILY_VISIT', 5, '일일 방문');
+                                                                      ('POST_WRITE', 20, '게시글 작성'),
+                                                                      ('COMMENT_WRITE', 5, '댓글 작성'),
+                                                                      ('TRADE', 15, '거래 완료'),
+                                                                      ('FOLLOW', 5, '팔로우하기'),
+                                                                      ('RECEIVE_LIKE', 2, '좋아요 받기'),
+                                                                      ('SHARE_POST', 10, '게시글 공유'),
+                                                                      ('COMPLETE_PROFILE', 50, '프로필 완성'),
+                                                                      ('FIRST_TRADE', 100, '첫 거래 완료'),
+                                                                      ('DAILY_VISIT', 5, '일일 방문');
 
 -- exp_logs 테이블
 INSERT INTO exp_logs (user_no, activity_type)
 VALUES (1, 'LOGIN'),
-       (2, 'POST_WRITE'),
-       (3, 'COMMENT_WRITE'),
-       (4, 'TRADE'),
-       (5, 'FOLLOW'),
-       (1, 'RECEIVE_LIKE'),
-       (2, 'SHARE_POST'),
-       (3, 'COMPLETE_PROFILE'),
-       (4, 'FIRST_TRADE'),
-       (5, 'DAILY_VISIT');
+                                                  (2, 'POST_WRITE'),
+                                                  (3, 'COMMENT_WRITE'),
+                                                  (4, 'TRADE'),
+                                                  (5, 'FOLLOW'),
+                                                  (1, 'RECEIVE_LIKE'),
+                                                  (2, 'SHARE_POST'),
+                                                  (3, 'COMPLETE_PROFILE'),
+                                                  (4, 'FIRST_TRADE'),
+                                                  (5, 'DAILY_VISIT');
 
 -- level_exp 테이블
 INSERT INTO level_exp (level, required_exp)
 VALUES (1, 0),
-       (2, 100),
-       (3, 300),
-       (4, 600),
-       (5, 1000),
-       (6, 1500),
-       (7, 2100),
-       (8, 2800),
-       (9, 3600),
-       (10, 4500);
+                                                (2, 100),
+                                                (3, 300),
+                                                (4, 600),
+                                                (5, 1000),
+                                                (6, 1500),
+                                                (7, 2100),
+                                                (8, 2800),
+                                                (9, 3600),
+                                                (10, 4500);
 
 -- guides 테이블
 INSERT INTO guides (guide_title, guide_cont)
 VALUES ('비트코인 시작하기', '비트코인 투자 입문자를 위한 가이드'),
-       ('이더리움 스테이킹', '이더리움 2.0 스테이킹 방법 안내'),
-       ('차트 보는 법', '기초적인 차트 분석 방법'),
-       ('거래소 이용방법', '거래소 회원가입부터 거래까지'),
-       ('보안 설정 가이드', '2차 인증 설정 방법'),
-       ('용어 사전', '가상화폐 투자 필수 용어 정리'),
-       ('투자 전략 가이드', '기본적인 투자 전략 소개'),
-       ('리스크 관리', '효과적인 리스크 관리 방법'),
-       ('트레이딩뷰 사용법', '트레이딩뷰 차트 활용 가이드'),
-       ('세금 가이드', '가상자산 과세 제도 안내');
+                                                 ('이더리움 스테이킹', '이더리움 2.0 스테이킹 방법 안내'),
+                                                 ('차트 보는 법', '기초적인 차트 분석 방법'),
+                                                 ('거래소 이용방법', '거래소 회원가입부터 거래까지'),
+                                                 ('보안 설정 가이드', '2차 인증 설정 방법'),
+                                                 ('용어 사전', '가상화폐 투자 필수 용어 정리'),
+                                                 ('투자 전략 가이드', '기본적인 투자 전략 소개'),
+                                                 ('리스크 관리', '효과적인 리스크 관리 방법'),
+                                                 ('트레이딩뷰 사용법', '트레이딩뷰 차트 활용 가이드'),
+                                                 ('세금 가이드', '가상자산 과세 제도 안내');
 
 -- questions 테이블
 INSERT INTO questions (user_no, question_title, question_cont, question_status, question_option)
 VALUES (1, '출금 문의', '출금이 지연되고 있습니다', 'PENDING', 'URGENT'),
-       (2, '로그인 오류', '로그인이 되지 않습니다', 'IN_PROGRESS', 'NORMAL'),
-       (3, 'API 오류', 'API 연동 중 오류가 발생했습니다', 'COMPLETED', 'TECHNICAL'),
-       (4, '계정 복구', '계정 복구를 요청합니다', 'PENDING', 'URGENT'),
-       (5, '입금 문의', '입금이 반영되지 않았습니다', 'IN_PROGRESS', 'URGENT'),
-       (1, '인증 문의', '휴대폰 인증이 안됩니다', 'COMPLETED', 'NORMAL'),
-       (2, '거래 오류', '거래 주문이 실행되지 않습니다', 'PENDING', 'TECHNICAL'),
-       (3, '출금 한도', '출금 한도 증액 요청', 'IN_PROGRESS', 'NORMAL'),
-       (4, '계정 보안', '보안 설정 방법 문의', 'COMPLETED', 'NORMAL'),
-       (5, '입금 주소', '입금 주소 확인 요청', 'PENDING', 'URGENT');
+                                                                                                     (2, '로그인 오류', '로그인이 되지 않습니다', 'IN_PROGRESS', 'NORMAL'),
+                                                                                                     (3, 'API 오류', 'API 연동 중 오류가 발생했습니다', 'COMPLETED', 'TECHNICAL'),
+                                                                                                     (4, '계정 복구', '계정 복구를 요청합니다', 'PENDING', 'URGENT'),
+                                                                                                     (5, '입금 문의', '입금이 반영되지 않았습니다', 'IN_PROGRESS', 'URGENT'),
+                                                                                                     (1, '인증 문의', '휴대폰 인증이 안됩니다', 'COMPLETED', 'NORMAL'),
+                                                                                                     (2, '거래 오류', '거래 주문이 실행되지 않습니다', 'PENDING', 'TECHNICAL'),
+                                                                                                     (3, '출금 한도', '출금 한도 증액 요청', 'IN_PROGRESS', 'NORMAL'),
+                                                                                                     (4, '계정 보안', '보안 설정 방법 문의', 'COMPLETED', 'NORMAL'),
+                                                                                                     (5, '입금 주소', '입금 주소 확인 요청', 'PENDING', 'URGENT');
 
 -- answers 테이블
 INSERT INTO answers (question_no, answer_cont)
 VALUES (1, '출금 지연 관련 답변입니다...'),
-       (2, '로그인 오류 해결 방법입니다...'),
-       (3, 'API 오류 해결 방법 안내드립니다...'),
-       (4, '계정 복구 절차 안내드립니다...'),
-       (5, '입금 확인 후 처리해드렸습니다...'),
-       (6, '인증 절차 안내드립니다...'),
-       (7, '거래 오류 관련 답변드립니다...'),
-       (8, '출금 한도 검토 후 답변드리겠습니다...'),
-       (9, '보안 설정 가이드 링크 첨부합니다...'),
-       (10, '입금 주소 확인 방법 안내드립니다...');
+                                                   (2, '로그인 오류 해결 방법입니다...'),
+                                                   (3, 'API 오류 해결 방법 안내드립니다...'),
+                                                   (4, '계정 복구 절차 안내드립니다...'),
+                                                   (5, '입금 확인 후 처리해드렸습니다...'),
+                                                   (6, '인증 절차 안내드립니다...'),
+                                                   (7, '거래 오류 관련 답변드립니다...'),
+                                                   (8, '출금 한도 검토 후 답변드리겠습니다...'),
+                                                   (9, '보안 설정 가이드 링크 첨부합니다...'),
+                                                   (10, '입금 주소 확인 방법 안내드립니다...');
 
 INSERT INTO faq (faq_title, faq_cont) VALUES
                                              ('시드머니는 어떻게 얻나요?', '시드머니는 자산현황 화면에서 ''내자산 추가하기'' 버튼을 클릭하여 획득이 가능합니다.'),
