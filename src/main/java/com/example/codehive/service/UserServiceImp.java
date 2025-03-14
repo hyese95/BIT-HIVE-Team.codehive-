@@ -29,4 +29,10 @@ public class UserServiceImp implements UserService {
         List<User> users = userRepository.findAllByUserIdLike(userName);
         return users;
     }
+
+    @Override
+    public User findNicknameByUserNo(int userNo) {
+        User user = userRepository.findNicknameById(userNo);
+        return user;
+    }
 }

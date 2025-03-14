@@ -3,7 +3,8 @@
       th:replace="~{fragments/default :: html(content=~{::body})}">
 <style>
     button>a{color:black; text-decoration: none;}
-    #UserRank
+    .UserRank{border: 1px solid black;}
+    .users{text-align: center;}
 </style>
 <head>
     <meta charset="UTF-8">
@@ -13,14 +14,32 @@
 <nav th:replace="fragments/nav_bars :: communitySubNav"></nav>
 <div class="container">
 <h1>손익인증게시판</h1>
-    <div>
-        <form action="#">
+    <div style="display: flex; justify-content: center; align-items: center; ">
+        <form>
             <div class="form-group">
-                <ul style="display: flex; flex-wrap: wrap;">
-                    <li class="UserRank"><a href="#">유저 닉네임<img src="/img/user_icon/user_icon_default.png" alt="유저1등"></a></li>
-                    <li class="UserRank"><a href="#">유저 닉네임<img src="/img/user_icon/user_icon_default.png" alt="유저2등"></a></li>
-                    <li class="UserRank"><a href="#">유저 닉네임<img src="/img/user_icon/user_icon_default.png" alt="유저3등"></a></li>
-                </ul>
+                <div style="display: flex; justify-content: center;  gap: 10px;">
+                <span class="UserRank" style="display: flex; flex-direction: column; align-items: center;">
+                    1등
+                    <a href="#">
+                        <img src="/img/user_icon/user_icon_default.png" alt="유저1등">
+                        <div th:text="${userName1.nickname}">유저 닉네임1</div>
+                    </a>
+                </span>
+                    <span class="UserRank" style="display: flex; flex-direction: column; align-items: center;">
+                        2등
+                    <a href="#">
+                        <img src="/img/user_icon/user_icon_default.png" alt="유저2등">
+                        <div th:text="${userName2.nickname}">유저 닉네임2</div>
+                    </a>
+                </span>
+                    <span class="UserRank" style="display: flex; flex-direction: column; align-items: center;">
+                        3등
+                    <a href="#">
+                        <img src="/img/user_icon/user_icon_default.png" alt="유저3등">
+                        <div th:text="${userName3.nickname}">유저 닉네임3</div>
+                    </a>
+                </span>
+                </div>
             </div>
         </form>
     </div>

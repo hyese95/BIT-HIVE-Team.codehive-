@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns=""
+      th:replace="~{fragments/default :: html(content=~{::body})}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>전문가 포럼 게시판</title>
+</head>
+<body>
+<nav th:replace="fragments/nav_bars :: communitySubNav"></nav>
+<div class="container">
+    <a href="/community/search.do">검색</a>
+<h1>전문가 포럼 게시판</h1>
+    <div>
+        <form th:action="@{/community}"  method="post">
+
+            <div class="form-group" style="justify-content: space-between;">
+                <label>
+                <textarea class="form-control" rows="10" style="width: 1200px; height: 500px;position: relative;
+                user-select: none; align-items: center;"
+                placeholder="로그인 후 이용해주세요!" name="textarea" ></textarea>
+                    <span>
+                        <button type="submit" ><a href="#"><img src="/img/ImageIcon/ImageIcon.png" alt="이미지" style="width: 20px; height: 20px">이미지 첨부</a></button>
+                    </span>
+                    <span><button type="submit" style=" position: absolute;">
+                            <a href="#" >게시하기</a></button>
+                    </span>
+                </label>
+            </div>
+
+        </form>
+    </div>
+    <h2 class="mb-4">게시글 목록</h2>
+    <div th:if="${postDto.isEmpty()}">
+        <p>게시글이 없습니다.</p>
+    </div>
+    <div id="postContainer" >
+    <div class="list-group" th:each="post : ${postDto.content}" style="padding-bottom: 15px;">
+        <a th:href="@{'/community/postDetail.do'(postNo=${post.id})}">
+        <div class="list-group-item" >
+            <div class="d-flex align-items-center mb-2">
+                <img src="/img/user_icon/user_icon_default.png" alt="프로필 이미지" class="rounded-circle" width="50" height="50">
+                <div class="ms-3">
+                    <h5 class="mb-0" th:text="${post.userNickname}">유저 닉네임</h5>
+                    <small class="text-muted" th:text="'Lv ' + ${post.userId}"></small>
+                </div>
+            </div>
+            <p th:text="${post.postCont}">게시글 내용</p>
+            <div  style="padding-bottom: 15px;">
+            <span th:text="'좋아요'+${post.likeCount}">좋아요</span>
+            <span th:text="'싫어요'+${post.dislikeCount}">싫어요</span>
+            </div>
+            <small class="text-muted" th:text="${#temporals.format(post.postCreatedAt, 'yyyy-MM-dd')}">작성일자</small>
+        </div>
+        </a>
+    </div>
+    </div>
+
+<!--    <div class="pagination" style="justify-content: center;">-->
+<!--        <a th:if="${postPage.hasPrevious()}"-->
+<!--           th:href="@{/community/free_post.do(page=${postPage.number - 1})}" th:text="${postPage.number}+'page '">-->
+<!--        </a>-->
+<!--        <a th:if="${postPage.hasPrevious()}" th:href="@{/community/free_post.do(page=${postPage.number - 1})}"> 이전</a>-->
+<!--        <span th:text="${postPage.number + 1}"></span> / <span th:text="${postPage.totalPages}"></span>-->
+<!--        <a th:if="${postPage.hasNext()}" th:href="@{/community/free_post.do(page=${postPage.number + 1})}">다음</a>-->
+<!--        <a th:if="${postPage.hasNext()}" th:href="@{/community/free_post.do(page=${postPage.number + 1})}"-->
+<!--        th:text="${postPage.number + 2}+'page '"></a>-->
+<!--    </div>-->
+
+    <button type="button" id="pageableBtn">더보기</button>
+</div>
+<br>
+<br>
+<br>
+<br>
+<script>
+    // console.log([[${postDto.content}]])
+    let page = 1;
+    const pageSize = 10;
+    let loading = false;
+    let pageableBtn = document.getElementById("pageableBtn");
+        pageableBtn.addEventListener("click",async function () {
+            if (loading) return;
+            loading = true;
+
+            await fetch(`/community/api/free_posts?page=${page}&size=${pageSize}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.content.length === 0) {
+                        alert("더 이상 게시글이 없습니다.");
+                        document.getElementById("pageableBtn").style.display = "none";
+                        return;
+                    }
+
+                    let postContainer = document.getElementById("postContainer");
+                    data.content.forEach(post => {
+                        let postItem = document.createElement("div");
+                        postItem.setAttribute("class", "list-group");
+                        postItem.setAttribute("style", "padding-bottom: 15px");
+                        postItem.innerHTML = `
+<a href="/community/postDetail.do?postNo=${post.id}">
+    <div class="list-group-item" style="padding-bottom: 15px;" style="padding-bottom: 15px;">
+                            <div class="d-flex align-items-center mb-2">
+                <img src="/img/user_icon/user_icon_default.png" alt="프로필 이미지" class="rounded-circle" width="50" height="50">
+                <div class="ms-3">
+                    <h5 class="mb-0"> ${post.userNickname}</h5>
+                    <small class="text-muted"> Lv ${post.userId}</small>
+                </div>
+            </div>
+            <p>${post.postCont}</p>
+            <span>좋아요: ${post.likeCount}</span>
+            <span>싫어요: ${post.dislikeCount}</span>
+            <small class="text-muted"> ${post.postCreatedAt.substring(0, 10)}</small>
+</div>
+</a>`;
+                        postContainer.appendChild(postItem);
+                    });
+                    page++;
+                    loading = false;
+                }).catch(error => {
+                console.error("오류 발생:", error);
+                alert("게시글을 불러오는 중 문제가 발생했습니다.");
+                loading = false;
+            });
+        })
+</script>
+</body>
+</html>

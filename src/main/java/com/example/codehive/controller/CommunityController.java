@@ -65,10 +65,58 @@ public class CommunityController {
                           @RequestParam(defaultValue = "0") int page) {
         Page<Post> pnlPostPage = postService.readAllByCategory(pageable, "pnl");
         List<User> user = userService.findAll();
+        User userName1=userService.findNicknameByUserNo(1);
+        User userName2=userService.findNicknameByUserNo(2);
+        User userName3=userService.findNicknameByUserNo(3);
         Page<PostDto> postDto = pnlPostPage.map(PostDto::new);
+        model.addAttribute("userName1", userName1);
+        model.addAttribute("userName2", userName2);
+        model.addAttribute("userName3", userName3);
         model.addAttribute("postDto", postDto);
         model.addAttribute("userList", user);
         return "community/pnl_post";
+    }
+    @GetMapping("/api/chart_posts")
+    @ResponseBody
+    public Page<PostDto> loadMoreChartPosts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size, Pageable pageable) {
+        pageable = PageRequest.of(page, size);
+        Page<Post> postPage=postService.readAllByCategory(pageable,"chart");
+        return postPage.map(PostDto::new);
+    }
+    @GetMapping("/chart_post.do")
+    public String chartPost(Model model,
+                           @PageableDefault(size = 10) Pageable pageable,
+                           @RequestParam(defaultValue = "0") int page) {
+        pageable = PageRequest.of(page, 10); // 기본 페이지 값 설정
+        Page<Post> chartPostPage = postService.readAllByCategory(pageable, "chart");
+        List<User> user = userService.findAll();
+        Page<PostDto> postDto = chartPostPage.map(PostDto::new);
+        model.addAttribute("postDto", postDto);
+        model.addAttribute("userList", user);
+        return "community/chart_post";
+    }
+    @GetMapping("/api/expert_posts")
+    @ResponseBody
+    public Page<PostDto> loadMoreExpertPosts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size, Pageable pageable) {
+        pageable = PageRequest.of(page, size);
+        Page<Post> postPage=postService.readAllByCategory(pageable,"expert");
+        return postPage.map(PostDto::new);
+    }
+    @GetMapping("/expert_post.do")
+    public String expertPost(Model model,
+                           @PageableDefault(size = 10) Pageable pageable,
+                           @RequestParam(defaultValue = "0") int page) {
+        pageable = PageRequest.of(page, 10); // 기본 페이지 값 설정
+        Page<Post> expertPostPage = postService.readAllByCategory(pageable, "expert");
+        List<User> user = userService.findAll();
+        Page<PostDto> postDto = expertPostPage.map(PostDto::new);
+        model.addAttribute("postDto", postDto);
+        model.addAttribute("userList", user);
+        return "community/expert_post";
     }
 
     @GetMapping("/postDetail.do")
