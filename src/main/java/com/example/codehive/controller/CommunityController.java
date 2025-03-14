@@ -35,7 +35,8 @@ public class CommunityController {
             @RequestParam(defaultValue = "10") int size, Pageable pageable) {
         pageable = PageRequest.of(page, size);
         Page<Post> postPage=postService.readAllByCategory(pageable,"free");
-        return postPage.map(PostDto::new);
+        Page<PostDto> postDtoPage= postPage.map(PostDto::new);
+        return postDtoPage;
     }
     @GetMapping("/free_post.do")
     public String freePost(Model model,
