@@ -9,15 +9,16 @@ import jakarta.servlet.http.HttpServletResponse;
 import com.example.codehive.service.UserService;
 import lombok.AllArgsConstructor;
 import com.example.codehive.repository.PostRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.function.Function;
 
 @Controller
 @RequestMapping("/community")
@@ -40,12 +41,11 @@ public class CommunityController {
     public String freePost(Model model,
                            @PageableDefault(size = 10) Pageable pageable,
                            @RequestParam(defaultValue = "0") int page) {
-
         pageable = PageRequest.of(page, 10); // 기본 페이지 값 설정
         Page<Post> freePostPage = postService.readAllByCategory(pageable, "free");
-
         List<User> user = userService.findAll();
-        model.addAttribute("freePostPage", freePostPage);
+        Page<PostDto> postDto = freePostPage.map(PostDto::new);
+        model.addAttribute("postDto", postDto);
         model.addAttribute("userList", user);
         return "community/free_post";
     }
@@ -61,12 +61,12 @@ public class CommunityController {
     }
     @GetMapping("/pnl_post.do")
     public String pnlPost(Model model,
-                           @PageableDefault(size = 10) Pageable pageable,
-                           @RequestParam(defaultValue = "0") int page) {// 기본 페이지 값 설정
-        pageable = PageRequest.of(page, 10);
+                          @PageableDefault(size = 10) Pageable pageable,
+                          @RequestParam(defaultValue = "0") int page) {
         Page<Post> pnlPostPage = postService.readAllByCategory(pageable, "pnl");
         List<User> user = userService.findAll();
-        model.addAttribute("pnlPostPage", pnlPostPage);
+        Page<PostDto> postDto = pnlPostPage.map(PostDto::new);
+        model.addAttribute("postDto", postDto);
         model.addAttribute("userList", user);
         return "community/pnl_post";
     }
@@ -77,7 +77,8 @@ public class CommunityController {
                          ) {
         System.out.println("받은 아이디는" + postNo);
         Post post=postService.getPostByPostId(postNo);
-        model.addAttribute("post", post);
+        PostDto postDto=new PostDto(post);
+        model.addAttribute("post", postDto);
         return "community/postDetail";
     }
 
@@ -129,11 +130,4 @@ public class CommunityController {
         Page<Post> postPage = postService.readByCategoryWithKeyword(category, keyword, pageable);
         return postPage.map(PostDto::new);
     }
-
-
-    @GetMapping("/pnl_post.do")
-    public String pnlPost() {
-        return "community/pnl_post";
-    }
-
 }

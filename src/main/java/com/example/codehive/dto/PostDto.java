@@ -4,6 +4,7 @@ import com.example.codehive.entity.Post;
 import com.example.codehive.entity.PostLike;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@ToString
 public class PostDto {
     private Integer id;
     private String postCont;

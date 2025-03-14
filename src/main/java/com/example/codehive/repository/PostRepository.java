@@ -1,5 +1,6 @@
 package com.example.codehive.repository;
 
+import com.example.codehive.dto.PostDto;
 import com.example.codehive.entity.Post;
 import com.example.codehive.entity.PostLike;
 import org.springframework.data.domain.Page;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-public interface PostRepository extends JpaRepository<Post, Long> {
+public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query("select p from Post p where (:category='%' or p.category = :category)" +
             " and p.postCont like %:keyword%")
     @EntityGraph(attributePaths = {"postLikes"})
