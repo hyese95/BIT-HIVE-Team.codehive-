@@ -12,16 +12,15 @@
 </head>
 <body>
 <div class="container">
-    <h1>주문</h1>
+    <h1 id="coinTitle">주문 페이지</h1>
     <p id="tradeprice"></p>
-    <div id="coindiv">
-    </div>
+    <div id="coindiv"></div>
     <p><a href="buy.html">매수</a>  <a href="sell.html">매도</a>  <a href="history.html">내역</a></p>
     <form id="buyform" action="buy.html" method="post">
         <p>
             <label>
-            지정 <input type="radio" name="market" checked>
-            시장 <input type="radio" name="market">
+                지정 <input type="radio" name="market" checked>
+                시장 <input type="radio" name="market">
             </label>
         </p>
         <p>주문가능: 원</p>
@@ -39,33 +38,61 @@
         <p><button type="submit">매수</button></p>
     </form>
     <script>
+        // URL 파라미터로 전달된 코인 티커를 읽음
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const coinTicker = urlParams.get("coin");
+        console.log("선택된 종목:", coinTicker);
+
+        // 선택된 종목에 맞게 데이터 API 호출
         async function loadCoin() {
+            if (!coinTicker) {
+                alert("종목 정보를 불러올 수 없습니다.");
+                return;
+            }
+            // 코인명 및 타이틀 수정
+            const coinTitle = document.getElementById("coinTitle");
+            coinTitle.innerText = `${coinTicker}/KRW 주문 페이지`;
+
             let coindiv = document.getElementById("coindiv");
             let tradeprice = document.getElementById("tradeprice");
-            let url = "https://api.upbit.com/v1/orderbook?markets=KRW-BTC&level=0";
-            let url2 = "https://api.upbit.com/v1/candles/seconds?market=KRW-BTC"
-            const response = await fetch(url);
-            const response2 = await fetch(url2);
-            const responseJson = await response.json();
-            const responseJson2 = await response2.json();
-            // 테스트
-            // coindiv.innerText=responseJson[0].orderbook_units[0].ask_price;
-            const orderbook = responseJson[0].orderbook_units;
-            const price = responseJson2[0].trade_price;
-            tradeprice.innerText = price;
-            html = ""
-            for (o of orderbook.reverse()) {
-                html += "<p>매수" + o.ask_price + " 잔량 : " + o.ask_size.toFixed(3) + "</p>"
+
+            // URL (코인 티커에 맞게 동적 생성)
+            const url = `https://api.upbit.com/v1/orderbook?markets=KRW-${coinTicker}`;
+            const url2 = `https://api.upbit.com/v1/ticker?markets=KRW-${coinTicker}`;
+
+            try {
+                // API 호출
+                const [response, response2] = await Promise.all([fetch(url), fetch(url2)]);
+                const responseJson = await response.json();
+                const responseJson2 = await response2.json();
+
+                // API 응답 데이터 파싱
+                const orderbook = responseJson[0].orderbook_units; // 호가 데이터
+                const price = responseJson2[0].trade_price; // 현재가
+
+                // 현재가 표시
+                tradeprice.innerText = `${coinTicker}/KRW 현재가: ${price.toLocaleString()} KRW`;
+
+                // 매수/매도 호가 표시
+                let html = "";
+                for (const o of orderbook.reverse()) {
+                    html += `<p>매수 ${o.ask_price.toLocaleString()} 잔량: ${o.ask_size.toFixed(3)}</p>`;
+                }
+                html += "<hr>";
+                for (const o of orderbook) {
+                    html += `<p>매도 ${o.bid_price.toLocaleString()} 잔량: ${o.bid_size.toFixed(3)}</p>`;
+                }
                 coindiv.innerHTML = html;
-            }
-            html += "<hr>"
-            for (o of orderbook) {
-                html += "<p>매도" + o.bid_price + " 잔량 : " + o.bid_size.toFixed(3) + "</p>"
-                coindiv.innerHTML = html;
+
+            } catch (error) {
+                console.error("호가 데이터를 불러오는 중 오류 발생:", error);
+                alert("호가 데이터를 불러올 수 없습니다.");
             }
         }
+
+        // 페이지 로딩 시 데이터 불러오기
         loadCoin();
-        // setInterval(loadCoin, 1000);
     </script>
 </div>
 </body>
