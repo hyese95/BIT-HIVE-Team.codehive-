@@ -286,11 +286,4 @@ public class CommunityController {
         System.out.println("###############"+postPage);
         return postPage.map(PostDto::new);
     }
-
-
-    @GetMapping("/pnl_post.do")
-    public String pnlPost() {
-        return "community/pnl_post";
-    }
-
 }
