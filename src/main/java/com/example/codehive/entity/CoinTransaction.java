@@ -42,4 +42,6 @@ public class CoinTransaction {
     @Column(name = "transaction_state", length = 20)
     private String transactionState;
 
+    @Transient
+    private Double transactionAmount;
 }
