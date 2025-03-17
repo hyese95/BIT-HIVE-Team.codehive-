@@ -1,6 +1,7 @@
 package com.example.codehive.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,10 +29,14 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "post_no", insertable = false, updatable = false)
+    @ToString.Exclude
+    @JsonBackReference
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_no", nullable = false)
+    @ToString.Exclude
+    @JsonBackReference
     private User userNo;
 
     @ColumnDefault("CURRENT_TIMESTAMP")

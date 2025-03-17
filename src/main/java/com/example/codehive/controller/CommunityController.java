@@ -1,8 +1,10 @@
 package com.example.codehive.controller;
 
 import com.example.codehive.dto.PostDto;
+import com.example.codehive.entity.Comment;
 import com.example.codehive.entity.Post;
 import com.example.codehive.entity.User;
+import com.example.codehive.service.CommentService;
 import com.example.codehive.service.PostService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,12 +24,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Iterator;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/community")
@@ -36,6 +35,7 @@ public class CommunityController {
     private final PostService postService;
     private final UserService userService;
     private final PostRepository postRepository;
+    private final CommentService commentService;
 
     @GetMapping("/api/free_posts")
     @ResponseBody
@@ -47,6 +47,7 @@ public class CommunityController {
         Page<PostDto> postDtoPage= postPage.map(PostDto::new);
         return postDtoPage;
     }
+
     @GetMapping("/free_post.do")
     public String freePost(Model model,
                            @PageableDefault(size = 10) Pageable pageable,
@@ -54,7 +55,6 @@ public class CommunityController {
 
         pageable = PageRequest.of(page, 10); // 기본 페이지 값 설정
         Page<Post> freePostPage = postService.readAllByCategory(pageable, "free");
-
         List<User> user = userService.findAll();
         Page<PostDto> postDto = freePostPage.map(PostDto::new);
         model.addAttribute("postDto", postDto);
@@ -138,7 +138,17 @@ public class CommunityController {
         System.out.println("받은 아이디는" + postNo);
         Post post=postService.getPostByPostId(postNo);
         PostDto postDto=new PostDto(post);
+        Comment comment=new Comment();
+//        Integer parentNo=comment.getParentNo();
+        List<Comment> comments=commentService.readComment(postNo);
+//        Comment childComment=commentService.readChildComment(parentNo);
+        int cntComment=commentService.getCommentCountByPostNo(postNo);
+//        int cntChildComment=commentService.getChildCommentCountByPostNoAndParentNo(postNo,parentNo);
+        model.addAttribute("cntComment",cntComment);
+//        model.addAttribute("cntChildComment",cntChildComment);
         model.addAttribute("post", postDto);
+        model.addAttribute("comments", comments);
+//        model.addAttribute("childComment", childComment);
         return "community/postDetail";
     }
 

@@ -52,8 +52,9 @@
             </div>
             <p th:text="${post.postCont}">게시글 내용</p>
             <div  style="padding-bottom: 15px;">
-            <span th:text="'좋아요'+${post.likeCount}">좋아요</span>
-            <span th:text="'싫어요'+${post.dislikeCount}">싫어요</span>
+            <span th:text="'좋아요'+${post.likeCount}+'개'">좋아요</span>
+            <span th:text="'싫어요'+${post.dislikeCount}+'개'">싫어요</span>
+            <span th:text="'댓글'+${post.commentCount}+'개'"></span>
             </div>
             <small class="text-muted" th:text="${#temporals.format(post.postCreatedAt, 'yyyy-MM-dd')}">작성일자</small>
         </div>
@@ -123,8 +124,9 @@
                                     </div>
                                 </div>
                                 <p>${post.postCont}</p>
-                                <span>좋아요: ${post.likeCount}</span>
-                                <span>싫어요: ${post.dislikeCount}</span>
+                                <span>좋아요${post.likeCount}개</span>
+                                <span>싫어요${post.dislikeCount}개</span>
+                                <span>댓글${post.commentCount}개</span>
                                 <small class="text-muted"> ${post.postCreatedAt.substring(0, 10)}</small>
                             </div>
                         </a>`;

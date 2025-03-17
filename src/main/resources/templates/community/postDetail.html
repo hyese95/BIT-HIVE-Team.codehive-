@@ -7,9 +7,8 @@
 </head>
 <nav th:replace="fragments/nav_bars :: communitySubNav"></nav>
 <body>
-<h1>게시글 상세</h1>
+<div class="container">
 <!--<p th:text="${post.postCont}"></p>-->
-    <div class="container">
         <div id="postCont" class="d-flex align-items-center mb-2" style="width: 70%; height: 300px; border: 1px solid black;">
             <div style="display: flex; flex-direction: row ;justify-content: space-between">
                 <img src="/img/user_icon/user_icon_green.png" alt="이미지" style="width: 20px; height: 20px">
@@ -22,12 +21,34 @@
             <div style="justify-content: flex-end">
                 <span th:text="좋아요 +${post.likeCount}">좋아요</span>
                 <span th:text="싫어요 +${post.dislikeCount}">싫어요</span>
-                <span th:text="댓글 +${post.id}+개">댓글 갯수</span>
+                <span th:text="댓글 +${cntComment}+개">댓글 갯수</span>
             </div>
         </div>
-        <div id="comment" style="width: 70%; height: 30px; border: 1px solid black; border-radius: 5px;">
-            <span style="font-size: 20px">댓글 예상</span>
+    <div th:each="comment : ${comments}" th:if="${comment.parentNo == null}" style="margin-bottom: 10px; justify-content: space-between;">
+        <!-- 부모 댓글 -->
+        <div id="comment" style="width: 70%; height: auto; border: 1px solid black; border-radius: 5px; padding: 5px; display: flex; flex-direction: row ;justify-content: space-between">
+            <div style="display: flex; flex-direction: column ;justify-content: space-between">
+                <img src='/img/user_icon/user_icon_default.png' style="width: 20px; height: 20px">
+                <span th:text="${comment.getUserNo().nickname}"></span>
+            </div>
+            <span style="font-size: 20px" th:text="${comment.commentCont}"></span>
+            <button th:if="${comment.parentNo==null}" class="disabled">
+                대댓글 보기
+            </button>
+            <!-- 대댓글 목록 (초기에 숨김) -->
+            <div id="childComment">
+                <div th:each="reply : ${comments}" th:if="${reply.parentNo!=null}" style="border-left: 2px solid gray; padding-left: 10px; display: none;">
+                    <span style="font-size: 18px" th:text="${reply.commentCont}"></span>
+                </div>
+            </div>
         </div>
+    </div>
 </div>
+<script>
+    child = document.getElementById("childComment");
+    child.addEventListener("toggle", function () {
+        child.style.display = "block";
+    })
+</script>
 </body>
 </html>
