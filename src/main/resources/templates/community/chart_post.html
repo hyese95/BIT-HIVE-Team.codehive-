@@ -36,7 +36,7 @@
     </div>
     <div id="postContainer" >
     <div class="list-group" th:each="post : ${postDto.content}" style="padding-bottom: 15px;">
-        <a th:href="@{'/community/postDetail.do'(postNo=${post.id})}">
+        <a th:href="@{'/community/postDetail.do'(postNo=${post.id})}" style="text-decoration: none; color: black;">
         <div class="list-group-item" >
             <div class="d-flex align-items-center mb-2">
                 <img src="/img/user_icon/user_icon_default.png" alt="프로필 이미지" class="rounded-circle" width="50" height="50">
@@ -51,7 +51,7 @@
                 </div>
             </div>
             <p th:text="${post.postCont}">게시글 내용</p>
-            <div  style="padding-bottom: 15px;">
+            <div  style="padding-bottom: 5px;">
                 <span th:text="'좋아요'+${post.likeCount}+'개'">좋아요</span>
                 <span th:text="'싫어요'+${post.dislikeCount}+'개'">싫어요</span>
                 <span th:text="'댓글'+${post.commentCount}+'개'"></span>
@@ -112,7 +112,7 @@
                     // 이미지 아이콘 추가 여부 확인
                     let imageIcon = post.imgUrl ? `<img src="/img/ImageIcon/ImageIcon.png" alt="이미지 있음" width="20" height="20" style="margin-left: 5px;">` : '';
                     postItem.innerHTML = `
-                        <a href="/community/postDetail.do?postNo=${post.id}">
+                        <a href="/community/postDetail.do?postNo=${post.id}" style="text-decoration: none; color: black;">
                             <div class="list-group-item">
                                 <div class="d-flex align-items-center mb-2">
                                     <img src="/img/user_icon/user_icon_default.png" alt="프로필 이미지" class="rounded-circle" width="50" height="50">
@@ -122,9 +122,11 @@
                                     </div>
                                 </div>
                                 <p>${post.postCont}</p>
+                                <div  style="padding-bottom: 5px;">
                                 <span>좋아요${post.likeCount}</span>
                                 <span>싫어요${post.dislikeCount}</span>
                                 <span>댓글${post.commentCount}개</span>
+                                </div>
                                 <small class="text-muted"> ${post.postCreatedAt.substring(0, 10)}</small>
                             </div>
                         </a>`;

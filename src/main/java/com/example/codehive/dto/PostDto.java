@@ -25,6 +25,13 @@ public class PostDto {
     private int dislikeCount;
     private int commentCount;
 
+    @Getter@Setter
+    public class ModifyPostRequest {
+        private int postNo;
+        private String postCont;
+
+    }
+
     public PostDto(Post post) {
             this.id = post.getId();
             this.postCont = post.getPostCont();

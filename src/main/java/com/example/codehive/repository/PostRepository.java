@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import java.time.Instant;
 import java.util.List;
 
+@Repository
 public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query("select p from Post p where (:category='%' or p.category = :category)" +
             " and p.postCont like %:keyword% order by p.postCreatedAt DESC")
@@ -40,4 +41,5 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
     @Query("SELECT p from Post p where p.id = :postNo")
     Post findPostById(int postNo);
+
 }

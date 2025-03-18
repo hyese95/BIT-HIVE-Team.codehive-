@@ -14,4 +14,6 @@ public interface PostService {
     Page<Post> readByCategoryWithKeyword(String category, String keyword, String sortType, Pageable pageable);
     Page<Post> readAllByCategory(Pageable pageable, String category);
     Post getPostByPostId(int id);
+    void modifyPost(int postNo, String content);
+    void deletePost(int postNo);
 }

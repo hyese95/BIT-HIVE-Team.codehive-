@@ -133,23 +133,37 @@ public class CommunityController {
 
     @GetMapping("/postDetail.do")
     public String detail(Model model,
-                         @RequestParam int postNo
+                         @RequestParam("postNo") int postNo
     ) {
-        System.out.println("받은 아이디는" + postNo);
         Post post=postService.getPostByPostId(postNo);
         PostDto postDto=new PostDto(post);
-        Comment comment=new Comment();
-//        Integer parentNo=comment.getParentNo();
         List<Comment> comments=commentService.readComment(postNo);
-//        Comment childComment=commentService.readChildComment(parentNo);
         int cntComment=commentService.getCommentCountByPostNo(postNo);
-//        int cntChildComment=commentService.getChildCommentCountByPostNoAndParentNo(postNo,parentNo);
         model.addAttribute("cntComment",cntComment);
-//        model.addAttribute("cntChildComment",cntChildComment);
         model.addAttribute("post", postDto);
         model.addAttribute("comments", comments);
-//        model.addAttribute("childComment", childComment);
         return "community/postDetail";
+    }
+
+    @GetMapping("modifyPost.do")
+    public String modifyPost(Model model
+            ,@RequestParam("postNo") int postNo) {
+        Post post=postService.getPostByPostId(postNo);
+        PostDto postDto=new PostDto(post);
+        model.addAttribute("postDto", postDto);
+        if(postDto.getId().equals(postNo)){
+            return "community/modifyPost";
+        }
+        return "community/postDetail";
+    }
+    @PutMapping("/modifyPostAction.do")
+    public ResponseEntity<String> modifyPost(@RequestBody PostDto.ModifyPostRequest request) {
+        System.out.println("수정할 postNo: " + request.getPostNo());
+        System.out.println("수정할 내용: " + request.getPostCont());
+
+        postService.modifyPost(request.getPostNo(), request.getPostCont());
+
+        return ResponseEntity.ok("수정 완료");
     }
 
     @GetMapping("search.do")
