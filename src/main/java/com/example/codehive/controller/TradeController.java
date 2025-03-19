@@ -84,4 +84,9 @@ public class TradeController {
             e.printStackTrace();
             throw new RuntimeException("Failed to fetch orderbook data for market: " + market);
         }
-    }}
+    }
+    @GetMapping("sell.do")
+    public String coinOrder2(Model model) {
+        return "trade/sell";
+    }
+}
