@@ -18,11 +18,46 @@ class CommentServiceImpTest {
     @Test
     @Transactional
     void readComment() {
-        Comment comment = commentRepository.findComments(1);
+        List<Comment> comment = commentRepository.findByPostNo(1);
         System.out.println(comment);
     }
 
     @Test
+    @Transactional
     void readChildComment() {
+        Comment comment = commentRepository.findWithChildCommentById(1);
+        System.out.println(comment);
+    }
+
+    @Test
+    @Transactional
+    void getCommentCountByPostNo() {
+        int postNo = 1;
+        int cntCont=commentRepository.countByPostNo(postNo);
+        System.out.println(cntCont);
+    }
+
+    @Test
+    @Transactional
+    void getChildCommentCountByPostNoAndParentNo() {
+        int postNo = 1;
+        int parentNo = 1;
+        int childCont=commentRepository.countChildCommentByPostNoAndParentNo(postNo,parentNo);
+        System.out.println(childCont);
+    }
+
+    @Test
+    @Transactional
+    void readCommentByPostNo() {
+        int postNo = 1;
+        System.out.println(commentRepository.findCommentContByPostNo(postNo));
+    }
+
+    @Test
+    @Transactional(readOnly = true)
+    void readCommentByPostNoAndParentNo() {
+        int postNo = 1;
+        int parentNo = 1;
+        System.out.println(commentRepository.findCommentContByPostNoAndParentNo(postNo,parentNo));
     }
 }

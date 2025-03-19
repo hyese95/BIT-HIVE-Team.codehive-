@@ -7,27 +7,116 @@
 </head>
 <nav th:replace="fragments/nav_bars :: communitySubNav"></nav>
 <body>
-<h1>게시글 상세</h1>
+<div class="container">
+
+    <div id="edit" class="d-flex justify-content-between" style="width: 70%;">
+        <form action="/community/modifyPost.do" method="get">
+        <label for="modify">
+            <input type="hidden"  name="postNo" th:value="${post.id}">
+            <button id="modify" type="submit" >수정하기</button>
+        </label>
+        </form>
+        <form action="/community/delete.do">
+        <label for="delete">
+            <button id="delete">삭제하기</button>
+        </label>
+        </form>
+    </div>
 <!--<p th:text="${post.postCont}"></p>-->
-    <div class="container">
-        <div id="postCont" class="d-flex align-items-center mb-2" style="width: 70%; height: 300px; border: 1px solid black;">
-            <div style="display: flex; flex-direction: row ;justify-content: space-between">
-                <img src="/img/user_icon/user_icon_green.png" alt="이미지" style="width: 20px; height: 20px">
+    <div id="postCont" class="d-flex flex-column mb-2" style="width: 70%; height: 300px; border: 1px solid black; padding: 10px; border-radius: 5px;">
+        <div class="d-flex justify-content-between align-items-start">
+            <!-- 게시자 정보 -->
+            <div class="d-flex flex-column align-items-center">
+                <img src="/img/user_icon/user_icon_green.png" alt="이미지" style="width: 40px; height: 40px;">
                 <span th:text="${post.userNickname}"></span>
-
-            <h1 th:text="${post.postCont}">게시글 세부내용!</h1>
-                <span th:text="${#temporals.format(post.postCreatedAt, 'yyyy-MM-dd')}">2022-02-02</span>
             </div>
+            <!-- 날짜 -->
+            <span th:text="${#temporals.format(post.postCreatedAt, 'yyyy-MM-dd a hh시 mm분')}"></span>
+        </div>
 
-            <div style="justify-content: flex-end">
-                <span th:text="좋아요 +${post.likeCount}">좋아요</span>
-                <span th:text="싫어요 +${post.dislikeCount}">싫어요</span>
-                <span th:text="댓글 +${post.id}+개">댓글 갯수</span>
+        <!-- 게시글 내용 -->
+        <h1 class="text-left" th:text="${post.postCont}" style="flex-grow: 1; display: flex; align-items: flex-start; justify-content: left;">
+            게시글 세부내용!
+        </h1>
+
+        <!-- 하단 (좋아요/싫어요/댓글) -->
+        <div class="d-flex justify-content-end">
+            <span class="me-3" th:text="'좋아요 ' + ${post.likeCount}">좋아요</span>
+            <span class="me-3" th:text="'싫어요 ' + ${post.dislikeCount}">싫어요</span>
+            <span th:text="'댓글 ' + ${cntComment} + '개'">댓글 갯수</span>
+        </div>
+    </div>
+    <div th:each="comment : ${comments}" th:if="${comment.parentNo == null}" style="margin-bottom: 10px; justify-content: space-between; align-items: center">
+        <!-- 부모 댓글 -->
+        <div id="comment" style="width: 70%; height: auto; border: 1px solid black; border-radius: 5px; padding: 5px; display: flex; flex-direction: row ;justify-content: space-between">
+            <div style="display: flex; flex-direction: row;justify-content: space-between">
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                <img src='/img/user_icon/user_icon_default.png' style="width: 30px; height: 30px" alt="없어">
+                <span th:text="${comment.getUserNo().nickname}"></span>
+                </div>
+                <span style="font-size: 20px; justify-content: center" th:text="'  '+${comment.commentCont}"></span>
             </div>
+            <span style="display: flex; flex-direction: column; align-items: center;">
+                <span th:text="${#temporals.format(comment.commentCreatedAt,'yyyy-MM-dd a hh시 M분')}"></span>
+                <span style="display: flex; flex-direction: row;" th:each="comment : ${comment}">
+                <span>좋아요n개</span>
+                <span>싫어요n개</span>
+                </span>
+            <button th:if="${comment.parentNo==null}" th:data-parent="${comment.id}" class="seeComment"
+                    onclick="toggleReplies(this)">
+                대댓글 보기
+            </button>
+                </span>
+            </div>
+            <!-- 대댓글 목록 (초기에 숨김) -->
+<!--        <i class="fa-solid fa-greater-than"></i>-->
+        <div class="childComment" th:each="reply : ${comments}" th:if="${reply.parentNo == comment.id && reply.parentNo!=null}" th:data-parent="${reply.parentNo}"
+                 style="display: none; margin: 10px; width: 70%; height: auto; border: 1px solid black;
+                  border-radius: 5px; padding: 5px; flex-direction: column; align-items: flex-start">
+<!--                <span th:text="'부모 ID: ' + ${comment.id}"></span>-->
+<!--                <span th:text="'대댓글의 부모 ID: ' + ${reply.parentNo}"></span>-->
+                <div  style="display: flex; flex-direction: row; justify-content: space-between">
+                    <div style="display: flex; flex-direction: row; align-items: center;">
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <img src='/img/user_icon/user_icon_default.png' style="width: 30px; height: 30px" alt="없어">
+                        <span th:text="${reply.getUserNo().nickname}"></span>
+                    </div>
+                    <span style="font-size: 18px" th:text="${reply.commentCont}"></span>
+                    </div>
+                    <div>
+                        <span th:text="${#temporals.format(reply.commentCreatedAt,'yyyy-MM-dd a h시 M분')}"></span>
+                        <div>
+                            <span>좋아요n개</span>
+                            <span>싫어요n개</span>
+                        </div>
+
+                    </div>
+                    </div>
+                </div>
         </div>
-        <div id="comment" style="width: 70%; height: 30px; border: 1px solid black; border-radius: 5px;">
-            <span style="font-size: 20px">댓글 예상</span>
-        </div>
-</div>
+    </div>
+<script>
+    // child = document.getElementsByClassName("childComment");
+    seecomment = document.getElementsByClassName("seeComment");
+
+    function toggleReplies(button) {
+        let parentId = button.getAttribute("data-parent");
+        console.log("클릭한 버튼의 부모 ID:", parentId); // 부모 ID 확인
+
+        let replies = document.querySelectorAll(`.childComment[data-parent='${parentId}']`);
+        console.log("찾은 대댓글 개수:", replies.length);// 대댓글 개수 확인
+
+        // console.log(No);
+        //
+        // if (replies.length === 0) {
+        //     console.log("대댓글이 없음 (HTML 확인 필요)");
+        // }
+
+        replies.forEach(reply => {
+            reply.style.display = (reply.style.display === "none" || reply.style.display === "") ? "block" : "none"
+
+        });
+    }
+</script>
 </body>
 </html>

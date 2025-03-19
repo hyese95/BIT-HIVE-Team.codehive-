@@ -23,6 +23,14 @@ public class PostDto {
     private Integer userId;
     private int likeCount;
     private int dislikeCount;
+    private int commentCount;
+
+    @Getter@Setter
+    public class ModifyPostRequest {
+        private int postNo;
+        private String postCont;
+
+    }
 
     public PostDto(Post post) {
             this.id = post.getId();
@@ -32,6 +40,7 @@ public class PostDto {
             this.category = post.getCategory();
             this.userNickname = post.getUser().getNickname();
             this.userId = post.getUser().getId();
+            this.commentCount=post.getComment().size();
 
             // 좋아요/싫어요 카운트
             this.likeCount = 0;

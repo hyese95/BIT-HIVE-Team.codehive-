@@ -47,4 +47,9 @@ public class Post {
     @OneToMany(mappedBy = "post")
     @ToString.Exclude
     private List<PostLike> postLikes=new ArrayList<>();
+
+    @OneToMany(mappedBy = "post")
+    @ToString.Exclude
+    @JsonBackReference
+    private List<Comment> comment;
 }

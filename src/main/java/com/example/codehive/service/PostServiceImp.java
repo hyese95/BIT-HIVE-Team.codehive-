@@ -18,6 +18,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -66,5 +67,22 @@ public class PostServiceImp implements PostService {
         Post posts;
         posts = postRepository.findPostById(id);
         return posts;
+    }
+
+    @Override
+    public void modifyPost(int postNo, String content) {
+        Optional<Post> optionalPost = postRepository.findById(postNo);
+        if (optionalPost.isPresent()) {
+            Post post = optionalPost.get();
+            post.setPostCont(content);  // 새로운 내용으로 업데이트
+            postRepository.save(post);  // 변경 사항 저장
+        } else {
+            throw new IllegalArgumentException("게시글을 찾을 수 없습니다. postNo: " + postNo);
+        }
+    }
+
+    @Override
+    public void deletePost(int postNo) {
+
     }
 }

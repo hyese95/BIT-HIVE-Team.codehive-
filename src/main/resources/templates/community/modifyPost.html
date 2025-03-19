@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns=""
+      th:replace="~{fragments/default :: html(content=~{::body})}">
+<head>
+  <meta charset="UTF-8">
+  <title>게시글 수정</title>
+</head>
+<body>
+    <div class="container">
+      <div class="form-group" style="justify-content: space-between;" id="">
+        <form action="community/modifyPostAction.do" onsubmit="modifyPostHandler(event)">
+        <h1>게시글 내용 수정<label>
+
+                <textarea class="form-control" rows="10" style="width: 1200px; height: 500px;position: relative;
+                user-select: none; align-items: center;"
+                          placeholder="수정할 내용을 입력해 주세요!" name="postCont" th:value="${postDto.postCont}" th:text="${postDto.postCont}"></textarea></label>
+            <input type="text" class="d-none" name="postNo" th:value="${postDto.id}"></h1>
+          <label>
+
+          <span>
+              <button type="submit" ><a href="#"><img src="/img/ImageIcon/ImageIcon.png" alt="이미지" style="width: 20px; height: 20px">이미지 첨부</a></button>
+          </span>
+              <span class="d-flex justify-content-between">
+          <span>
+              <button type="reset">초기화</button>
+          </span>
+          <span>
+              <button type="submit">수정하기</button>
+          </span>
+                  </span>
+        </label>
+        </form>
+
+      </div>
+    </div>
+<script>
+
+    const url = "/community/modifyPostAction.do"
+
+    const modifyPostHandler = async (e) => {
+        e.preventDefault()
+        const form=e.target;
+        const formData=new FormData(form);
+        const formDataObj=Object.fromEntries(formData);
+        console.log(formDataObj)
+        const response=await fetch(url,{
+            method:'PUT',
+            headers:{"Content-Type":"application/json"},
+            body: JSON.stringify(formDataObj)
+        });
+    }
+</script>
+</body>
+</html>
