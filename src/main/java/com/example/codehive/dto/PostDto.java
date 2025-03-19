@@ -26,7 +26,7 @@ public class PostDto {
     private int commentCount;
 
     @Getter@Setter
-    public class ModifyPostRequest {
+    public static class ModifyPostRequest {
         private int postNo;
         private String postCont;
 

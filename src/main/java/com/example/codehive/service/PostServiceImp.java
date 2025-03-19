@@ -77,12 +77,19 @@ public class PostServiceImp implements PostService {
             post.setPostCont(content);  // 새로운 내용으로 업데이트
             postRepository.save(post);  // 변경 사항 저장
         } else {
-            throw new IllegalArgumentException("게시글을 찾을 수 없습니다. postNo: " + postNo);
+            throw new IllegalArgumentException("게시글을 찾을 수 없습니다.");
         }
     }
 
     @Override
     public void deletePost(int postNo) {
-
+        Optional<Post> optionalPost = postRepository.findById(postNo);
+        if (optionalPost.isPresent()) {
+            Post post = optionalPost.get();
+            postRepository.delete(post);
+        }
+        else {
+            throw new IllegalArgumentException("게시글을 찾을 수 없습니다");
+        }
     }
 }

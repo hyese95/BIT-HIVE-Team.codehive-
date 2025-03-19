@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -157,14 +158,33 @@ public class CommunityController {
         return "community/postDetail";
     }
     @PutMapping("/modifyPostAction.do")
-    public ResponseEntity<String> modifyPost(@RequestBody PostDto.ModifyPostRequest request) {
-        System.out.println("수정할 postNo: " + request.getPostNo());
-        System.out.println("수정할 내용: " + request.getPostCont());
+    public ResponseEntity<String> modifyPostAction(@RequestBody PostDto.ModifyPostRequest request) {
+        try {
+            int postNo = request.getPostNo();
+            String postCont = request.getPostCont();
 
-        postService.modifyPost(request.getPostNo(), request.getPostCont());
-
-        return ResponseEntity.ok("수정 완료");
+            // 게시글 수정 서비스 호출
+            postService.modifyPost(postNo, postCont);
+            String redirectUrl = "/community/postDetail.do?postNo=" + request.getPostNo();
+            return ResponseEntity.ok("게시글이 성공적으로 수정되었습니다.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글 수정 중 오류 발생");
+        }
     }
+    @DeleteMapping("/delete.do")
+    public ResponseEntity<String> deletePost(@RequestParam("postNo") int postNo){
+        try{
+
+            postService.deletePost(postNo);
+            return ResponseEntity.ok("성공!");
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("이미 삭제되었거나 존재하지 않는 게시물입니다.");
+        }
+
+    }
+
 
     @GetMapping("search.do")
     public String search(Model model,
