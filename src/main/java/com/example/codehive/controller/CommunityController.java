@@ -215,15 +215,20 @@ public class CommunityController {
         //검색로직
         Pageable pageable;
         if (category.equals("all")) { //통합검색
-            pageable = PageRequest.of(0, 2);
+            pageable = PageRequest.of(0, 3);
             Page<Post> freePostPage = postService.readByCategoryWithKeyword("free", keyword, pageable);
             Page<Post> pnlPostPage = postService.readByCategoryWithKeyword("pnl", keyword, pageable);
             Page<Post> chartPostPage = postService.readByCategoryWithKeyword("chart", keyword, pageable);
             Page<Post> expertPostPage = postService.readByCategoryWithKeyword("expert", keyword, pageable);
             model.addAttribute("freePostPage", freePostPage);
+            model.addAttribute("freePostCount", freePostPage.getTotalElements());
             model.addAttribute("pnlPostPage", pnlPostPage);
+            model.addAttribute("pnlPostCount", pnlPostPage.getTotalElements());
             model.addAttribute("chartPostPage", chartPostPage);
+            model.addAttribute("chartPostCount", chartPostPage.getTotalElements());
             model.addAttribute("expertPostPage", expertPostPage);
+            model.addAttribute("expertPostCount", expertPostPage.getTotalElements());
+
         } else { //카테고리검색
             pageable = PageRequest.of(0, 2);
             Page<Post> postPage = postService.readByCategoryWithKeyword(category, keyword, pageable);

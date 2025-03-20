@@ -21,9 +21,12 @@
         </div>
 
         <h3 th:text="${category}+' 검색결과'"></h3>
+        <div id="searchResultDiv">
+
         <div th:each="p : ${postPage.content}">
             <p th:text="'게시글번호 : ' +${p.Id}"></p>
             <p th:text="'게시글내용 : '+${p.postCont}"></p>
+        </div>
         </div>
         <div id="moreResultDiv">
 
@@ -43,39 +46,41 @@
             <div th:each="p : ${freePostPage.content}">
                 <p th:text="'ㅁ'+${p.postCont}"></p>
             </div>
-            <a th:href="@{/community/search_result.do(category='free',keyword=${keyword})}">자유게시판 검색결과 더보기</a>
+            <a th:href="@{/community/search_result.do(category='free',keyword=${keyword})}">자유게시판 검색결과 전체보기(<span th:text="${freePostCount}"></span> 건)</a>
         </div>
         <div>
             <h3>손익인증 검색결과</h3>
             <div th:each="p : ${pnlPostPage.content}">
                 <p th:text="'ㅁ'+${p.postCont}"></p>
             </div>
-            <a th:href="@{/community/search_result.do(category='pnl',keyword=${keyword})}">손익인증 검색결과 더보기</a>
+            <a th:href="@{/community/search_result.do(category='pnl',keyword=${keyword})}">손익인증게시판 검색결과 전체보기(<span th:text="${pnlPostCount}"></span> 건)</a>
         </div>
         <div>
             <h3>차트분석 검색결과</h3>
             <div th:each="p : ${chartPostPage.content}">
                 <p th:text="'ㅁ'+${p.postCont}"></p>
             </div>
-            <a th:href="@{/community/search_result.do(category='chart',keyword=${keyword})}">차트분석 검색결과 더보기</a>
+            <a th:href="@{/community/search_result.do(category='chart',keyword=${keyword})}">차트분석게시판 검색결과 전체보기(<span th:text="${chartPostCount}"></span> 건)</a>
         </div>
         <div>
             <h3>전문가 검색결과</h3>
             <div th:each="p : ${expertPostPage.content}">
                 <p th:text="'ㅁ'+${p.postCont}"></p>
             </div>
-            <a th:href="@{/community/search_result.do(category='expert',keyword=${keyword})}">전문가게시판 검색결과 더보기</a>
+            <a th:href="@{/community/search_result.do(category='expert',keyword=${keyword})}">전문가게시판 검색결과 전체보기(<span th:text="${expertPostCount}"></span> 건)</a>
         </div>
     </div>
 </div>
 <script>
     const moreResultDiv = document.getElementById('moreResultDiv')
+    const searchResultDiv= document.getElementById('searchResultDiv')
     const urlParams = new URLSearchParams(window.location.search)
     const category = urlParams.get('category')
     const keyword = urlParams.get('keyword')
     let page = 0;
     let html = ""
     async function handleSort(clickedBtn) {
+        searchResultDiv.style.display='none';
         // 활성화된 버튼 스타일 변경
         document.querySelectorAll('.sort-btn').forEach(btn => {
             btn.classList.remove('active');
@@ -117,7 +122,3 @@
 </script>
 </body>
 </html>
-
-<!--for(g : guidelist){
-
-}-->

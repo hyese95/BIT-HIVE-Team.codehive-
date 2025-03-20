@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,7 @@ public class PostServiceImp implements PostService {
         };
         System.out.println(sortType);
         System.out.println("startDate"+startDate);
+
         if (startDate == null) {
 
             return postRepository.findByCategoryWithKeyword(category, keyword, pageable);
