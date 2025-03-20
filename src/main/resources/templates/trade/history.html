@@ -20,27 +20,15 @@
     <a id="sellLink" href="#">매도</a>
     <a id="historyLink" href="#">내역</a>
   </p>
-  <form id="buyform" action="buy.html" method="post">
-    <p>
-      <label>
-        지정 <input type="radio" name="market" checked>
-        시장 <input type="radio" name="market">
-      </label>
-    </p>
-    <p>주문가능: 원</p>
-    <p>
-      <label>
-        <input type="text" placeholder="수량">
-      </label>
-    </p>
-    <p>
-      <label>
-        <input type="text" placeholder="가격">
-      </label>
-    </p>
-    <p><button type="reset">초기화</button></p>
-    <p><button type="submit">매수</button></p>
-  </form>
+  <p>
+    <button type="reset">체결</button>
+    <button type="submit">미체결</button>
+  </p>
+  <p>
+    <label>
+      전체 <input type="checkbox" name="market">
+    </label>
+  </p>
   <script>
     document.addEventListener("DOMContentLoaded", function() {
       const queryString = window.location.search;
