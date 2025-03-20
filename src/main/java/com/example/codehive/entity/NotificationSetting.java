@@ -19,34 +19,34 @@ public class NotificationSetting {
 
     @ColumnDefault("0")
     @Column(name = "volatility_yn")
-    private Boolean volatilityYn;
+    private boolean volatilityYn;
 
     @ColumnDefault("0")
     @Column(name = "portfolio_yn")
-    private Boolean portfolioYn;
+    private boolean portfolioYn;
 
     @ColumnDefault("0")
     @Column(name = "target_price_yn")
-    private Boolean targetPriceYn;
+    private boolean targetPriceYn;
 
     @ColumnDefault("0")
     @Column(name = "trade_yn")
-    private Boolean tradeYn;
+    private boolean tradeYn;
 
     @ColumnDefault("0")
     @Column(name = "like_yn")
-    private Boolean likeYn;
+    private boolean likeYn;
 
     @ColumnDefault("0")
     @Column(name = "comment_yn")
-    private Boolean commentYn;
+    private boolean commentYn;
 
     @ColumnDefault("0")
     @Column(name = "reply_yn")
-    private Boolean replyYn;
+    private boolean replyYn;
 
     @ColumnDefault("0")
     @Column(name = "follower_yn")
-    private Boolean followerYn;
+    private boolean followerYn;
 
 }
