@@ -101,6 +101,21 @@ INSERT INTO coin_transactions (user_no, market, transaction_type, price, transac
 (1, 'KRW-ADA', 'SELL', 1250, 400, 'COMPLETED'),
 (1, 'KRW-KRW', 'BUY', 1, 500000, 'COMPLETED'),
 
+-- 🟠 사용자 1의 미체결 거래 (PENDING)
+-- 보유 KRW 잔액: 약 14,440,000 KRW
+-- 보유 코인: BTC 0.3개, ETH 2개, ADA 600개, SAND 500개
+-- 미체결 매수 주문 (더 낮은 가격에 매수 주문)
+(1, 'KRW-BTC', 'BUY', 76500000, 0.1, 'PENDING'),        -- 현재 시장가보다 낮은 가격에 BTC 매수 주문
+(1, 'KRW-ETH', 'BUY', 4300000, 0.5, 'PENDING'),         -- 현재 시장가보다 낮은 가격에 ETH 매수 주문
+(1, 'KRW-SOL', 'BUY', 180000, 10, 'PENDING'),           -- 새로운 코인 SOL 매수 주문
+(1, 'KRW-XRP', 'BUY', 750, 2000, 'PENDING'),            -- 새로운 코인 XRP 매수 주문
+
+-- 미체결 매도 주문 (더 높은 가격에 매도 주문)
+(1, 'KRW-BTC', 'SELL', 81000000, 0.15, 'PENDING'),      -- 현재 시장가보다 높은 가격에 BTC 매도 주문
+(1, 'KRW-ETH', 'SELL', 4800000, 1, 'PENDING'),          -- 현재 시장가보다 높은 가격에 ETH 매도 주문
+(1, 'KRW-ADA', 'SELL', 1350, 300, 'PENDING'),           -- 현재 시장가보다 높은 가격에 ADA 매도 주문
+(1, 'KRW-SAND', 'SELL', 5500, 250, 'PENDING'),          -- 현재 시장가보다 높은 가격에 SAND 매도 주문
+
 -- 🟢 사용자 2 (ETH, QTUM, FLOW, ICX 거래)
 (2, 'KRW-KRW', 'BUY', 1, 30000000, 'COMPLETED'),
 (2, 'KRW-ETH', 'BUY', 4600000, 3, 'COMPLETED'),
