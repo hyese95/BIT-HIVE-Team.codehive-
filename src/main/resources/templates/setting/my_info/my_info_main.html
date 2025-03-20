@@ -7,36 +7,76 @@
 </head>
 <body>
 <div class="container">
+    <div id="MyInfoContainer">
+        <h1>내정보</h1>
+        <p><span>프로필 사진</span> <img src="/img/user_icon/user_icon_green.png" alt="프로필이미지"></p>
+        <p><span>닉네임</span>
+            <button id="nicknameModifyBtn" th:text="${user.nickname}"></button>
+        </p>
+        <p><span>이름</span> <span th:text="${user.name}"></span></p>
+        <p><span>연락처</span> <span th:text="${user.phone}"></span></p>
+        <p><span>이메일</span> <span th:text="${user.email}"></span></p>
+        <p><span>생년월일</span> <span th:text="${user.birthDate}"></span></p>
+        <p><span>자기소개</span>
+            <button th:text="${user.selfIntroduction}"></button>
+        </p>
+    </div>
 
-<h1>내정보</h1>
-<div id="infoContainer">
+    <div id="nicknameModifyModal" style="display: none">
+        <button id="cancelModifyNicknameBtn">취소</button>
+        <h2>닉네임</h2>
+        <form id="nicknameForm">
+            <input type="text" id="nickname" name="nickname" th:value="${user.nickname}"
+                   th:placeholder="${user.nickname}">
+            <button>X</button>
+            <p>
+                <button type="submit">닉네임 변경하기</button>
+            </p>
+        </form>
+    </div>
 
-</div>
 
 </div>
 <script>
-    async function loadInfo(){
-        const URL="/api/users/me"
-        const resp=await fetch(URL)
-        const data=await resp.json()
-        console.log(data)
-        return data
-    }
-    
-   
-    (async function() {
-        const data = await loadInfo()  
-        const infoContainer = document.getElementById('infoContainer')
-        infoContainer.innerHTML = `
-        <p><span>프로필 사진</span> <img src="/img/user_icon/user_icon_green.png" alt="프로필이미지"></p>
-        <p><span>닉네임</span> <a href="#">${data.nickname}</a></p>
-        <p><span>이름</span> <span>${data.name}</span></p>
-        <p><span>연락처</span> <span>${data.phone}</span></p>
-        <p><span>이메일</span> <span>${data.email}</span></p>
-        <p><span>생년월일</span> <span>${data.birthDate}</span></p>
-        <p><span>자기소개</span> <a href="#">${data.selfIntroduction}</a></p>
-        `
-    })();
+    const MyInfoContainer = document.getElementById('MyInfoContainer');
+    const nicknameModifyBtn = document.getElementById('nicknameModifyBtn');
+    const nicknameModifyModal = document.getElementById('nicknameModifyModal');
+    const cancelModifyNicknameBtn = document.getElementById('cancelModifyNicknameBtn');
+    const nicknameForm = document.getElementById('nicknameForm')
+
+    nicknameModifyBtn.addEventListener('click', function () {
+        MyInfoContainer.style.display = 'none';
+        nicknameModifyModal.style.display = 'block';
+    })
+
+    cancelModifyNicknameBtn.addEventListener('click', function () {
+        nicknameModifyModal.style.display = 'none';
+        MyInfoContainer.style.display = 'block';
+    })
+
+    nicknameForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const nickname = document.getElementById('nickname').value;
+        const errorElement = document.getElementById('nicknameError');
+
+        const response = await fetch('/api/users/me', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({nickname: nickname})
+        });
+
+
+
+        nicknameModifyBtn.textContent = nickname;
+        nicknameModifyModal.style.display = 'none';
+        MyInfoContainer.style.display = 'block';
+
+        alert('닉네임이 성공적으로 변경되었습니다.');
+
+    });
+
 </script>
 </body>
 </html>

@@ -29,4 +29,12 @@ public class UserServiceImp implements UserService {
         User user = userRepository.findNicknameById(userNo);
         return user;
     }
+
+    @Override
+    public void updateNickname(int userNo, String nickname) {
+        userRepository.findById(userNo).ifPresent(user -> {
+            user.setNickname(nickname);
+            userRepository.save(user);
+        });
+    }
 }

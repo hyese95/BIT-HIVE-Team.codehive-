@@ -101,7 +101,6 @@ public class SettingController {
         User user=userOpt.get();
         model.addAttribute("user", user);
 
-
         return "setting/my_info/my_info_main";
     }
 }

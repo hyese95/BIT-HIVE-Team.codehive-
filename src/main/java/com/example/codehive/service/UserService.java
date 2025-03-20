@@ -9,4 +9,6 @@ public interface UserService {
     List<User> findAll();
     Optional<User> readByUserNo(int userNo);
     User findNicknameByUserNo(int userNo);
+    void updateNickname(int userNo, String nickname);
+
 }
