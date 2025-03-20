@@ -36,7 +36,7 @@ public class TradeController {
     }
 
     @GetMapping("buy.do")
-    public String coinOrder(Model model) {
+    public String coinOrderBuy(Model model) {
         return "trade/buy";
     }
 
@@ -76,7 +76,11 @@ public class TradeController {
         }
     }
     @GetMapping("sell.do")
-    public String coinOrder2(Model model) {
+    public String coinOrderSell(Model model) {
         return "trade/sell";
+    }
+    @GetMapping("history.do")
+    public String coinOrderHistory(Model model) {
+        return "trade/history";
     }
 }

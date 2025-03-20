@@ -1,10 +1,7 @@
 package com.example.codehive.controller;
 
 import com.example.codehive.entity.*;
-import com.example.codehive.service.AnswerServiceImp;
-import com.example.codehive.service.FaqService;
-import com.example.codehive.service.GuideService;
-import com.example.codehive.service.QuestionServiceImp;
+import com.example.codehive.service.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,8 +17,8 @@ import java.util.List;
 public class SettingController {
     private final GuideService guideService;
     private final FaqService faqService;
-    private final QuestionServiceImp questionServiceImp;
-    private final AnswerServiceImp answerServiceImp;
+    private final QuestionService questionService;
+    private final AnswerService answerService;
 
     @GetMapping("/main.do")
     public String main() {
@@ -71,13 +68,13 @@ public class SettingController {
     }
     @GetMapping("/support/qna/qna.do")
     public String qna(Model model) {
-        List<Question> questions=questionServiceImp.readByUser_IdAndQuestionStatus(1, "PENDING");
+        List<Question> questions=questionService.readByUser_IdAndQuestionStatus(1, "PENDING");
         model.addAttribute("questions", questions);
         return "setting/support/qna/qna";
     }
     @GetMapping("/support/qna/qna_complete.do")
     public String qnaComplete(Model model) {
-        List<Question> questions=questionServiceImp.readByUser_IdAndQuestionStatus(1, "COMPLETED");
+        List<Question> questions=questionService.readByUser_IdAndQuestionStatus(1, "COMPLETED");
         model.addAttribute("questions", questions);
         return "setting/support/qna/qna_complete";
     }
@@ -85,8 +82,8 @@ public class SettingController {
     @GetMapping("/support/qna/qna_detail.do")
     public String qnaDetail(Model model, @RequestParam int questionNo) {
 
-        Question question=questionServiceImp.readById(questionNo);
-        Answer answer=answerServiceImp.readByQuestion_Id(questionNo);
+        Question question=questionService.readById(questionNo);
+        Answer answer=answerService.readByQuestion_Id(questionNo);
 
         model.addAttribute("question", question);
         model.addAttribute("answer", answer);
