@@ -15,7 +15,11 @@
     <h1 id="coinTitle">주문 페이지</h1>
     <p id="tradeprice"></p>
     <div id="coindiv"></div>
-    <p><a href="buy.do">매수</a>  <a href="sell.do">매도</a>  <a href="history.do">내역</a></p>
+    <p>
+        <a id="buyLink" href="#">매수</a>
+        <a id="sellLink" href="#">매도</a>
+        <a id="historyLink" href="#">내역</a>
+    </p>
     <form id="buyform" action="buy.html" method="post">
         <p>
             <label>
@@ -38,6 +42,18 @@
         <p><button type="submit">매수</button></p>
     </form>
     <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            const coinTicker = urlParams.get("coin");
+            if (!coinTicker) {
+                alert("코인 정보가 없습니다! URL을 확인하세요.");
+                return;
+            }
+            document.getElementById("buyLink").href = `buy.do?coin=${coinTicker}`;
+            document.getElementById("sellLink").href = `sell.do?coin=${coinTicker}`;
+            document.getElementById("historyLink").href = `history.do?coin=${coinTicker}`;
+        });
         // URL 파라미터로 전달된 코인 티커를 읽음
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);

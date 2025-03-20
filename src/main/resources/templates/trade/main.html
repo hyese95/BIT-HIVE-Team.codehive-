@@ -148,8 +148,9 @@
 
     // 5. 코인명 클릭 시 매수/매도 페이지로 이동하는 함수
     function goToChart(coinTicker) {
-        // 예: 매수/매도 페이지 URL이 /trade/buy.do 인 경우 티커를 전달
-        window.location.href = '/trade/buy.do?coin=' + coinTicker;
+        const url = `/trade/buy.do?coin=${coinTicker}`;
+        console.log("이동할 URL:", url);
+        window.location.href = url;
     }
 
     // -------------------------------
