@@ -5,12 +5,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.Map;
+
 @Getter
 @Setter
 @ToString
 @AllArgsConstructor
-public class CoinTransactionAmountDto {
+public class CoinTransactionDto {
     private String market;
-    private Double transactionAmount;
-
+    private Double quantity;
 }

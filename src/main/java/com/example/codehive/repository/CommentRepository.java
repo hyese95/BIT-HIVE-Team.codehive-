@@ -13,14 +13,22 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
     List<Comment> findByPostNo(int postNo);
     @EntityGraph(attributePaths = {"childComments"})
 //    @Query("SELECT c1.commentCont from Comment c1 INNER JOIN Comment c2 WHERE c2.id=c1.parentNo")
-    Comment findWithChildCommentById(int commentNo);
+    Comment findWithChildCommentById(int parentNo);
 
     @EntityGraph(attributePaths = {"childComments"})
     Comment findById(int id);
+
+//    @Query("select c.commentCont from Comment c where c.postNo=:postNo")
+    List<Comment> findCommentContByPostNo(int postNo);
+//    @Query("select c.commentCont from Comment c where c.postNo=:postNo and c.parentNo=:parentNo")
+    List<Comment>  findCommentContByPostNoAndParentNo(int postNo,Integer parentNo);
 
     @Query("SELECT c.commentCont from Comment c where c.parentNo is null")
     Comment findComments(int id);
 
     List<Comment> findByParent_ParentNo(int parentNo);
+
+    int countByPostNo(int postNo);
+    int countChildCommentByPostNoAndParentNo(int postNo, int parentNo);
 }
 

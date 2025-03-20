@@ -234,5 +234,5 @@ CREATE TABLE faq(
     faq_cont TEXT,
     faq_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     faq_title VARCHAR(255)
-)
+);
 
