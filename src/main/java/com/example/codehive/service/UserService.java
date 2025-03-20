@@ -3,10 +3,10 @@ package com.example.codehive.service;
 import com.example.codehive.entity.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
     List<User> findAll();
-    List<User> findAllByUserNo(int userNo);
-    List<User> findAllByUserNameLike(String userName);
+    Optional<User> readByUserNo(int userNo);
     User findNicknameByUserNo(int userNo);
 }

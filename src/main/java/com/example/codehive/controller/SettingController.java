@@ -1,10 +1,7 @@
 package com.example.codehive.controller;
 
 import com.example.codehive.entity.*;
-import com.example.codehive.service.AnswerServiceImp;
-import com.example.codehive.service.FaqService;
-import com.example.codehive.service.GuideService;
-import com.example.codehive.service.QuestionServiceImp;
+import com.example.codehive.service.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/setting")
@@ -22,6 +20,7 @@ public class SettingController {
     private final FaqService faqService;
     private final QuestionServiceImp questionServiceImp;
     private final AnswerServiceImp answerServiceImp;
+    private final UserService userService;
 
     @GetMapping("/main.do")
     public String main() {
@@ -93,5 +92,16 @@ public class SettingController {
 
 
         return "setting/support/qna/qna_detail";
+    }
+
+    @GetMapping("/my_info/my_info_main.do")
+    public String myInfo(Model model) {
+
+        Optional<User> userOpt=userService.readByUserNo(1);
+        User user=userOpt.get();
+        model.addAttribute("user", user);
+
+
+        return "setting/my_info/my_info_main";
     }
 }

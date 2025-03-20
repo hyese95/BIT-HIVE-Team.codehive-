@@ -16,12 +16,7 @@ class UserServiceImpTest {
     @Autowired
     private UserService userService;
 
-    @Test
-    @Transactional
-    void findAllById() {
-        List<User> users = userService.findAllByUserNo(1);
-        System.out.println(users);
-    }
+
 //user_no
 //user_id
 //password

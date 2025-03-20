@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns=""
+      th:replace="~{fragments/default :: html(content=~{::body})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="container">
+
+<h1>내정보</h1>
+<div id="infoContainer">
+
+</div>
+
+</div>
+<script>
+    async function loadInfo(){
+        const URL="/api/users/me"
+        const resp=await fetch(URL)
+        const data=await resp.json()
+        console.log(data)
+        return data
+    }
+    
+   
+    (async function() {
+        const data = await loadInfo()  
+        const infoContainer = document.getElementById('infoContainer')
+        infoContainer.innerHTML = `
+        <p><span>프로필 사진</span> <img src="/img/user_icon/user_icon_green.png" alt="프로필이미지"></p>
+        <p><span>닉네임</span> <a href="#">${data.nickname}</a></p>
+        <p><span>이름</span> <span>${data.name}</span></p>
+        <p><span>연락처</span> <span>${data.phone}</span></p>
+        <p><span>이메일</span> <span>${data.email}</span></p>
+        <p><span>생년월일</span> <span>${data.birthDate}</span></p>
+        <p><span>자기소개</span> <a href="#">${data.selfIntroduction}</a></p>
+        `
+    })();
+</script>
+</body>
+</html>
