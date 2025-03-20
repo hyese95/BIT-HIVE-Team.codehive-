@@ -16,8 +16,8 @@ import java.time.Instant;
 import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Integer> {
-    @Query("select p from Post p where (:category='%' or p.category = :category)" +
-            " and p.postCont like %:keyword% order by p.postCreatedAt DESC")
+    @Query(value = "select p from Post p where (:category='%' or p.category = :category) and p.postCont like %:keyword% order by p.postCreatedAt DESC",
+            countQuery = "select count(p) from Post p where (:category='%' or p.category = :category) and p.postCont like %:keyword%")
     @EntityGraph(attributePaths = {"postLikes"})
     Page<Post> findByCategoryWithKeyword(String category, String keyword, Pageable pageable);
 
