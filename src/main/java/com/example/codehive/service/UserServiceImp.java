@@ -37,4 +37,12 @@ public class UserServiceImp implements UserService {
             userRepository.save(user);
         });
     }
+
+    @Override
+    public void updateSelfIntroduction(int userNo, String selfIntroduction) {
+        userRepository.findById(userNo).ifPresent(user -> {
+            user.setSelfIntroduction(selfIntroduction);
+            userRepository.save(user);
+        });
+    }
 }

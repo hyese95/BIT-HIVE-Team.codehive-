@@ -10,5 +10,6 @@ public interface UserService {
     Optional<User> readByUserNo(int userNo);
     User findNicknameByUserNo(int userNo);
     void updateNickname(int userNo, String nickname);
+    void updateSelfIntroduction(int userNo, String selfIntroduction);
 
 }

@@ -23,9 +23,13 @@ public class UserApiController {
             if (dto.getNickname() != null) {
                 userService.updateNickname(1, dto.getNickname());
             }
+            if (dto.getSelfIntroduction() != null) {
+                userService.updateSelfIntroduction(1, dto.getSelfIntroduction());
+            }
             return ResponseEntity.ok().build();
         } catch (Exception e){
             return ResponseEntity.internalServerError().build();
         }
+
     }
 }
