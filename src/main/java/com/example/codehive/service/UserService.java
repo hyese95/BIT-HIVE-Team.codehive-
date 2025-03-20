@@ -11,5 +11,9 @@ public interface UserService {
     User findNicknameByUserNo(int userNo);
     void updateNickname(int userNo, String nickname);
     void updateSelfIntroduction(int userNo, String selfIntroduction);
+    int readPostsCount(int userNo);
+    int readFollowersCount(int userNo);
+    int readFollowingCount(int userNo);
+
 
 }

@@ -103,4 +103,10 @@ public class SettingController {
 
         return "setting/my_info/my_info_main";
     }
+
+    @GetMapping("/my_info/my_info_summary")
+    public String myInfoSummary(Model model) {
+
+        return "setting/my_info/my_info_summary";
+    }
 }

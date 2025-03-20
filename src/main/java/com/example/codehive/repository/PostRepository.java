@@ -42,4 +42,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query("SELECT p from Post p where p.id = :postNo")
     Post findPostById(int postNo);
 
+    @Query("SELECT COUNT(p) FROM Post p WHERE p.user.id = :userNo")
+    Integer countPostsByUserNo(@Param("userNo") Integer userNo);
+
 }

@@ -1,6 +1,8 @@
 package com.example.codehive.service;
 
 import com.example.codehive.entity.User;
+import com.example.codehive.repository.FollowRepository;
+import com.example.codehive.repository.PostRepository;
 import com.example.codehive.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,8 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UserServiceImp implements UserService {
     private UserRepository userRepository;
+    private PostRepository postRepository;
+    private FollowRepository followRepository;
 
     @Override
     public List<User> findAll() {
@@ -44,5 +48,19 @@ public class UserServiceImp implements UserService {
             user.setSelfIntroduction(selfIntroduction);
             userRepository.save(user);
         });
+    }
+    @Override
+    public int readPostsCount(int userNo) {
+        return postRepository.countPostsByUserNo(userNo);
+    }
+
+    @Override
+    public int readFollowersCount(int userNo) {
+        return followRepository.countFollowersByUserNo(userNo);
+    }
+
+    @Override
+    public int readFollowingCount(int userNo) {
+        return followRepository.countFollowingsByUserNo(userNo);
     }
 }
