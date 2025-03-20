@@ -3,8 +3,11 @@ package com.example.codehive.repository;
 import com.example.codehive.entity.Comment;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -17,7 +20,6 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
 
     @EntityGraph(attributePaths = {"childComments"})
     Comment findById(int id);
-
 //    @Query("select c.commentCont from Comment c where c.postNo=:postNo")
     List<Comment> findCommentContByPostNo(int postNo);
 //    @Query("select c.commentCont from Comment c where c.postNo=:postNo and c.parentNo=:parentNo")
@@ -30,5 +32,12 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
 
     int countByPostNo(int postNo);
     int countChildCommentByPostNoAndParentNo(int postNo, int parentNo);
+
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM Comment c WHERE c.postNo = :postNo")
+    List<Comment> deleteCommentByPostNo(@Param("postNo") int postNo);
+
+    int countByParentNo(int parentNo);
 }
 

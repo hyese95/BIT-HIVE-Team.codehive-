@@ -4,15 +4,16 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.Hibernate;
 
 import java.util.Objects;
 
 @Getter
 @Setter
+@ToString
 @Embeddable
 public class CommentLikeId implements java.io.Serializable {
-    private static final long serialVersionUID = -618883628258142597L;
     @Column(name = "user_no", nullable = false)
     private Integer userNo;
 

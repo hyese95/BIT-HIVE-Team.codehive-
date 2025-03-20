@@ -3,10 +3,12 @@ package com.example.codehive.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @Entity
+@ToString
 @Table(name = "comment_likes", schema = "bithive")
 public class CommentLike {
     @EmbeddedId
