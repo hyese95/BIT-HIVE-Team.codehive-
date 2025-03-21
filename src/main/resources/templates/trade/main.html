@@ -9,9 +9,43 @@
         <div id="myAsset">
             <p><span>원</span></p>
         </div>
-        <p>평가손익</p>
-        <p>수익률</p>
+        <div>
+            <p>평가손익: <span th:text="${#numbers.formatDecimal(profitResult.totalProfit, 0, 'COMMA', 2, 'POINT')}"></span></p>
+            <p>수익률: <span th:text="${#numbers.formatDecimal(profitResult.overallProfitRate, 0, 'COMMA', 2, 'POINT')}"></span></p>
+        </div>
     </div>
+<!--    <div>-->
+<!--        <p>보유자산: <span th:text="${#numbers.formatDecimal(profitResult.totalCurrentValuation, 0, 'COMMA', 2, 'POINT')}"></span> 원</p>-->
+<!--        <p>평가손익: <span th:text="${#numbers.formatDecimal(profitResult.totalProfit, 0, 'COMMA', 2, 'POINT')}"></span> 원</p>-->
+<!--        <p>수익률: <span th:text="${#numbers.formatDecimal(profitResult.overallProfitRate, 0, 'COMMA', 2, 'POINT')}"></span> %</p>-->
+<!--    </div>-->
+<!---->
+    <!-- 각 코인별 상세 내역 (옵션) -->
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>코인명</th>
+            <th>평단가</th>
+            <th>잔여수량</th>
+            <th>구매 평가금액</th>
+            <th>현재 평가금액</th>
+            <th>평가손익</th>
+            <th>수익률</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="coin : ${profitResult.coinDetails}">
+            <td th:text="${coin.market}"></td>
+            <td th:text="${#numbers.formatDecimal(coin.weightedAvgPrice, 0, 'COMMA', 2, 'POINT')}"></td>
+            <td th:text="${#numbers.formatDecimal(coin.holdingQty, 0, 'COMMA', 2, 'POINT')}"></td>
+            <td th:text="${#numbers.formatDecimal(coin.purchaseValuation, 0, 'COMMA', 2, 'POINT')}"></td>
+            <td th:text="${#numbers.formatDecimal(coin.currentValuation, 0, 'COMMA', 2, 'POINT')}"></td>
+            <td th:text="${#numbers.formatDecimal(coin.profit, 0, 'COMMA', 2, 'POINT')}"></td>
+            <td th:text="${#numbers.formatDecimal(coin.profitRate, 0, 'COMMA', 2, 'POINT')}"></td>
+        </tr>
+        </tbody>
+    </table>
+<!--    -->
     <p><a href="#">원화</a></p>
     <p><a href="/trade/favorite_coin.do">관심</a></p>
     <p><a href="/trade/holding_coin.do">보유</a></p>

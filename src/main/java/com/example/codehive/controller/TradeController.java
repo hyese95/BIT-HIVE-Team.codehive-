@@ -1,12 +1,14 @@
 package com.example.codehive.controller;
 
 import com.example.codehive.dto.CoinTransactionDto;
+import com.example.codehive.dto.ProfitResult;
 import com.example.codehive.entity.CoinTransaction;
 import com.example.codehive.entity.FavoriteMarket;
 import com.example.codehive.repository.CoinTransactionRepository;
 import com.example.codehive.service.CoinTransactionService;
 import com.example.codehive.service.FavoriteCoinMarketService;
 import com.example.codehive.service.MyAssetService;
+import com.example.codehive.service.PriceService;
 import lombok.AllArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,12 +29,29 @@ import java.util.Map;
 public class TradeController {
     private final FavoriteCoinMarketService favoriteCoinMarketService;
     private final MyAssetService myAssetService;
+    private final CoinTransactionService coinTransactionService;
+    private final PriceService priceService;
 
-    // user 1이 로그인 했다고 가정한 상태
+    // user 1이 로그인한 상태를 가정
     @GetMapping("main.do")
     public String main(Model model) {
-        Map<String,Double> myAssetMap=myAssetService.readAssetByUserNo(1);
-        model.addAttribute("myAssetMap",myAssetMap);
+        Map<String, Double> myAssetMap = myAssetService.readAssetByUserNo(1);
+        model.addAttribute("myAssetMap", myAssetMap);
+
+        Map<String, Double> currentPriceMap = new HashMap<>();
+        for (String market : myAssetMap.keySet()) {
+            if ("KRW-KRW".equalsIgnoreCase(market)) {
+                continue;
+            }
+            // 만약 key가 이미 "KRW-"로 시작하면 그대로 사용, 그렇지 않으면 접두어 추가
+            String upbitMarket = market.startsWith("KRW-") ? market : "KRW-" + market;
+            double currentPrice = priceService.getCoinPrice(upbitMarket);
+            currentPriceMap.put(market, currentPrice);
+        }
+
+        ProfitResult profitResult = coinTransactionService.calculateProfit(1, currentPriceMap);
+        model.addAttribute("profitResult", profitResult);
+
         return "trade/main";
     }
 
