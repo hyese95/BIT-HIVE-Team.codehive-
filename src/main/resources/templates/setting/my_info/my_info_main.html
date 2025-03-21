@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns=""
+      th:replace="~{fragments/default :: html(content=~{::body})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="container">
+    <div id="MyInfoContainer">
+        <a href="/setting/my_info/my_info_summary">요약정보</a>
+        <h1>내정보</h1>
+        <p><span>프로필 사진</span> <img src="/img/user_icon/user_icon_green.png" alt="프로필이미지"></p>
+        <p><span>닉네임</span>
+            <button id="nicknameModifyBtn" th:text="${user.nickname}"></button>
+        </p>
+        <p><span>이름</span> <span th:text="${user.name}"></span></p>
+        <p><span>연락처</span> <span th:text="${user.phone}"></span></p>
+        <p><span>이메일</span> <span th:text="${user.email}"></span></p>
+        <p><span>생년월일</span> <span th:text="${user.birthDate}"></span></p>
+        <p><span>자기소개</span>
+            <button th:text="${user.selfIntroduction}" id="selfIntroductionModifyBtn"></button>
+        </p>
+    </div>
+
+    <div id="nicknameModifyModal" style="display: none">
+        <button id="cancelModifyNicknameBtn">취소</button>
+        <h2>닉네임</h2>
+        <form id="nicknameForm">
+            <input type="text" id="nickname" name="nickname" th:value="${user.nickname}"
+                   th:placeholder="${user.nickname}">
+            <button>X</button>
+            <p>
+                <button type="submit">닉네임 변경하기</button>
+            </p>
+        </form>
+    </div>
+
+    <div id="selfIntroductionModifyModal" style="display: none">
+        <h2>자기소개</h2>
+        <form id="selfIntroductionForm">
+            <button id="cancelModifySelfIntroductionBtn">취소</button>
+            <button type="submit">수정</button>
+            <p>
+                <img src="#" alt="프로필이미지"><input type="text" id="selfIntroduction" name="selfIntroduction"
+                                                 th:value="${user.selfIntroduction}"
+                                                 placeholder="자신에 대한 간단한 소개">
+                <button>X</button>
+            </p>
+        </form>
+    </div>
+
+
+</div>
+<script>
+    const MyInfoContainer = document.getElementById('MyInfoContainer');
+    const nicknameModifyBtn = document.getElementById('nicknameModifyBtn');
+    const nicknameModifyModal = document.getElementById('nicknameModifyModal');
+    const cancelModifyNicknameBtn = document.getElementById('cancelModifyNicknameBtn');
+    const nicknameForm = document.getElementById('nicknameForm')
+    const selfIntroductionForm = document.getElementById('selfIntroductionForm')
+    const selfIntroductionModifyModal = document.getElementById('selfIntroductionModifyModal')
+    const cancelModifySelfIntroductionBtn = document.getElementById('cancelModifySelfIntroductionBtn');
+    const selfIntroductionModifyBtn = document.getElementById('selfIntroductionModifyBtn');
+
+    //닉네임수정
+    nicknameModifyBtn.addEventListener('click', function () {
+        document.getElementById('nickname').value = this.textContent;
+        MyInfoContainer.style.display = 'none';
+        nicknameModifyModal.style.display = 'block';
+    })
+
+    cancelModifyNicknameBtn.addEventListener('click', function () {
+        nicknameModifyModal.style.display = 'none';
+        MyInfoContainer.style.display = 'block';
+    })
+
+    nicknameForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const nickname = document.getElementById('nickname').value;
+
+        const response = await fetch('/api/users/me', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({nickname: nickname})
+        });
+
+        nicknameModifyBtn.textContent = nickname;
+        nicknameModifyModal.style.display = 'none';
+        MyInfoContainer.style.display = 'block';
+
+        alert('닉네임이 성공적으로 변경되었습니다.');
+    });
+
+
+    //자기소개수정
+    selfIntroductionModifyBtn.addEventListener('click', function () {
+        document.getElementById('selfIntroduction').value = this.textContent;
+        MyInfoContainer.style.display = 'none';
+        selfIntroductionModifyModal.style.display = 'block';
+    })
+
+    cancelModifySelfIntroductionBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        selfIntroductionModifyModal.style.display = 'none';
+        MyInfoContainer.style.display = 'block';
+    })
+
+    selfIntroductionForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const selfIntroduction = document.getElementById('selfIntroduction').value;
+
+        const response = await fetch('/api/users/me', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({selfIntroduction: selfIntroduction})
+        });
+
+        selfIntroductionModifyBtn.textContent = selfIntroduction;
+        selfIntroductionModifyModal.style.display = 'none';
+        MyInfoContainer.style.display = 'block';
+
+        alert('자기소개가 성공적으로 변경되었습니다.');
+    });
+
+
+</script>
+</body>
+</html>

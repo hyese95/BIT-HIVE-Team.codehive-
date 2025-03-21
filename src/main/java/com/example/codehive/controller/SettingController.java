@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/setting")
@@ -17,8 +18,9 @@ import java.util.List;
 public class SettingController {
     private final GuideService guideService;
     private final FaqService faqService;
-    private final QuestionService questionService;
-    private final AnswerService answerService;
+    private final QuestionServiceImp questionServiceImp;
+    private final AnswerServiceImp answerServiceImp;
+    private final UserService userService;
 
     @GetMapping("/main.do")
     public String main() {
@@ -68,13 +70,13 @@ public class SettingController {
     }
     @GetMapping("/support/qna/qna.do")
     public String qna(Model model) {
-        List<Question> questions=questionService.readByUser_IdAndQuestionStatus(1, "PENDING");
+        List<Question> questions=questionServiceImp.readByUser_IdAndQuestionStatus(1, "PENDING");
         model.addAttribute("questions", questions);
         return "setting/support/qna/qna";
     }
     @GetMapping("/support/qna/qna_complete.do")
     public String qnaComplete(Model model) {
-        List<Question> questions=questionService.readByUser_IdAndQuestionStatus(1, "COMPLETED");
+        List<Question> questions=questionServiceImp.readByUser_IdAndQuestionStatus(1, "COMPLETED");
         model.addAttribute("questions", questions);
         return "setting/support/qna/qna_complete";
     }
@@ -82,13 +84,29 @@ public class SettingController {
     @GetMapping("/support/qna/qna_detail.do")
     public String qnaDetail(Model model, @RequestParam int questionNo) {
 
-        Question question=questionService.readById(questionNo);
-        Answer answer=answerService.readByQuestion_Id(questionNo);
+        Question question=questionServiceImp.readById(questionNo);
+        Answer answer=answerServiceImp.readByQuestion_Id(questionNo);
 
         model.addAttribute("question", question);
         model.addAttribute("answer", answer);
 
 
         return "setting/support/qna/qna_detail";
+    }
+
+    @GetMapping("/my_info/my_info_main.do")
+    public String myInfo(Model model) {
+
+        Optional<User> userOpt=userService.readByUserNo(1);
+        User user=userOpt.get();
+        model.addAttribute("user", user);
+
+        return "setting/my_info/my_info_main";
+    }
+
+    @GetMapping("/my_info/my_info_summary")
+    public String myInfoSummary(Model model) {
+
+        return "setting/my_info/my_info_summary";
     }
 }
