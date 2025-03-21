@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
@@ -44,6 +45,10 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
     @Query("SELECT COUNT(p) FROM Post p WHERE p.user.id = :userNo")
     Integer countPostsByUserNo(@Param("userNo") Integer userNo);
-    //함수
+
+    @Modifying
+    @Transactional
+    @Query("DELETE from Post p where p.id= :postNo")
+    int deletePostByPostNo(int postNo);
 
 }
