@@ -3,6 +3,7 @@ package com.example.codehive.service;
 
 import com.example.codehive.entity.Post;
 import com.example.codehive.entity.PostLike;
+import com.example.codehive.repository.CommentRepository;
 import com.example.codehive.repository.PostRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -24,9 +26,9 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class PostServiceImp implements PostService {
-
+    @Autowired
     PostRepository postRepository;
-
+    CommentRepository commentRepository;
     @Override
     public Page<Post> readByCategoryWithKeyword(String category, String keyword, String sortType, Pageable pageable) {
         Instant startDate = switch (sortType) {
@@ -79,12 +81,19 @@ public class PostServiceImp implements PostService {
             post.setPostCont(content);  // 새로운 내용으로 업데이트
             postRepository.save(post);  // 변경 사항 저장
         } else {
-            throw new IllegalArgumentException("게시글을 찾을 수 없습니다. postNo: " + postNo);
+            throw new IllegalArgumentException("게시글을 찾을 수 없습니다.");
         }
     }
 
     @Override
+    @Transactional
     public void deletePost(int postNo) {
-
+        Optional<Post> optionalPost = postRepository.findById(postNo);
+        if (optionalPost.isPresent()) {
+            postRepository.deletePostByPostNo(postNo);
+        }
+        else {
+            throw new IllegalArgumentException("게시글을 찾을 수 없습니다");
+        }
     }
 }

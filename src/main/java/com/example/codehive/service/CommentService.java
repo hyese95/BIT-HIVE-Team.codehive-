@@ -12,4 +12,6 @@ public interface CommentService {
     int getChildCommentCountByPostNoAndParentNo(int postNo,int parentNo);
     List<Comment>  readCommentByPostNo(int postNo);
     List<Comment>  readCommentByPostNoAndParentNo(int postNo,Integer parentNo);
+    List<Comment> removeCommentByPostNo(int postNo);
+    int getReplyCount(int parentNo);
 }

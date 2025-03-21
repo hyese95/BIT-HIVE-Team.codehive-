@@ -99,7 +99,7 @@ CREATE TABLE favorite_markets(
     market VARCHAR(255) NOT NULL,
     list_no INT NOT NULL,
     sort_order VARCHAR(10),
-    FOREIGN KEY(user_no) REFERENCES users(user_no),
+    FOREIGN KEY(user_no) REFERENCES users(user_no) ON DELETE CASCADE,
     FOREIGN KEY(list_no) REFERENCES favorite_markets_folders(list_no)
 );
 
@@ -119,7 +119,7 @@ CREATE TABLE posts(
     post_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     img_url VARCHAR(255),
     category VARCHAR(20),
-    FOREIGN KEY (user_no) REFERENCES users(user_no)
+    FOREIGN KEY (user_no) REFERENCES users(user_no) ON DELETE CASCADE
 );
 
 CREATE TABLE comments(
@@ -129,9 +129,9 @@ CREATE TABLE comments(
     comment_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     parent_no INT,
     comment_cont VARCHAR(255) NOT NULL,
-    FOREIGN KEY(post_no) REFERENCES posts(post_no),
-    FOREIGN KEY(user_no) REFERENCES users(user_no),
-    FOREIGN KEY(parent_no) REFERENCES comments(comment_no)
+    FOREIGN KEY(post_no) REFERENCES posts(post_no) ON DELETE CASCADE ,
+    FOREIGN KEY(user_no) REFERENCES users(user_no) ON DELETE CASCADE,
+    FOREIGN KEY(parent_no) REFERENCES comments(comment_no) ON DELETE CASCADE
 );
 
 CREATE TABLE chatting_logs(
@@ -147,16 +147,16 @@ CREATE TABLE post_likes(
     post_no INT NOT NULL,
     PRIMARY KEY(user_no, post_no),
     like_type BOOLEAN,
-    FOREIGN KEY(post_no) REFERENCES posts(post_no),
-    FOREIGN KEY(user_no) REFERENCES users(user_no)
+    FOREIGN KEY(post_no) REFERENCES posts(post_no) ON DELETE CASCADE,
+    FOREIGN KEY(user_no) REFERENCES users(user_no) ON DELETE CASCADE
 );
 
 CREATE TABLE post_bookmarks(
     user_no INT NOT NULL,
     post_no INT NOT NULL,
     PRIMARY KEY(user_no, post_no),
-    FOREIGN KEY(post_no) REFERENCES posts(post_no),
-    FOREIGN KEY(user_no) REFERENCES users(user_no)
+    FOREIGN KEY(post_no) REFERENCES posts(post_no) ON DELETE CASCADE,
+    FOREIGN KEY(user_no) REFERENCES users(user_no) ON DELETE CASCADE
 );
 
 CREATE TABLE comment_likes(
@@ -164,8 +164,8 @@ CREATE TABLE comment_likes(
     comment_no INT,
     PRIMARY KEY(user_no, comment_no),
     like_type BOOLEAN,
-    FOREIGN KEY(user_no) REFERENCES users(user_no),
-    FOREIGN KEY(comment_no) REFERENCES comments(comment_no)
+    FOREIGN KEY(user_no) REFERENCES users(user_no) ON DELETE CASCADE,
+    FOREIGN KEY(comment_no) REFERENCES comments(comment_no) ON DELETE CASCADE
 );
 
 CREATE TABLE password_change_logs(

@@ -9,21 +9,20 @@
 <body>
 <div class="container">
 
-    <div id="edit" class="d-flex justify-content-between" style="width: 70%;">
+    <div id="edit" class="d-flex justify-content-between" >
         <form action="/community/modifyPost.do" method="get">
         <label for="modify">
             <input type="hidden"  name="postNo" th:value="${post.id}">
             <button id="modify" type="submit" >수정하기</button>
         </label>
         </form>
-        <form action="/community/delete.do">
-        <label for="delete">
-            <button id="delete">삭제하기</button>
-        </label>
+        <form>
+                <input type="hidden" name="postNo" th:value="${post.id}">
+            <button type="button" th:onclick="|deletePost(${post.id})|">삭제하기</button>
         </form>
     </div>
 <!--<p th:text="${post.postCont}"></p>-->
-    <div id="postCont" class="d-flex flex-column mb-2" style="width: 70%; height: 300px; border: 1px solid black; padding: 10px; border-radius: 5px;">
+    <div id="postCont" class="d-flex flex-column mb-2" style=" height: 300px; border: 1px solid black; padding: 10px; border-radius: 5px;">
         <div class="d-flex justify-content-between align-items-start">
             <!-- 게시자 정보 -->
             <div class="d-flex flex-column align-items-center">
@@ -48,7 +47,12 @@
     </div>
     <div th:each="comment : ${comments}" th:if="${comment.parentNo == null}" style="margin-bottom: 10px; justify-content: space-between; align-items: center">
         <!-- 부모 댓글 -->
-        <div id="comment" style="width: 70%; height: auto; border: 1px solid black; border-radius: 5px; padding: 5px; display: flex; flex-direction: row ;justify-content: space-between">
+        <div id="comment" style=" height: auto; border: 1px solid black; border-radius: 5px; padding: 5px; ">
+            <div class="pe-3 text-end" style="right:100%">
+                <button type="button" onclick="">수정</button>
+                <button type="button" onclick="">삭제</button>
+            </div>
+            <div style="display: flex; flex-direction: row ;justify-content: space-between">
             <div style="display: flex; flex-direction: row;justify-content: space-between">
                 <div style="display: flex; flex-direction: column; align-items: center;">
                 <img src='/img/user_icon/user_icon_default.png' style="width: 30px; height: 30px" alt="없어">
@@ -59,19 +63,20 @@
             <span style="display: flex; flex-direction: column; align-items: center;">
                 <span th:text="${#temporals.format(comment.commentCreatedAt,'yyyy-MM-dd a hh시 M분')}"></span>
                 <span style="display: flex; flex-direction: row;" th:each="comment : ${comment}">
-                <span>좋아요n개</span>
-                <span>싫어요n개</span>
+                <span th:text="좋아요 +${cntCommentLike[comment.id]?.likeCount ?: 0}"></span>&nbsp;
+                <span th:text="싫어요 +${cntCommentLike[comment.id]?.dislikeCount ?: 0}"></span>
                 </span>
-            <button th:if="${comment.parentNo==null}" th:data-parent="${comment.id}" class="seeComment"
+            <button th:if="${comment.parentNo==null && replyCounts[comment.id] > 0}" th:data-parent="${comment.id}"  class="seeComment"
                     onclick="toggleReplies(this)">
-                대댓글 보기
+                대댓글 <span th:text="${replyCounts[comment.id] ?: 0}+개"></span> 보기
             </button>
                 </span>
             </div>
+        </div>
             <!-- 대댓글 목록 (초기에 숨김) -->
 <!--        <i class="fa-solid fa-greater-than"></i>-->
         <div class="childComment" th:each="reply : ${comments}" th:if="${reply.parentNo == comment.id && reply.parentNo!=null}" th:data-parent="${reply.parentNo}"
-                 style="display: none; margin: 10px; width: 70%; height: auto; border: 1px solid black;
+                 style="display: none; margin: 10px; height: auto; border: 1px solid black;
                   border-radius: 5px; padding: 5px; flex-direction: column; align-items: flex-start">
 <!--                <span th:text="'부모 ID: ' + ${comment.id}"></span>-->
 <!--                <span th:text="'대댓글의 부모 ID: ' + ${reply.parentNo}"></span>-->
@@ -86,8 +91,8 @@
                     <div>
                         <span th:text="${#temporals.format(reply.commentCreatedAt,'yyyy-MM-dd a h시 M분')}"></span>
                         <div>
-                            <span>좋아요n개</span>
-                            <span>싫어요n개</span>
+                            <span th:text="좋아요 +${cntCommentLike[comment.parentNo==comment.id]?.likeCount ?: 0}"></span>&nbsp;
+                            <span th:text="싫어요 +${cntCommentLike[comment.parentNo==comment.id]?.dislikeCount ?: 0}"></span>
                         </div>
 
                     </div>
@@ -98,24 +103,36 @@
 <script>
     // child = document.getElementsByClassName("childComment");
     seecomment = document.getElementsByClassName("seeComment");
-
+    const category='[[${post.category}]]';
     function toggleReplies(button) {
         let parentId = button.getAttribute("data-parent");
-        console.log("클릭한 버튼의 부모 ID:", parentId); // 부모 ID 확인
-
         let replies = document.querySelectorAll(`.childComment[data-parent='${parentId}']`);
-        console.log("찾은 대댓글 개수:", replies.length);// 대댓글 개수 확인
-
-        // console.log(No);
-        //
-        // if (replies.length === 0) {
-        //     console.log("대댓글이 없음 (HTML 확인 필요)");
-        // }
-
         replies.forEach(reply => {
             reply.style.display = (reply.style.display === "none" || reply.style.display === "") ? "block" : "none"
-
         });
+    }
+
+    async function deletePost(postNo) {
+        const confirmation = confirm("정말 삭제하시겠습니까?");
+        if (confirmation) {
+            try {
+                const response = await fetch(`/community/post/${postNo}`, {  // 경로 확인
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                if (response.ok) {
+                    alert("게시글이 삭제되었습니다.");
+                    window.location.href = `/community/`+category+`_post.do`;  // 삭제 후 목록 페이지로 이동
+                } else {
+                    alert("삭제 실패");
+                }
+            } catch (error) {
+                console.error("삭제 중 오류 발생:", error);
+                alert("삭제 중 오류 발생");
+            }
+        }
     }
 </script>
 </body>

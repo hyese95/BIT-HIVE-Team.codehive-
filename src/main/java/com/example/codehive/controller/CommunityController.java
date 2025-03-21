@@ -1,9 +1,12 @@
 package com.example.codehive.controller;
 
+import com.example.codehive.dto.CommentLikeCountDTO;
 import com.example.codehive.dto.PostDto;
-import com.example.codehive.entity.Comment;
-import com.example.codehive.entity.Post;
-import com.example.codehive.entity.User;
+import com.example.codehive.entity.*;
+import com.example.codehive.repository.CommentLikeRepository;
+import com.example.codehive.repository.CommentRepository;
+import com.example.codehive.repository.PostLikeRepository;
+import com.example.codehive.service.CommentLikeService;
 import com.example.codehive.service.CommentService;
 import com.example.codehive.service.PostService;
 import jakarta.servlet.http.Cookie;
@@ -11,22 +14,17 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import com.example.codehive.service.UserService;
 import lombok.AllArgsConstructor;
-import com.example.codehive.repository.PostRepository;
-import org.springframework.data.domain.*;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.stereotype.Component;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/community")
@@ -34,8 +32,9 @@ import java.util.stream.Collectors;
 public class CommunityController {
     private final PostService postService;
     private final UserService userService;
-    private final PostRepository postRepository;
     private final CommentService commentService;
+    private final CommentLikeService commentLikeService;
+    private final CommentLikeRepository commentLikeRepository;
 
     @GetMapping("/api/free_posts")
     @ResponseBody
@@ -139,9 +138,23 @@ public class CommunityController {
         PostDto postDto=new PostDto(post);
         List<Comment> comments=commentService.readComment(postNo);
         int cntComment=commentService.getCommentCountByPostNo(postNo);
+        Map<Integer, CommentLikeCountDTO> cntCommentLike = new HashMap<>();
+        for (CommentLikeCountDTO dto : commentLikeService.getLikesAndDislikesCount()) {
+            cntCommentLike.put(dto.getCommentNo(), dto);
+        }
+        Map<Integer, Integer> replyCounts = new HashMap<>();
+        for (Comment comment : comments) {
+            if (comment.getParentNo() == null) { // 부모 댓글만 체크
+                int count = commentService.getReplyCount(comment.getId());
+                replyCounts.put(comment.getId(), count);
+            }
+        }
+        model.addAttribute("replyCounts", replyCounts);
+        model.addAttribute("cntCommentLike", cntCommentLike);
         model.addAttribute("cntComment",cntComment);
         model.addAttribute("post", postDto);
         model.addAttribute("comments", comments);
+
         return "community/postDetail";
     }
 
@@ -157,14 +170,31 @@ public class CommunityController {
         return "community/postDetail";
     }
     @PutMapping("/modifyPostAction.do")
-    public ResponseEntity<String> modifyPost(@RequestBody PostDto.ModifyPostRequest request) {
-        System.out.println("수정할 postNo: " + request.getPostNo());
-        System.out.println("수정할 내용: " + request.getPostCont());
-
-        postService.modifyPost(request.getPostNo(), request.getPostCont());
-
-        return ResponseEntity.ok("수정 완료");
+    public ResponseEntity<String> modifyPostAction(@RequestBody PostDto.ModifyPostRequest request) {
+        try {
+            int postNo = request.getPostNo();
+            String postCont = request.getPostCont();
+            // 게시글 수정 서비스 호출
+            postService.modifyPost(postNo, postCont);
+            String redirectUrl = "/community/postDetail.do?postNo=" + request.getPostNo();
+            return ResponseEntity.ok("게시글이 성공적으로 수정되었습니다.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글 수정 중 오류 발생");
+        }
     }
+    @DeleteMapping("/post/{postNo}")
+    public ResponseEntity<String> deletePost(@PathVariable int postNo){
+        try{
+            postService.deletePost(postNo);
+            return ResponseEntity.ok("게시글이 삭제되었습니다.");
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("이미 삭제되었거나 존재하지 않는 게시물입니다.");
+        }
+
+    }
+
 
     @GetMapping("search.do")
     public String search(Model model,

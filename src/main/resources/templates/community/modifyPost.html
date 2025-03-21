@@ -14,7 +14,7 @@
                 <textarea class="form-control" rows="10" style="width: 1200px; height: 500px;position: relative;
                 user-select: none; align-items: center;"
                           placeholder="수정할 내용을 입력해 주세요!" name="postCont" th:value="${postDto.postCont}" th:text="${postDto.postCont}"></textarea></label>
-            <input type="text" class="d-none" name="postNo" th:value="${postDto.id}"></h1>
+            <input type="hidden" name="postNo" th:value="${postDto.id}"></h1>
           <label>
 
           <span>
@@ -36,18 +36,55 @@
 <script>
 
     const url = "/community/modifyPostAction.do"
-
+    // console.log(request.getParameter("post"))
+    // const modifyPostHandler = async (e) => {
+    //     e.preventDefault()
+    //     const form=e.target;
+    //     const formData=new FormData(form);
+    //     const formDataObj=Object.fromEntries(formData);
+    //     console.log(formDataObj)
+    //     const response=await fetch(url,{
+    //         method:'PUT',
+    //         headers:{"Content-Type":"application/json"},
+    //         body: JSON.stringify(formDataObj)
+    //     });
     const modifyPostHandler = async (e) => {
-        e.preventDefault()
-        const form=e.target;
-        const formData=new FormData(form);
-        const formDataObj=Object.fromEntries(formData);
-        console.log(formDataObj)
-        const response=await fetch(url,{
-            method:'PUT',
-            headers:{"Content-Type":"application/json"},
-            body: JSON.stringify(formDataObj)
-        });
+        e.preventDefault();
+        console.log(document.querySelector('input[name="postNo"]').value);
+        const form = e.target;
+        const formData = new FormData(form);
+        const postNo = formData.get("postNo"); // `postNo` 값을 가져옴
+        const postCont = formData.get("postCont"); // `postCont` 값을 가져옴
+
+        const requestData = {
+            postNo: postNo,
+            postCont: postCont
+        };
+
+        console.log(requestData);  // 데이터 확인
+
+        try {
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(requestData)
+            });
+
+            if (response.ok) {
+                // 서버에서 받은 리다이렉트 URL
+                alert("게시글 수정이 완료되었습니다!")
+                const redirectUrl = await response.text();
+                // 수정된 게시글로 이동
+                window.location.href = `/community/postDetail.do?postNo=${postNo}`;
+            } else {
+                alert("수정 실패");
+            }
+        } catch (error) {
+            console.error("수정 중 오류 발생:", error);
+            alert("수정 중 오류 발생");
+        }
     }
 </script>
 </body>
