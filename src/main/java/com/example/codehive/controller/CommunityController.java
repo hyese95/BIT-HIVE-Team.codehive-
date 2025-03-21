@@ -24,6 +24,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.*;
 
 @Controller
@@ -35,6 +36,9 @@ public class CommunityController {
     private final CommentService commentService;
     private final CommentLikeService commentLikeService;
     private final CommentLikeRepository commentLikeRepository;
+    public String convertNewlineToBr(String text) {
+        return text.replace("\n", "<br>");
+    }
 
     @GetMapping("/api/free_posts")
     @ResponseBody
@@ -43,15 +47,30 @@ public class CommunityController {
             @RequestParam(defaultValue = "10") int size, Pageable pageable) {
         pageable = PageRequest.of(page, size);
         Page<Post> postPage=postService.readAllByCategory(pageable,"free");
+        postPage.forEach(post -> post.setPostCont(convertNewlineToBr(post.getPostCont())));
         Page<PostDto> postDtoPage= postPage.map(PostDto::new);
         return postDtoPage;
+    }
+    @PostMapping("/api/free_post_write")
+    @ResponseBody
+    public ResponseEntity<PostDto> writeFreePost(@RequestBody PostDto postDto) {
+        // 1. 임의의 유저 정보 추가 (예: Guest)
+        List<User> users = userService.findAll();
+        if (users.isEmpty()) {
+            throw new IllegalArgumentException("사용자가 없습니다.");
+        }
+        User randomUser = users.get(new Random().nextInt(users.size()));
+        postDto.setUserId(randomUser.getId());
+        postDto.setUserNickname(randomUser.getNickname());
+        postDto.setPostCreatedAt(Instant.now());
+        Post savedPost = postService.createPost(postDto);
+        return ResponseEntity.ok(new PostDto(savedPost));
     }
 
     @GetMapping("/free_post.do")
     public String freePost(Model model,
                            @PageableDefault(size = 10) Pageable pageable,
                            @RequestParam(defaultValue = "0") int page) {
-
         pageable = PageRequest.of(page, 10); // 기본 페이지 값 설정
         Page<Post> freePostPage = postService.readAllByCategory(pageable, "free");
         List<User> user = userService.findAll();
@@ -136,7 +155,9 @@ public class CommunityController {
     ) {
         Post post=postService.getPostByPostId(postNo);
         PostDto postDto=new PostDto(post);
-        List<Comment> comments=commentService.readComment(postNo);
+        String formattedContent = convertNewlineToBr(post.getPostCont());
+        model.addAttribute("formattedContent", formattedContent);// 서버에서 변환
+        List<Comment> comments=commentService.readCommentByPostNo(postNo);
         int cntComment=commentService.getCommentCountByPostNo(postNo);
         Map<Integer, CommentLikeCountDTO> cntCommentLike = new HashMap<>();
         for (CommentLikeCountDTO dto : commentLikeService.getLikesAndDislikesCount()) {
@@ -148,7 +169,7 @@ public class CommunityController {
                 int count = commentService.getReplyCount(comment.getId());
                 replyCounts.put(comment.getId(), count);
             }
-        }
+        }// 변환된 내용 전달
         model.addAttribute("replyCounts", replyCounts);
         model.addAttribute("cntCommentLike", cntCommentLike);
         model.addAttribute("cntComment",cntComment);

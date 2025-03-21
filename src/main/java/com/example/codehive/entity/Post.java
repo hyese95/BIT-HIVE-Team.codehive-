@@ -11,6 +11,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Formula;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,7 @@ import java.util.List;
 public class Post {
     @Id
     @Column(name = "post_no", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

@@ -8,7 +8,7 @@
 <nav th:replace="fragments/nav_bars :: communitySubNav"></nav>
 <body>
 <div class="container">
-
+    <h1 th:text="${post.id}+'번 게시글 세부내용'"></h1>
     <div id="edit" class="d-flex justify-content-between" >
         <form action="/community/modifyPost.do" method="get">
         <label for="modify">
@@ -34,9 +34,9 @@
         </div>
 
         <!-- 게시글 내용 -->
-        <h1 class="text-left" th:text="${post.postCont}" style="flex-grow: 1; display: flex; align-items: flex-start; justify-content: left;">
+        <h2 class="text-left" th:utext="${formattedContent}" style="flex-grow: 1; display: flex; align-items: flex-start; justify-content: left;">
             게시글 세부내용!
-        </h1>
+        </h2>
 
         <!-- 하단 (좋아요/싫어요/댓글) -->
         <div class="d-flex justify-content-end">

@@ -3,6 +3,7 @@ package com.example.codehive.dto;
 import com.example.codehive.entity.Post;
 import com.example.codehive.entity.PostLike;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 public class PostDto {
     private Integer id;
     private String postCont;
