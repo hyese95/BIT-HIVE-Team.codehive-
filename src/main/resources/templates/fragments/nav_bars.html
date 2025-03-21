@@ -1,111 +1,201 @@
 <!-- 상단 네비게이션 -->
 <style>
-  ul>li:hover{background-color: blue}
+    ul > li:hover {
+        background-color: blue
+    }
+
 </style>
 <nav class="navbar fixed-top py-1 bg-secondary-subtle p-2 text-white bg-opacity-75" th:fragment="topNav">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="/">
-      <img th:src="@{/img/logo/sample_logo.svg}" alt="Logo" width="100" height="24" class="d-inline-block align-text-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+            <img th:src="@{/img/logo/sample_logo.svg}" alt="Logo" width="100" height="24"
+                 class="d-inline-block align-text-top">
+        </a>
 
-    </a>
-    <div>
-      <a href="#">
-        <img th:src="@{/img/user_icon/user_icon_default.png}" alt="#">
-      </a>
+        <button style="border: none; background: none;" type="button" data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+            <img src="/img/user_icon/user_icon_default.png" alt="프로필">
+        </button>
+
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+            <div class="offcanvas-header">
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+
+            <div class="offcanvas-body">
+                <p id="nicknameAtSummary">닉네임</p>
+                <div class="card text-center">
+                    <p>가입일 <span id="createdAt"></span></p>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <div class="card text-center flex-grow-1 mx-1">
+                        <p id="postCount" class="mb-0 fw-bold"></p>
+                        <span>게시물</span>
+                    </div>
+                    <div class="card text-center flex-grow-1 mx-1">
+                        <a href="/user/follow_list">
+                            <p id="followerCount" class="mb-0 fw-bold"></p>
+                            <span>팔로워</span>
+                        </a>
+                    </div>
+                    <div class="card text-center flex-grow-1 mx-1">
+                        <p id="followingCount" class="mb-0 fw-bold"></p>
+                        <span>팔로잉</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <p>보유자산</p>
+                    <p>456456 <span>원</span></p>
+                    <p><span>평가손익</span><span>+123123</span></p>
+                    <p><span>수익률</span><span>+12.34%</span></p>
+                </div>
+
+                <div class="card">
+                    <p id="name"></p>
+                    <p id="birthDate"></p>
+                    <p id="national"></p>
+                    <p id="theme"></p>
+                </div>
+
+                <div class="card">
+                    <p>자기소개</p>
+                    <p id="selfIntroductionAtSummary"></p>
+                </div>
+
+            </div>
+        </div>
+
 
     </div>
-  </div>
 </nav>
+
+<script th:fragment="profileSummaryScript">
+    const nickname = document.getElementById("nicknameAtSummary");
+    const createdAt = document.getElementById("createdAt");
+    const postCount = document.getElementById('postCount');
+    const followingCount = document.getElementById('followingCount');
+    const followerCount = document.getElementById('followerCount');
+    const name = document.getElementById("name");
+    const birthDate = document.getElementById("birthDate");
+    const national = document.getElementById("national");
+    const theme = document.getElementById("theme");
+    const selfIntroduction = document.getElementById("selfIntroductionAtSummary");
+
+
+    async function loadSummary() {
+        const url = '/api/users/me/summary';
+        const response = await fetch(url);
+        const data = await response.json();
+        console.log(data)
+        postCount.innerText = data.postCount;
+        nickname.innerText = data.nickname;
+        followingCount.innerText = data.followingCount;
+        followerCount.innerText = data.followerCount;
+        createdAt.innerText = data.createdAt;
+        birthDate.innerText = data.birthDate;
+        national.innerText = data.nationality;
+        theme.innerText = data.theme;
+        selfIntroduction.innerText = data.selfIntroduction;
+
+    }
+
+    loadSummary();
+</script>
 
 
 <!-- 하단 네비게이션 -->
 <nav class="navbar navbar-expand fixed-bottom bg-danger-subtle py-1 border-top border-2" th:fragment="bottomNav">
-  <div class="container-fluid px-0">
-    <div class="collapse navbar-collapse">
-      <ul class="navbar-nav w-100 justify-content-evenly">
-        <li class="nav-item">
-          <a class="nav-link fw-bold fs-5" href="#">전체메뉴</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link fw-bold fs-5" href="/trade/main.do">거래소</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link fw-bold fs-5" href="/asset/my_asset.do">내자산</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link fw-bold fs-5" th:href="@{/community/free_post.do}">커뮤니티</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link fw-bold fs-5" href="/news/main.do">뉴스</a>
-        </li>
-      </ul>
+    <div class="container-fluid px-0">
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav w-100 justify-content-evenly">
+                <li class="nav-item">
+                    <a class="nav-link fw-bold fs-5" href="#">전체메뉴</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-bold fs-5" href="/trade/main.do">거래소</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-bold fs-5" href="/asset/my_asset.do">내자산</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-bold fs-5" th:href="@{/community/free_post.do}">커뮤니티</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-bold fs-5" href="/news/main.do">뉴스</a>
+                </li>
+            </ul>
+        </div>
     </div>
-  </div>
 </nav>
 
 
 <!-- 내자산 서브네비게이션-->
-<nav class="navbar navbar-expand bg-info py-1 border-top border-2 w-100" style="position: fixed; margin-top: 40px" th:fragment="assetSubNav">
-  <div class="container-fluid px-0">
-    <div class="collapse navbar-collapse">
-      <ul class="navbar-nav w-100 justify-content-evenly">
-        <li class="nav-item">
-          <a class="nav-link fw-medium" href="#">나의자산</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link fw-medium" href="#">거래내역</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link fw-medium" href="#">주문내역</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link fw-medium" href="#">미체결</a>
-        </li>
-      </ul>
+<nav class="navbar navbar-expand bg-info py-1 border-top border-2 w-100" style="position: fixed; margin-top: 40px"
+     th:fragment="assetSubNav">
+    <div class="container-fluid px-0">
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav w-100 justify-content-evenly">
+                <li class="nav-item">
+                    <a class="nav-link fw-medium" href="#">나의자산</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-medium" href="#">거래내역</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-medium" href="#">주문내역</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-medium" href="#">미체결</a>
+                </li>
+            </ul>
+        </div>
     </div>
-  </div>
 </nav>
 
 <!-- 커뮤니티 서브네비게이션-->
-<nav class="navbar navbar-expand bg-info py-1 border-top border-2 w-100" style="position: fixed; margin-top: 40px" th:fragment="communitySubNav">
-  <div class="container-fluid px-0">
-    <div class="collapse navbar-collapse">
-      <ul class="navbar-nav w-100 justify-content-evenly">
-        <li class="nav-item">
-          <a class="nav-link fw-medium" th:href="@{/community/free_post.do}">자유게시판</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link fw-medium" th:href="@{/community/pnl_post.do}">손익인증</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link fw-medium" th:href="@{/community/chart_post.do}">차트분석</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link fw-medium" th:href="@{/community/expert_post.do}">전문가</a>
-        </li>
-      </ul>
+<nav class="navbar navbar-expand bg-info py-1 border-top border-2 w-100" style="position: fixed; margin-top: 40px"
+     th:fragment="communitySubNav">
+    <div class="container-fluid px-0">
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav w-100 justify-content-evenly">
+                <li class="nav-item">
+                    <a class="nav-link fw-medium" th:href="@{/community/free_post.do}">자유게시판</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-medium" th:href="@{/community/pnl_post.do}">손익인증</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-medium" th:href="@{/community/chart_post.do}">차트분석</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-medium" th:href="@{/community/expert_post.do}">전문가</a>
+                </li>
+            </ul>
+        </div>
     </div>
-  </div>
 </nav>
 
 <!-- 뉴스 서브네비게이션-->
-<nav class="navbar navbar-expand bg-info py-1 border-top border-2 w-100" style="position: fixed; margin-top: 40px" th:fragment="newsSubNav">
-  <div class="container-fluid px-0">
-    <div class="collapse navbar-collapse">
-      <ul class="navbar-nav w-100 justify-content-evenly">
-        <li class="nav-item">
-          <a class="nav-link fw-medium" href="#">전체뉴스</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link fw-medium" href="/news/nav_menu/fear_greed_index.do">공탐지수</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link fw-medium" href="/news/nav_menu/kimchi_premium.do">김프</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link fw-medium" href="#">선물</a>
-        </li>
-      </ul>
+<nav class="navbar navbar-expand bg-info py-1 border-top border-2 w-100" style="position: fixed; margin-top: 40px"
+     th:fragment="newsSubNav">
+    <div class="container-fluid px-0">
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav w-100 justify-content-evenly">
+                <li class="nav-item">
+                    <a class="nav-link fw-medium" href="#">전체뉴스</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-medium" href="/news/nav_menu/fear_greed_index.do">공탐지수</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-medium" href="/news/nav_menu/kimchi_premium.do">김프</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-medium" href="#">선물</a>
+                </li>
+            </ul>
+        </div>
     </div>
-  </div>
 </nav>

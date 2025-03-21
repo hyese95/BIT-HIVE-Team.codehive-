@@ -1,5 +1,6 @@
 package com.example.codehive.service;
 
+import com.example.codehive.entity.Follow;
 import com.example.codehive.entity.User;
 
 import java.util.List;
@@ -14,6 +15,7 @@ public interface UserService {
     int readPostsCount(int userNo);
     int readFollowersCount(int userNo);
     int readFollowingCount(int userNo);
-
+    List<Follow> readFollowersByUserNo(int userNo);
+    List<Follow> readFollowingsByUserNo(int userNo);
 
 }

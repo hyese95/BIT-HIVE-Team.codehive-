@@ -1,5 +1,6 @@
 package com.example.codehive.service;
 
+import com.example.codehive.entity.Follow;
 import com.example.codehive.entity.User;
 import com.example.codehive.repository.FollowRepository;
 import com.example.codehive.repository.PostRepository;
@@ -62,5 +63,15 @@ public class UserServiceImp implements UserService {
     @Override
     public int readFollowingCount(int userNo) {
         return followRepository.countFollowingsByUserNo(userNo);
+    }
+
+    @Override
+    public List<Follow> readFollowersByUserNo(int userNo) {
+        return followRepository.findFollowersByUserNo(userNo);
+    }
+
+    @Override
+    public List<Follow> readFollowingsByUserNo(int userNo) {
+        return followRepository.findFollowingsByUserNo(userNo);
     }
 }

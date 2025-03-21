@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns=""
+      th:replace="~{fragments/default :: html(content=~{::body})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+<style>
+    .listSelectBtn {
+        background: none;
+        border: none;
+    }
+
+    .active {
+        border-bottom: 2px solid #000000;
+    }
+</style>
+<div class="container">
+
+
+    <button class="listSelectBtn active" id="followerListBtn">팔로워</button>
+    <button class="listSelectBtn" id="followingListBtn">팔로잉</button>
+    <hr>
+    <input type="text">
+    <hr>
+    <p>정렬기준 기본</p>
+    <div id="listContainer">
+
+    </div>
+</div>
+
+<script>
+    const listContainer = document.getElementById('listContainer');
+    const followerListBtn = document.getElementById('followerListBtn');
+    const followingListBtn = document.getElementById('followingListBtn');
+
+    async function loadFollowers() {
+        followerListBtn.classList.add('active');
+        followingListBtn.classList.remove('active');
+        const url = '/api/users/me/followers';
+        const response = await fetch(url);
+        const data = await response.json();
+        let html = ''
+        for (const follower of data) {
+            html +=
+                `<div class="my-3">
+                    <img src="${follower.followerUser.profileImgUrl}" alt="${follower.followerUser.profileImgUrl}">
+                    <span>${follower.followerUser.nickname}</span>
+                </div>`
+        }
+        listContainer.innerHTML = html;
+    }
+    followerListBtn.addEventListener('click', loadFollowers);
+
+
+
+    async function loadFollowings() {
+        followingListBtn.classList.add('active');
+        followerListBtn.classList.remove('active');
+        const url = '/api/users/me/followings';
+        const response = await fetch(url);
+        const data = await response.json();
+        let html = ''
+        for (const following of data) {
+            html +=
+                `<div class="my-3">
+                    <img src="${following.followingUser.profileImgUrl}" alt="${following.followingUser.profileImgUrl}">
+                    <span>${following.followingUser.nickname}</span>
+                </div>`
+        }
+        listContainer.innerHTML = html;
+    }
+    followingListBtn.addEventListener('click', loadFollowings);
+
+</script>
+
+</body>
+</html>

@@ -5,6 +5,8 @@ import com.example.codehive.entity.User;
 import com.example.codehive.service.PostService;
 import com.example.codehive.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,28 +14,18 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 import java.util.Optional;
 
-@RestController
+
 @AllArgsConstructor
-@RequestMapping("/api/users")
+@RequestMapping("/user")
+@Controller
 public class UserController {
     private UserService userService;
 
-
-    @GetMapping("/me")
-    public UserDto me() {
-        Optional<User> userOpt = userService.readByUserNo(1);
-        User user = userOpt.get();
-        return UserDto.from(user);
+    @GetMapping("follow_list")
+    public String followList(){
+        return "/user/follow_list";
     }
 
-    @GetMapping("/me/summary")
-    public UserDto meSummary() {
-        Optional<User> userOpt = userService.readByUserNo(1);
-        User user = userOpt.get();
-        UserDto userDto=UserDto.from(user);
-        userDto.setPostCount(userService.readPostsCount(1));
-        userDto.setFollowingCount(userService.readFollowingCount(1));
-        userDto.setFollowerCount(userService.readFollowersCount(1));
-        return userDto;
-    }
+
+
 }

@@ -1,48 +1,49 @@
 -- users 테이블 (50명의 다양한 유저)
+-- /img/user_icon/user_icon_default.png
 INSERT INTO users (user_id, password, nickname, email, phone, privacy_agreements, marketing_agreements, nationality,
-                   gender, birth_date, name, self_introduction, role)
+                   gender, birth_date, name, self_introduction, role,profile_img_url)
 VALUES 
 
-('user1', 'pass123', '비트맨', 'user1@example.com', '010-2222-0001', true, true, 'KR', 'MALE', '1990-01-01', '김철수', '비트코인 장기투자자', 'USER'),
-('user2', 'pass123', '코인女', 'user2@example.com', '010-2222-0002', true, false, 'KR', 'FEMALE', '1992-02-02', '이영희', '알트코인 단타 전문', 'USER'),
-('user3', 'pass123', '투자의신', 'user3@example.com', '010-2222-0003', true, true, 'KR', 'MALE', '1988-03-03', '박민수', '3년차 존버중', 'USER'),
-('user4', 'pass123', '존버킹', 'user4@example.com', '010-2222-0004', true, true, 'KR', 'MALE', '1995-04-04', '정대만', '존버는 승리한다', 'USER'),
-('user5', 'pass123', '단타여신', 'user5@example.com', '010-2222-0005', true, false, 'KR', 'FEMALE', '1993-05-05', '최지은', '단타 전문', 'USER'),
-('user6', 'pass123', '코인요정', 'user6@example.com', '010-2222-0006', true, true, 'KR', 'FEMALE', '1991-06-06', '송미라', '비트코인 마이너', 'USER'),
-('user7', 'pass123', '황소장', 'user7@example.com', '010-2222-0007', true, true, 'KR', 'MALE', '1987-07-07', '황길동', '강세장 전문가', 'USER'),
-('user8', 'pass123', '곰돌이', 'user8@example.com', '010-2222-0008', true, false, 'KR', 'MALE', '1994-08-08', '곽진태', '약세장 전문가', 'USER'),
-('user9', 'pass123', '알트하는여자', 'user9@example.com', '010-2222-0009', true, true, 'KR', 'FEMALE', '1996-09-09', '한미영', '알트코인 분석가', 'USER'),
-('user10', 'pass123', '김코린이', 'user10@example.com', '010-2222-0010', true, true, 'KR', 'MALE', '1997-10-10', '김초보', '열심히 공부중입니다', 'USER'),
-('user11', 'pass123', '이더리움맨', 'user11@example.com', '010-2222-0011', true, false, 'KR', 'MALE', '1989-11-11', '이더훈', '이더리움 맥시멀리스트', 'USER'),
-('user12', 'pass123', '리플여신', 'user12@example.com', '010-2222-0012', true, true, 'KR', 'FEMALE', '1990-12-12', '정리플', 'XRP 홀더', 'USER'),
-('user13', 'pass123', '도지코인러', 'user13@example.com', '010-2222-0013', true, true, 'KR', 'MALE', '1992-01-13', '도지킴', '밈코인 전문가', 'USER'),
-('user14', 'pass123', '솔라나맨', 'user14@example.com', '010-2222-0014', true, false, 'KR', 'MALE', '1993-02-14', '솔라김', 'SOL 마니아', 'USER'),
-('user15', 'pass123', '에이다여신', 'user15@example.com', '010-2222-0015', true, true, 'KR', 'FEMALE', '1994-03-15', '에이박', 'ADA 장기투자', 'USER'),
-('user16', 'pass123', '폴카맨', 'user16@example.com', '010-2222-0016', true, true, 'KR', 'MALE', '1995-04-16', '폴카최', 'DOT 홀더', 'USER'),
-('user17', 'pass123', '링크여신', 'user17@example.com', '010-2222-0017', true, false, 'KR', 'FEMALE', '1996-05-17', '링크정', 'LINK 믿음홀더', 'USER'),
-('user18', 'pass123', '유니스왑킹', 'user18@example.com', '010-2222-0018', true, true, 'KR', 'MALE', '1997-06-18', '유니양', 'UNI 장기투자', 'USER'),
-('user19', 'pass123', '테더지박령', 'user19@example.com', '010-2222-0019', true, true, 'KR', 'MALE', '1998-07-19', '테더송', '스테이블코인 전문가', 'USER'),
-('user20', 'pass123', '메틱여신', 'user20@example.com', '010-2222-0020', true, false, 'KR', 'FEMALE', '1999-08-20', '메틱임', 'MATIC 홀더', 'USER'),
-('user21', 'pass123', '코인초보', 'user21@example.com', '010-3333-0001', true, true, 'KR', 'MALE', '1991-01-21', '초보김', '열심히 배우는 중', 'USER'),
-('user22', 'pass123', '투자신입', 'user22@example.com', '010-3333-0002', true, false, 'KR', 'FEMALE', '1992-02-22', '신입이', '첫 투자 시작했어요', 'USER'),
-('user23', 'pass123', '블록체인맨', 'user23@example.com', '010-3333-0003', true, true, 'KR', 'MALE', '1993-03-23', '블록박', '블록체인 기술에 관심많아요', 'USER'),
-('user24', 'pass123', '채굴러', 'user24@example.com', '010-3333-0004', true, true, 'KR', 'MALE', '1994-04-24', '채굴김', '채굴 시작했어요', 'USER'),
-('user25', 'pass123', '스테이킹여신', 'user25@example.com', '010-3333-0005', true, false, 'KR', 'FEMALE', '1995-05-25', '스테장', '스테이킹 수익률 좋아요', 'USER'),
-('user26', 'pass123', '디파이초보', 'user26@example.com', '010-3333-0006', true, true, 'KR', 'MALE', '1996-06-26', '디파최', 'DeFi 공부중입니다', 'USER'),
-('user27', 'pass123', 'NFT수집가', 'user27@example.com', '010-3333-0007', true, true, 'KR', 'MALE', '1997-07-27', '엔프트', 'NFT 컬렉터입니다', 'USER'),
-('user28', 'pass123', '메타버스킹', 'user28@example.com', '010-3333-0008', true, false, 'KR', 'MALE', '1998-08-28', '메타김', '메타버스 관련주 투자', 'USER'),
-('user29', 'pass123', '레이어2여신', 'user29@example.com', '010-3333-0009', true, true, 'KR', 'FEMALE', '1999-09-29', '레이박', '레이어2 프로젝트 관심있어요', 'USER'),
-('user30', 'pass123', '웹3맨', 'user30@example.com', '010-3333-0010', true, true, 'KR', 'MALE', '2000-10-30', '웹삼이', 'Web3.0 개발자입니다', 'USER'),
-('user31', 'pass123', '스마트컨트랙트', 'user31@example.com', '010-3333-0011', true, false, 'KR', 'MALE', '1991-11-01', '스마정', '스마트컨트랙트 개발중', 'USER'),
-('user32', 'pass123', '토큰이코노미', 'user32@example.com', '010-3333-0012', true, true, 'KR', 'FEMALE', '1992-12-02', '토큰양', '토큰이코노미 연구중', 'USER'),
-('user33', 'pass123', '거래소맨', 'user33@example.com', '010-3333-0013', true, true, 'KR', 'MALE', '1993-01-03', '거래김', '거래소 API 개발자', 'USER'),
-('user34', 'pass123', '차트초보', 'user34@example.com', '010-3333-0014', true, false, 'KR', 'MALE', '1994-02-04', '차트박', '차트 공부중이에요', 'USER'),
-('user35', 'pass123', '코딩하는투자자', 'user35@example.com', '010-3333-0015', true, true, 'KR', 'MALE', '1995-03-05', '코딩이', '개발자겸 투자자입니다', 'USER'),
-('user36', 'pass123', '마진여신', 'user36@example.com', '010-3333-0016', true, true, 'KR', 'FEMALE', '1996-04-06', '마진송', '마진거래 전문', 'USER'),
-('user37', 'pass123', '선물왕', 'user37@example.com', '010-3333-0017', true, false, 'KR', 'MALE', '1997-05-07', '선물최', '선물거래 주력', 'USER'),
-('user38', 'pass123', '스윙맨', 'user38@example.com', '010-3333-0018', true, true, 'KR', 'MALE', '1998-06-08', '스윙정', '스윙매매 전문', 'USER'),
-('user39', 'pass123', '스캘핑여신', 'user39@example.com', '010-3333-0019', true, true, 'KR', 'FEMALE', '1999-07-09', '스캘프', '스캘핑 트레이더', 'USER'),
-('user40', 'pass123', '포지션킹', 'user40@example.com', '010-3333-0020', true, false, 'KR', 'MALE', '2000-08-10', '포지션', '포지션 트레이딩 전문', 'USER');
+('user1', 'pass123', '비트맨', 'user1@example.com', '010-2222-0001', true, true, 'KR', 'MALE', '1990-01-01', '김철수', '비트코인 장기투자자', 'USER', '/img/user_icon/user_icon_default.png'),
+('user2', 'pass123', '코인女', 'user2@example.com', '010-2222-0002', true, false, 'KR', 'FEMALE', '1992-02-02', '이영희', '알트코인 단타 전문', 'USER', '/img/user_icon/user_icon_default.png'),
+('user3', 'pass123', '투자의신', 'user3@example.com', '010-2222-0003', true, true, 'KR', 'MALE', '1988-03-03', '박민수', '3년차 존버중', 'USER', '/img/user_icon/user_icon_default.png'),
+('user4', 'pass123', '존버킹', 'user4@example.com', '010-2222-0004', true, true, 'KR', 'MALE', '1995-04-04', '정대만', '존버는 승리한다', 'USER', '/img/user_icon/user_icon_default.png'),
+('user5', 'pass123', '단타여신', 'user5@example.com', '010-2222-0005', true, false, 'KR', 'FEMALE', '1993-05-05', '최지은', '단타 전문', 'USER', '/img/user_icon/user_icon_default.png'),
+('user6', 'pass123', '코인요정', 'user6@example.com', '010-2222-0006', true, true, 'KR', 'FEMALE', '1991-06-06', '송미라', '비트코인 마이너', 'USER', '/img/user_icon/user_icon_default.png'),
+('user7', 'pass123', '황소장', 'user7@example.com', '010-2222-0007', true, true, 'KR', 'MALE', '1987-07-07', '황길동', '강세장 전문가', 'USER', '/img/user_icon/user_icon_default.png'),
+('user8', 'pass123', '곰돌이', 'user8@example.com', '010-2222-0008', true, false, 'KR', 'MALE', '1994-08-08', '곽진태', '약세장 전문가', 'USER', '/img/user_icon/user_icon_default.png'),
+('user9', 'pass123', '알트하는여자', 'user9@example.com', '010-2222-0009', true, true, 'KR', 'FEMALE', '1996-09-09', '한미영', '알트코인 분석가', 'USER', '/img/user_icon/user_icon_default.png'),
+('user10', 'pass123', '김코린이', 'user10@example.com', '010-2222-0010', true, true, 'KR', 'MALE', '1997-10-10', '김초보', '열심히 공부중입니다', 'USER', '/img/user_icon/user_icon_default.png'),
+('user11', 'pass123', '이더리움맨', 'user11@example.com', '010-2222-0011', true, false, 'KR', 'MALE', '1989-11-11', '이더훈', '이더리움 맥시멀리스트', 'USER', '/img/user_icon/user_icon_default.png'),
+('user12', 'pass123', '리플여신', 'user12@example.com', '010-2222-0012', true, true, 'KR', 'FEMALE', '1990-12-12', '정리플', 'XRP 홀더', 'USER', '/img/user_icon/user_icon_default.png'),
+('user13', 'pass123', '도지코인러', 'user13@example.com', '010-2222-0013', true, true, 'KR', 'MALE', '1992-01-13', '도지킴', '밈코인 전문가', 'USER', '/img/user_icon/user_icon_default.png'),
+('user14', 'pass123', '솔라나맨', 'user14@example.com', '010-2222-0014', true, false, 'KR', 'MALE', '1993-02-14', '솔라김', 'SOL 마니아', 'USER', '/img/user_icon/user_icon_default.png'),
+('user15', 'pass123', '에이다여신', 'user15@example.com', '010-2222-0015', true, true, 'KR', 'FEMALE', '1994-03-15', '에이박', 'ADA 장기투자', 'USER', '/img/user_icon/user_icon_default.png'),
+('user16', 'pass123', '폴카맨', 'user16@example.com', '010-2222-0016', true, true, 'KR', 'MALE', '1995-04-16', '폴카최', 'DOT 홀더', 'USER', '/img/user_icon/user_icon_default.png'),
+('user17', 'pass123', '링크여신', 'user17@example.com', '010-2222-0017', true, false, 'KR', 'FEMALE', '1996-05-17', '링크정', 'LINK 믿음홀더', 'USER', '/img/user_icon/user_icon_default.png'),
+('user18', 'pass123', '유니스왑킹', 'user18@example.com', '010-2222-0018', true, true, 'KR', 'MALE', '1997-06-18', '유니양', 'UNI 장기투자', 'USER', '/img/user_icon/user_icon_default.png'),
+('user19', 'pass123', '테더지박령', 'user19@example.com', '010-2222-0019', true, true, 'KR', 'MALE', '1998-07-19', '테더송', '스테이블코인 전문가', 'USER', '/img/user_icon/user_icon_default.png'),
+('user20', 'pass123', '메틱여신', 'user20@example.com', '010-2222-0020', true, false, 'KR', 'FEMALE', '1999-08-20', '메틱임', 'MATIC 홀더', 'USER', '/img/user_icon/user_icon_default.png'),
+('user21', 'pass123', '코인초보', 'user21@example.com', '010-3333-0001', true, true, 'KR', 'MALE', '1991-01-21', '초보김', '열심히 배우는 중', 'USER', '/img/user_icon/user_icon_default.png'),
+('user22', 'pass123', '투자신입', 'user22@example.com', '010-3333-0002', true, false, 'KR', 'FEMALE', '1992-02-22', '신입이', '첫 투자 시작했어요', 'USER', '/img/user_icon/user_icon_default.png'),
+('user23', 'pass123', '블록체인맨', 'user23@example.com', '010-3333-0003', true, true, 'KR', 'MALE', '1993-03-23', '블록박', '블록체인 기술에 관심많아요', 'USER', '/img/user_icon/user_icon_default.png'),
+('user24', 'pass123', '채굴러', 'user24@example.com', '010-3333-0004', true, true, 'KR', 'MALE', '1994-04-24', '채굴김', '채굴 시작했어요', 'USER', '/img/user_icon/user_icon_default.png'),
+('user25', 'pass123', '스테이킹여신', 'user25@example.com', '010-3333-0005', true, false, 'KR', 'FEMALE', '1995-05-25', '스테장', '스테이킹 수익률 좋아요', 'USER', '/img/user_icon/user_icon_default.png'),
+('user26', 'pass123', '디파이초보', 'user26@example.com', '010-3333-0006', true, true, 'KR', 'MALE', '1996-06-26', '디파최', 'DeFi 공부중입니다', 'USER', '/img/user_icon/user_icon_default.png'),
+('user27', 'pass123', 'NFT수집가', 'user27@example.com', '010-3333-0007', true, true, 'KR', 'MALE', '1997-07-27', '엔프트', 'NFT 컬렉터입니다', 'USER', '/img/user_icon/user_icon_default.png'),
+('user28', 'pass123', '메타버스킹', 'user28@example.com', '010-3333-0008', true, false, 'KR', 'MALE', '1998-08-28', '메타김', '메타버스 관련주 투자', 'USER', '/img/user_icon/user_icon_default.png'),
+('user29', 'pass123', '레이어2여신', 'user29@example.com', '010-3333-0009', true, true, 'KR', 'FEMALE', '1999-09-29', '레이박', '레이어2 프로젝트 관심있어요', 'USER', '/img/user_icon/user_icon_default.png'),
+('user30', 'pass123', '웹3맨', 'user30@example.com', '010-3333-0010', true, true, 'KR', 'MALE', '2000-10-30', '웹삼이', 'Web3.0 개발자입니다', 'USER', '/img/user_icon/user_icon_default.png'),
+('user31', 'pass123', '스마트컨트랙트', 'user31@example.com', '010-3333-0011', true, false, 'KR', 'MALE', '1991-11-01', '스마정', '스마트컨트랙트 개발중', 'USER', '/img/user_icon/user_icon_default.png'),
+('user32', 'pass123', '토큰이코노미', 'user32@example.com', '010-3333-0012', true, true, 'KR', 'FEMALE', '1992-12-02', '토큰양', '토큰이코노미 연구중', 'USER', '/img/user_icon/user_icon_default.png'),
+('user33', 'pass123', '거래소맨', 'user33@example.com', '010-3333-0013', true, true, 'KR', 'MALE', '1993-01-03', '거래김', '거래소 API 개발자', 'USER', '/img/user_icon/user_icon_default.png'),
+('user34', 'pass123', '차트초보', 'user34@example.com', '010-3333-0014', true, false, 'KR', 'MALE', '1994-02-04', '차트박', '차트 공부중이에요', 'USER', '/img/user_icon/user_icon_default.png'),
+('user35', 'pass123', '코딩하는투자자', 'user35@example.com', '010-3333-0015', true, true, 'KR', 'MALE', '1995-03-05', '코딩이', '개발자겸 투자자입니다', 'USER', '/img/user_icon/user_icon_default.png'),
+('user36', 'pass123', '마진여신', 'user36@example.com', '010-3333-0016', true, true, 'KR', 'FEMALE', '1996-04-06', '마진송', '마진거래 전문', 'USER', '/img/user_icon/user_icon_default.png'),
+('user37', 'pass123', '선물왕', 'user37@example.com', '010-3333-0017', true, false, 'KR', 'MALE', '1997-05-07', '선물최', '선물거래 주력', 'USER', '/img/user_icon/user_icon_default.png'),
+('user38', 'pass123', '스윙맨', 'user38@example.com', '010-3333-0018', true, true, 'KR', 'MALE', '1998-06-08', '스윙정', '스윙매매 전문', 'USER', '/img/user_icon/user_icon_default.png'),
+('user39', 'pass123', '스캘핑여신', 'user39@example.com', '010-3333-0019', true, true, 'KR', 'FEMALE', '1999-07-09', '스캘프', '스캘핑 트레이더', 'USER', '/img/user_icon/user_icon_default.png'),
+('user40', 'pass123', '포지션킹', 'user40@example.com', '010-3333-0020', true, false, 'KR', 'MALE', '2000-08-10', '포지션', '포지션 트레이딩 전문', 'USER', '/img/user_icon/user_icon_default.png');
 
 -- notification_settings 테이블
 INSERT INTO notification_settings (volatility_yn, portfolio_yn, target_price_yn, trade_yn, like_yn, comment_yn,
@@ -217,18 +218,78 @@ VALUES (1, 'BTC-KRW', 1, 'ASC'),
                                                                         (4, 'LINK-KRW', 9, 'DESC'),
                                                                         (5, 'UNI-KRW', 10, 'ASC');
 
--- follows 테이블
-INSERT INTO follows (follower_user_no, following_user_no)
-VALUES (1, 2),
-                                                              (1, 3),
-                                                              (2, 1),
-                                                              (3, 1),
-                                                              (4, 1),
-                                                              (5, 1),
-                                                              (2, 3),
-                                                              (3, 4),
-                                                              (4, 5),
-                                                              (5, 2);
+-- follows 테이블 데이터 (유저 1~40 사이의 팔로우 관계)
+INSERT INTO follows (follower_user_no, following_user_no, following_date) VALUES
+-- 인기 유저 1~5를 여러 사람이 팔로우
+(6, 1, '2025-03-10 09:15:23'), (7, 1, '2025-03-11 14:22:31'), (8, 1, '2025-03-12 16:05:17'),
+(9, 1, '2025-03-13 11:32:19'), (10, 1, '2025-03-14 08:44:51'), (11, 1, '2025-03-15 13:27:03'),
+(12, 1, '2025-03-16 15:36:42'), (13, 1, '2025-02-23 10:19:37'), (14, 1, '2025-02-24 12:08:21'),
+(15, 1, '2025-02-25 09:55:18'),
+
+(7, 2, '2025-03-11 08:35:42'), (8, 2, '2025-03-12 15:18:29'), (9, 2, '2025-03-13 10:42:37'),
+(10, 2, '2025-03-14 16:23:45'), (16, 2, '2025-03-15 11:09:27'), (17, 2, '2025-03-16 14:47:33'),
+(18, 2, '2025-02-22 09:38:51'), (19, 2, '2025-02-23 13:26:14'), (20, 2, '2025-02-24 15:22:49'),
+
+(8, 3, '2025-03-12 10:27:33'), (9, 3, '2025-03-13 14:18:22'), (10, 3, '2025-03-14 09:44:18'),
+(21, 3, '2025-03-15 16:37:29'), (22, 3, '2025-03-16 11:28:44'), (23, 3, '2025-02-21 13:52:17'),
+(24, 3, '2025-02-22 10:11:38'), (25, 3, '2025-02-23 15:47:26'),
+
+(11, 4, '2025-03-13 11:23:45'), (12, 4, '2025-03-14 15:36:19'), (13, 4, '2025-03-15 10:45:27'),
+(26, 4, '2025-03-16 14:19:38'), (27, 4, '2025-02-20 09:32:54'), (28, 4, '2025-02-21 13:47:22'),
+(29, 4, '2025-02-22 16:08:51'), (30, 4, '2025-02-23 11:29:13'),
+
+(15, 5, '2025-03-11 13:24:36'), (16, 5, '2025-03-12 09:45:17'), (17, 5, '2025-03-13 16:28:53'),
+(31, 5, '2025-03-14 11:37:44'), (32, 5, '2025-03-15 14:52:19'), (33, 5, '2025-02-19 10:16:32'),
+(34, 5, '2025-02-20 15:23:47'), (35, 5, '2025-02-21 12:41:55'),
+
+-- 일반 유저들 간의 팔로우 관계
+(1, 6, '2025-03-10 10:12:34'), (2, 7, '2025-03-11 14:23:56'), (3, 8, '2025-03-12 09:34:18'),
+(4, 9, '2025-03-13 16:45:29'), (5, 10, '2025-03-14 11:56:37'), (6, 11, '2025-03-15 13:07:48'),
+(7, 12, '2025-03-16 08:18:59'), (8, 13, '2025-02-22 15:29:03'), (9, 14, '2025-02-23 10:31:24'),
+(10, 15, '2025-02-24 17:42:35'),
+
+(11, 16, '2025-03-10 09:23:45'), (12, 17, '2025-03-11 14:34:56'), (13, 18, '2025-03-12 10:45:07'),
+(14, 19, '2025-03-13 15:56:18'), (15, 20, '2025-03-14 11:07:29'), (16, 21, '2025-03-15 16:18:39'),
+(17, 22, '2025-03-16 12:29:50'), (18, 23, '2025-02-21 17:40:01'), (19, 24, '2025-02-22 13:51:12'),
+(20, 25, '2025-02-23 18:02:23'),
+
+-- 추가 유저들 간의 팔로우 관계
+(21, 26, '2025-03-10 11:12:13'), (22, 27, '2025-03-11 16:23:24'), (23, 28, '2025-03-12 12:34:35'),
+(24, 29, '2025-03-13 17:45:46'), (25, 30, '2025-03-14 13:56:57'), (26, 31, '2025-03-15 19:07:08'),
+(27, 32, '2025-03-16 15:18:19'), (28, 33, '2025-02-20 20:29:30'), (29, 34, '2025-02-21 16:40:41'),
+(30, 35, '2025-02-22 21:51:52'),
+
+(31, 36, '2025-03-10 12:11:22'), (32, 37, '2025-03-11 17:22:33'), (33, 38, '2025-03-12 13:33:44'),
+(34, 39, '2025-03-13 18:44:55'), (35, 40, '2025-03-14 14:55:06'), (36, 1, '2025-03-15 19:06:17'),
+(37, 2, '2025-03-16 15:17:28'), (38, 3, '2025-02-19 20:28:39'), (39, 4, '2025-02-20 16:39:50'),
+(40, 5, '2025-02-21 21:50:01'),
+
+-- 상호 팔로우 관계 (서로 팔로우)
+(1, 2, '2025-03-10 13:24:35'), (2, 1, '2025-03-10 14:35:46'),
+(3, 4, '2025-03-11 15:46:57'), (4, 3, '2025-03-11 16:57:08'),
+(5, 6, '2025-03-12 14:08:19'), (6, 5, '2025-03-12 15:19:20'),
+(7, 8, '2025-03-13 16:29:31'), (8, 7, '2025-03-13 17:33:42'),
+(9, 10, '2025-03-14 15:44:53'), (10, 9, '2025-03-14 16:55:04'),
+(11, 12, '2025-03-15 14:06:15'), (12, 11, '2025-03-15 15:17:26'),
+(13, 14, '2025-03-16 17:28:37'), (14, 13, '2025-03-16 18:39:48'),
+(15, 16, '2025-02-18 16:40:59'), (16, 15, '2025-02-18 17:51:10'),
+
+-- 인기 유저들의 상호 팔로우
+(1, 3, '2025-02-19 15:11:22'), (3, 1, '2025-02-19 16:22:33'),
+(2, 4, '2025-02-20 14:33:44'), (4, 2, '2025-02-20 15:44:55'),
+(3, 5, '2025-02-21 13:55:06'), (5, 3, '2025-02-21 14:06:17'),
+(1, 4, '2025-02-22 12:17:28'), (4, 1, '2025-02-22 13:28:39'),
+(2, 5, '2025-02-23 11:39:40'), (5, 2, '2025-02-23 12:50:51'),
+
+-- 추가 유저들 간의 관계
+(17, 25, '2025-03-10 14:12:13'), (18, 26, '2025-03-11 10:23:24'),
+(19, 27, '2025-03-12 15:34:35'), (20, 28, '2025-03-13 11:45:46'),
+(21, 29, '2025-03-14 16:56:57'), (22, 30, '2025-03-15 12:07:08'),
+(23, 31, '2025-03-16 17:18:19'), (24, 32, '2025-02-17 13:29:30'),
+(25, 33, '2025-02-18 18:40:41'), (26, 34, '2025-02-19 14:51:52'),
+(27, 35, '2025-02-20 19:02:03'), (28, 36, '2025-02-21 15:13:14'),
+(29, 37, '2025-02-22 20:24:25'), (30, 38, '2025-02-23 16:35:36'),
+(31, 39, '2025-02-24 21:46:47'), (32, 40, '2025-02-25 17:57:58');
 
 -- posts 테이블 (2025-02-18부터 2025-03-18까지, 총 90개)
 INSERT INTO posts (user_no, post_cont, img_url, category, post_created_at)
