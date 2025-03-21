@@ -25,7 +25,16 @@ public class NotificationSettingController {
 
         }
         model.addAttribute("settings", settings);
-        return "setting/support/notifications/notification_setting"; // 템플릿 경로 정확히 맞춰줌
+        return "setting/support/notifications/notification_setting";
+    }
+    @GetMapping("/volatility_list.do")
+    public String getVolatilityNotificationList() {
+        return "setting/support/notifications/volatility_list";
+    }
+
+    @GetMapping("/target_price_list.do")
+    public String getTargetPriceNotificationList() {
+        return "setting/support/notifications/target_price_list";
     }
 
     @PostMapping("/save-auto")
@@ -86,7 +95,7 @@ public class NotificationSettingController {
             response.put("success", true);
         } catch (Exception e) {
             response.put("success", false);
-            response.put("message", e.getMessage()); // 이 메시지를 프론트에서 받게 됨
+            response.put("message", e.getMessage());
         }
 
         return response;

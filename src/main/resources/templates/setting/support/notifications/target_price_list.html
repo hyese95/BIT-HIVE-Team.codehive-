@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>알림 목록</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    .notification-label {
+      font-size: 14px;
+    }
+    .large-checkbox {
+      transform: scale(1.4);
+    }
+  </style>
+</head>
+<body>
+<div class="container py-4">
+  <h3 class="mb-4">지정가 알림</h3>
+
+  <table class="table align-middle table-hover">
+    <thead>
+    <tr>
+      <th class="notification-label">코인 이름</th>
+      <th class="notification-label text-end">지정가</th>
+      <th class="notification-label text-end pe-4">알림 ON/OFF</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <tr>
+      <td>솔라나 (SOL)</td>
+      <td class="text-end">₩285,000</td>
+      <td class="text-end pe-4">
+        <div class="form-check form-switch d-inline-flex">
+          <input class="form-check-input large-checkbox" type="checkbox" checked>
+        </div>
+      </td>
+    </tr>
+
+
+    <tr>
+      <td>비트코인 (BTC)</td>
+      <td class="text-end">₩150,319,000</td>
+      <td class="text-end pe-4">
+        <div class="form-check form-switch d-inline-flex">
+          <input class="form-check-input large-checkbox" type="checkbox"checked>
+        </div>
+      </td>
+    </tr>
+
+
+    <tr>
+      <td>리플 (XRP)</td>
+      <td class="text-end">₩4,800</td>
+      <td class="text-end pe-4">
+        <div class="form-check form-switch d-inline-flex">
+          <input class="form-check-input large-checkbox" type="checkbox" checked>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <a href="/setting/support/notifications/notification_setting.do" class="btn btn-secondary">뒤로가기</a>
+</div>
+</body>
+</html>

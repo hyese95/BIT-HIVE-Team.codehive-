@@ -109,4 +109,9 @@ public class SettingController {
 
         return "setting/my_info/my_info_summary";
     }
+
+    @GetMapping("/support/privacy_policy")
+    public String privacyPolicy() {
+        return "setting/support/privacy_policy";
+    }
 }

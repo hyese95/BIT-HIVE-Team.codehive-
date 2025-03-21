@@ -13,7 +13,7 @@ public class NotificationSettingServiceImp implements NotificationSettingService
 
     @Override
     public NotificationSetting getSettingsForUser() {
-        int userNo = getCurrentUserNo(); // 사용자 정보 획득 로직 필요
+        int userNo = getCurrentUserNo();
         return notificationSettingRepository.findById(userNo);
     }
 
@@ -22,9 +22,9 @@ public class NotificationSettingServiceImp implements NotificationSettingService
         notificationSettingRepository.save(settings);
     }
 
-    // 현재 로그인한 사용자 번호를 가져오는 메서드 구현 필요
+
     private int getCurrentUserNo() {
-        // 임시로 사용자 번호 1 반환
+
         return 1;
     }
 }

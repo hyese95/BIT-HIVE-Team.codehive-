@@ -4,94 +4,185 @@
     <meta charset="UTF-8">
     <title>알림 설정</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        .notification-label {
+            font-size: 14px;
+        }
+        .notification-button {
+            font-size: 12px;
+        }
+        .large-checkbox {
+            transform: scale(1.4);
+        }
+    </style>
 </head>
 <body>
 <div class="container py-4">
     <h2 class="mb-4">알림 설정</h2>
 
     <form method="post" action="/setting/support/notifications/save" th:object="${settings}">
+
+
         <div class="card mb-3">
             <div class="card-header">
-                <strong>전체 알림</strong>
+                <strong class="notification-label">전체 알림</strong>
             </div>
             <div class="card-body">
                 <div class="form-check form-switch d-flex align-items-center justify-content-between">
-                    <label class="form-check-label" for="all_notifications">전체 알림</label>
-                    <input class="form-check-input auto-save" type="checkbox" id="all_notifications" data-field="allNotifications">
+                    <label class="form-check-label notification-label">전체 알림</label>
+                    <div class="d-flex align-items-center justify-content-between" style="width: 160px;">
+                        <div style="width: 70px;"></div>
+                        <input class="form-check-input auto-save large-checkbox" type="checkbox"
+                               id="all_notifications"
+                               data-field="allNotifications"
+                               th:checked="${settings.volatilityYn and settings.portfolioYn and settings.targetPriceYn
+                                            and settings.tradeYn and settings.likeYn and settings.commentYn
+                                            and settings.replyYn and settings.followerYn}">
+                    </div>
                 </div>
             </div>
         </div>
 
+
         <div class="card mb-3">
             <div class="card-header">
-                <strong>거래소 알림</strong>
+                <strong class="notification-label">거래소 알림</strong>
             </div>
             <div class="card-body">
-                <div class="form-check form-switch d-flex align-items-center justify-content-between">
-                    <label class="form-check-label" for="volatility">급격한 시세변동 알림</label>
-                    <input class="form-check-input auto-save" type="checkbox" id="volatility" data-field="volatilityYn" th:checked="${settings.volatilityYn}">
+
+
+                <div class="form-check form-switch d-flex align-items-center justify-content-between mb-2">
+                    <label class="form-check-label notification-label">급격한 시세변동 알림</label>
+                    <div class="d-flex align-items-center justify-content-between" style="width: 160px;">
+                        <a class="btn btn-sm btn-dark notification-button" href="/setting/support/notifications/volatility_list.do">목록보기</a>
+                        <input class="form-check-input auto-save large-checkbox" type="checkbox"
+                               id="volatility" data-field="volatilityYn"
+                               th:checked="${settings.volatilityYn}">
+                    </div>
                 </div>
 
-                <div class="form-check form-switch d-flex align-items-center justify-content-between">
-                    <label class="form-check-label" for="portfolio">보유 자산 알림</label>
-                    <input class="form-check-input auto-save" type="checkbox" id="portfolio" data-field="portfolioYn" th:checked="${settings.portfolioYn}">
+
+                <div class="form-check form-switch d-flex align-items-center justify-content-between mb-2">
+                    <label class="form-check-label notification-label">보유 자산 알림</label>
+                    <div class="d-flex align-items-center justify-content-between" style="width: 160px;">
+                        <div style="width: 70px;"></div>
+                        <input class="form-check-input auto-save large-checkbox" type="checkbox"
+                               id="portfolio" data-field="portfolioYn"
+                               th:checked="${settings.portfolioYn}">
+                    </div>
                 </div>
 
-                <div class="form-check form-switch d-flex align-items-center justify-content-between">
-                    <label class="form-check-label" for="targetPrice">지정가 알림</label>
-                    <input class="form-check-input auto-save" type="checkbox" id="targetPrice" data-field="targetPriceYn" th:checked="${settings.targetPriceYn}">
+
+                <div class="form-check form-switch d-flex align-items-center justify-content-between mb-2">
+                    <label class="form-check-label notification-label">지정가 알림</label>
+                    <div class="d-flex align-items-center justify-content-between" style="width: 160px;">
+                        <a class="btn btn-sm btn-dark notification-button" href="/setting/support/notifications/target_price_list.do">목록보기</a>
+                        <input class="form-check-input auto-save large-checkbox" type="checkbox"
+                               id="targetPrice" data-field="targetPriceYn"
+                               th:checked="${settings.targetPriceYn}">
+                    </div>
                 </div>
 
+
                 <div class="form-check form-switch d-flex align-items-center justify-content-between">
-                    <label class="form-check-label" for="trade">매수/매도 체결시 알림</label>
-                    <input class="form-check-input auto-save" type="checkbox" id="trade" data-field="tradeYn" th:checked="${settings.tradeYn}">
+                    <label class="form-check-label notification-label">매수/매도 체결시 알림</label>
+                    <div class="d-flex align-items-center justify-content-between" style="width: 160px;">
+                        <div style="width: 70px;"></div>
+                        <input class="form-check-input auto-save large-checkbox" type="checkbox"
+                               id="trade" data-field="tradeYn"
+                               th:checked="${settings.tradeYn}">
+                    </div>
                 </div>
             </div>
         </div>
 
+
         <div class="card mb-3">
             <div class="card-header">
-                <strong>커뮤니티 알림</strong>
+                <strong class="notification-label">커뮤니티 알림</strong>
             </div>
             <div class="card-body">
-                <div class="form-check form-switch d-flex align-items-center justify-content-between">
-                    <label class="form-check-label" for="like">내 게시물 좋아요 </label>
-                    <input class="form-check-input auto-save" type="checkbox" id="like" data-field="likeYn" th:checked="${settings.likeYn}">
+
+
+                <div class="form-check form-switch d-flex align-items-center justify-content-between mb-2">
+                    <label class="form-check-label notification-label">내 게시물 좋아요</label>
+                    <div class="d-flex align-items-center justify-content-between" style="width: 160px;">
+                        <div style="width: 70px;"></div>
+                        <input class="form-check-input auto-save large-checkbox" type="checkbox"
+                               id="like" data-field="likeYn"
+                               th:checked="${settings.likeYn}">
+                    </div>
                 </div>
 
-                <div class="form-check form-switch d-flex align-items-center justify-content-between">
-                    <label class="form-check-label" for="comment">내 게시물에 댓글 </label>
-                    <input class="form-check-input auto-save" type="checkbox" id="comment" data-field="commentYn" th:checked="${settings.commentYn}">
+
+                <div class="form-check form-switch d-flex align-items-center justify-content-between mb-2">
+                    <label class="form-check-label notification-label">내 게시물에 댓글</label>
+                    <div class="d-flex align-items-center justify-content-between" style="width: 160px;">
+                        <div style="width: 70px;"></div>
+                        <input class="form-check-input auto-save large-checkbox" type="checkbox"
+                               id="comment" data-field="commentYn"
+                               th:checked="${settings.commentYn}">
+                    </div>
                 </div>
 
-                <div class="form-check form-switch d-flex align-items-center justify-content-between">
-                    <label class="form-check-label" for="reply">나를 언급한 댓글 </label>
-                    <input class="form-check-input auto-save" type="checkbox" id="reply" data-field="replyYn" th:checked="${settings.replyYn}">
+
+                <div class="form-check form-switch d-flex align-items-center justify-content-between mb-2">
+                    <label class="form-check-label notification-label">나를 언급한 댓글</label>
+                    <div class="d-flex align-items-center justify-content-between" style="width: 160px;">
+                        <div style="width: 70px;"></div>
+                        <input class="form-check-input auto-save large-checkbox" type="checkbox"
+                               id="reply" data-field="replyYn"
+                               th:checked="${settings.replyYn}">
+                    </div>
                 </div>
 
+
                 <div class="form-check form-switch d-flex align-items-center justify-content-between">
-                    <label class="form-check-label" for="follower">새로운 팔로워 </label>
-                    <input class="form-check-input auto-save" type="checkbox" id="follower" data-field="followerYn" th:checked="${settings.followerYn}">
+                    <label class="form-check-label notification-label">새로운 팔로워</label>
+                    <div class="d-flex align-items-center justify-content-between" style="width: 160px;">
+                        <div style="width: 70px;"></div>
+                        <input class="form-check-input auto-save large-checkbox" type="checkbox"
+                               id="follower" data-field="followerYn"
+                               th:checked="${settings.followerYn}">
+                    </div>
                 </div>
+
+
             </div>
         </div>
+        <div class="text-start mt-4">
+            <a href="/setting/main.do" class="btn btn-secondary">뒤로가기</a>
+        </div>
+    </form>
+</div>
         <script>
-            // 체크박스 상태 변경 감지하여 자동 저장 (JavaScript 코드)
             document.addEventListener('DOMContentLoaded', function() {
-                document.querySelectorAll('.auto-save').forEach(function(checkbox) {
+                document.querySelectorAll('input.auto-save').forEach(function(checkbox) {
                     checkbox.addEventListener('change', function() {
                         const field = this.getAttribute('data-field');
                         const checked = this.checked;
+
+
+                        if (field === 'allNotifications') {
+                            document.querySelectorAll('input.auto-save').forEach(function(otherCheckbox) {
+                                otherCheckbox.checked = checked;
+                            });
+                        } else {
+                            if (!checked) {
+                                document.querySelector('#all_notifications').checked = false;
+                            } else {
+                                const allChecked = Array.from(document.querySelectorAll('input.auto-save:not(#all_notifications)'))
+                                    .every(cb => cb.checked);
+                                document.querySelector('#all_notifications').checked = allChecked;
+                            }
+                        }
 
                         fetch('/setting/support/notifications/save-auto', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify({
-                                field: field,
-                                value: checked
-                            })
+                            body: JSON.stringify({ field: field, value: checked })
                         })
                             .then(response => response.json())
                             .then(data => {
@@ -109,8 +200,8 @@
             });
         </script>
 
-
     </form>
+
 </div>
 </body>
 </html>
