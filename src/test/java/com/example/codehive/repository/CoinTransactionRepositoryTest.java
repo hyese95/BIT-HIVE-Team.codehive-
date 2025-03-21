@@ -14,20 +14,4 @@ class CoinTransactionRepositoryTest {
     @Autowired
     CoinTransactionRepository coinTransactionRepository;
 
-    @Test
-    @Transactional
-    public void testFindByUserNo() {
-        int userNo = 1;
-        List<CoinTransaction> transactions = coinTransactionRepository.findByUserNo(userNo);
-        System.out.println("User " + userNo + "의 거래 내역:");
-        transactions.stream()
-                .filter(tx -> "KRW-KRW".equals(tx.getMarket()) && "BUY".equals(tx.getTransactionType()))
-                .forEach(System.out::println);
-    }
-
-    @Test
-    @Transactional
-    void findSumCoinTransactionsByUserNo() {
-        System.out.println(coinTransactionRepository.findSumCoinTransactionsByUserNoWithBuy(1));
-    }
 }

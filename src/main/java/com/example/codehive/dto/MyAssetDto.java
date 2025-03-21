@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 @ToString
 @AllArgsConstructor
-public class MyAssetDto {
+public class MyAssetDto { // 한 사용자에 대한 전체 자산을 나타내기 위해 매수 내역과 매도 내역을 별도의 리스트로 보유
     private String market;
     private Double quantity;
 
