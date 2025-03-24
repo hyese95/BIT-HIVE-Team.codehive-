@@ -49,7 +49,7 @@
             <form action="/community/api/commentWrite" method="post" style="display: flex; flex-direction: column;">
             <label style="user-select: none;">
                 <textarea class="d-flex flex-column mb-2" name="commentCont" id="commentCont" cols="165" rows="3"
-                          placeholder="비방성 댓글, 욕설은 삼가주세요. 불이익을 당할 수 있습니다." style="user-select: none;"></textarea>
+                          placeholder="비방성 댓글, 욕설은 삼가주세요. 불이익을 당할 수 있습니다." style="user-select: none; resize: none;"></textarea>
             </label>
             <button onclick="writeComment" style="justify-content: flex-end; left:100%;width: 100px ">
                 댓글 달기
@@ -84,7 +84,7 @@
                 </span>
                 <div class="modifyComments" style="display: none">
                     <label>
-                    <textarea name="commentCont" cols="165" rows="3" style="user-modify: none"></textarea>
+                    <textarea name="commentCont" cols="165" rows="3" style="resize: none; height: 300px;"></textarea>
                         <button type="button" class="modifyCommentBtn" onclick="modifyPost">수정완료</button>
                     </label>
                 </div>

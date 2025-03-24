@@ -12,7 +12,7 @@
         <h1>게시글 내용 수정<label>
 
                 <textarea class="form-control" rows="10" style="width: 1200px; height: 500px;position: relative;
-                user-select: none; align-items: center;"
+                user-select: none; align-items: center; resize: none;"
                           placeholder="수정할 내용을 입력해 주세요!" name="postCont" th:value="${postDto.postCont}" th:utext="${postDto.postCont}"></textarea></label>
             <input type="hidden" name="postNo" th:value="${postDto.id}"></h1>
           <label>
