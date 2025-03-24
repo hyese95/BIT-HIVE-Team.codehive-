@@ -20,11 +20,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -113,6 +109,7 @@ public class PostServiceImp implements PostService {
             throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
         }
         newPost.setUser(user);  // 실제 User 객체 설정
+        newPost.setComment(new ArrayList<>());
 
         Post savedPost = postRepository.save(newPost);
         return new PostDto(savedPost);

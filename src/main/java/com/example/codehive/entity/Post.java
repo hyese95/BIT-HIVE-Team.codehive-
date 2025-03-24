@@ -50,8 +50,8 @@ public class Post {
     @ToString.Exclude
     private List<PostLike> postLikes=new ArrayList<>();
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     @JsonBackReference
-    private List<Comment> comment;
+    private List<Comment> comment = new ArrayList<>();
 }

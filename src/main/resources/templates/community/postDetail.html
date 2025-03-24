@@ -45,12 +45,23 @@
             <span th:text="'댓글 ' + ${cntComment} + '개'">댓글 갯수</span>
         </div>
     </div>
+        <div style="width: fit-content;">
+            <form action="/community/api/commentWrite" method="post" style="display: flex; flex-direction: column;">
+            <label style="user-select: none;">
+                <textarea class="d-flex flex-column mb-2" name="commentCont" id="commentCont" cols="165" rows="3"
+                          placeholder="비방성 댓글, 욕설은 삼가주세요. 불이익을 당할 수 있습니다." style="user-select: none;"></textarea>
+            </label>
+            <button onclick="writeComment" style="justify-content: flex-end; left:100%;width: 100px ">
+                댓글 달기
+            </button>
+            </form>
+        </div>
     <div th:each="comment : ${comments}" th:if="${comment.parentNo == null}" style="margin-bottom: 10px; justify-content: space-between; align-items: center">
         <!-- 부모 댓글 -->
         <div id="comment" style=" height: auto; border: 1px solid black; border-radius: 5px; padding: 5px; ">
             <div class="pe-3 text-end" style="right:100%">
-                <button type="button" onclick="">수정</button>
-                <button type="button" onclick="">삭제</button>
+                <button type="button" class="modifyComment" onclick="modifyCommentForm">수정</button>
+                <button type="button" class="deleteComment" onclick="deleteComments">삭제</button>
             </div>
             <div style="display: flex; flex-direction: row ;justify-content: space-between">
             <div style="display: flex; flex-direction: row;justify-content: space-between">
@@ -71,6 +82,12 @@
                 대댓글 <span th:text="${replyCounts[comment.id] ?: 0}+개"></span> 보기
             </button>
                 </span>
+                <div class="modifyComments" style="display: none">
+                    <label>
+                    <textarea name="commentCont" cols="165" rows="3" style="user-modify: none"></textarea>
+                        <button type="button" class="modifyCommentBtn" onclick="modifyPost">수정완료</button>
+                    </label>
+                </div>
             </div>
         </div>
             <!-- 대댓글 목록 (초기에 숨김) -->
@@ -103,6 +120,11 @@
 <script>
     // child = document.getElementsByClassName("childComment");
     seecomment = document.getElementsByClassName("seeComment");
+    modifyComment=document.getElementsByClassName("modifyComment");
+    modifyComments=document.getElementsByClassName("modifyComments");
+    deleteComment=document.getElementsByClassName("deleteComment");
+    modifyCommentBtn=document.getElementsByClassName("modifyCommentBtn");
+
     const category='[[${post.category}]]';
     function toggleReplies(button) {
         let parentId = button.getAttribute("data-parent");
@@ -110,6 +132,9 @@
         replies.forEach(reply => {
             reply.style.display = (reply.style.display === "none" || reply.style.display === "") ? "block" : "none"
         });
+    }
+    function modifyCommentForm(modifyComments) {
+        modifyComments.style.display = modifyComments.style.display === "none" ? "block" : "none"
     }
 
     async function deletePost(postNo) {

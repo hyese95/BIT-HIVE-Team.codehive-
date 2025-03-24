@@ -43,7 +43,7 @@ public class PostDto {
             this.category = post.getCategory();
             this.userNickname = post.getUser().getNickname();
             this.userId = post.getUser().getId();
-            this.commentCount=post.getComment().size();
+            this.commentCount = (post.getComment() != null) ? post.getComment().size() : 0;
 
             // 좋아요/싫어요 카운트
             this.likeCount = 0;

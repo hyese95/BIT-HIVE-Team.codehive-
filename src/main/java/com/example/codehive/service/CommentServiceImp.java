@@ -2,11 +2,15 @@ package com.example.codehive.service;
 
 import com.example.codehive.entity.Comment;
 import com.example.codehive.repository.CommentRepository;
+import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -14,6 +18,7 @@ import java.util.List;
 public class CommentServiceImp implements CommentService {
     @Autowired
     private final CommentRepository commentRepository;
+    private final EntityManager entityManager;
 
     @Override
     public List<Comment> readComment(int id) {
@@ -61,6 +66,20 @@ public class CommentServiceImp implements CommentService {
     @Override
     public int getReplyCount(int parentNo) {
         return commentRepository.countByParentNo(parentNo);
+    }
+
+    @Override
+    @Transactional
+    public void modifyComment(Comment comment) {
+        comment.setParentNo(comment.getPostNo());
+        comment.setId(comment.getId());
+        comment.setCommentCont(comment.getCommentCont());
+        comment.setCommentCreatedAt(Instant.now());
+        commentRepository.save(comment);
+        entityManager.persist(comment);
+
+
+
     }
 
 

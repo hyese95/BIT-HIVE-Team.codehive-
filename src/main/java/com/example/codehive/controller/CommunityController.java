@@ -54,17 +54,17 @@ public class CommunityController {
     @PostMapping("/api/free_post_write")
     @ResponseBody
     public ResponseEntity<PostDto> writeFreePost(@RequestBody PostDto postDto) {
-        // 1. 임의의 유저 정보 추가 (예: Guest)
         List<User> users = userService.findAll();
         if (users.isEmpty()) {
             throw new IllegalArgumentException("사용자가 없습니다.");
         }
         User randomUser = users.get(new Random().nextInt(users.size()));
         postDto.setUserId(randomUser.getId());
+        postDto.setCategory("free");
         postDto.setUserNickname(randomUser.getNickname());
         postDto.setPostCreatedAt(Instant.now());
-        Post savedPost = postService.createPost(postDto);
-        return ResponseEntity.ok(new PostDto(savedPost));
+        PostDto savedPost = postService.createPost(postDto);
+        return ResponseEntity.ok(savedPost);
     }
 
     @GetMapping("/free_post.do")
@@ -88,6 +88,21 @@ public class CommunityController {
         pageable = PageRequest.of(page, size);
         Page<Post> postPage = postService.readAllByCategory(pageable, "pnl");
         return postPage.map(PostDto::new);
+    }
+    @PostMapping("/api/pnl_post_write")
+    @ResponseBody
+    public ResponseEntity<PostDto> writePnlPost(@RequestBody PostDto postDto) {
+        List<User> users = userService.findAll();
+        if (users.isEmpty()) {
+            throw new IllegalArgumentException("사용자가 없습니다.");
+        }
+        User randomUser = users.get(new Random().nextInt(users.size()));
+        postDto.setUserId(randomUser.getId());
+        postDto.setCategory("pnl");
+        postDto.setUserNickname(randomUser.getNickname());
+        postDto.setPostCreatedAt(Instant.now());
+        PostDto savedPost = postService.createPost(postDto);
+        return ResponseEntity.ok(savedPost);
     }
     @GetMapping("/pnl_post.do")
     public String pnlPost(Model model,
@@ -115,6 +130,21 @@ public class CommunityController {
         Page<Post> postPage=postService.readAllByCategory(pageable,"chart");
         return postPage.map(PostDto::new);
     }
+    @PostMapping("/api/chart_post_write")
+    @ResponseBody
+    public ResponseEntity<PostDto> writeChartPost(@RequestBody PostDto postDto) {
+        List<User> users = userService.findAll();
+        if (users.isEmpty()) {
+            throw new IllegalArgumentException("사용자가 없습니다.");
+        }
+        User randomUser = users.get(new Random().nextInt(users.size()));
+        postDto.setUserId(randomUser.getId());
+        postDto.setCategory("chart");
+        postDto.setUserNickname(randomUser.getNickname());
+        postDto.setPostCreatedAt(Instant.now());
+        PostDto savedPost = postService.createPost(postDto);
+        return ResponseEntity.ok(savedPost);
+    }
     @GetMapping("/chart_post.do")
     public String chartPost(Model model,
                            @PageableDefault(size = 10) Pageable pageable,
@@ -135,6 +165,21 @@ public class CommunityController {
         pageable = PageRequest.of(page, size);
         Page<Post> postPage=postService.readAllByCategory(pageable,"expert");
         return postPage.map(PostDto::new);
+    }
+    @PostMapping("/api/expert_post_write")
+    @ResponseBody
+    public ResponseEntity<PostDto> writeExpertPost(@RequestBody PostDto postDto) {
+        List<User> users = userService.findAll();
+        if (users.isEmpty()) {
+            throw new IllegalArgumentException("사용자가 없습니다.");
+        }
+        User randomUser = users.get(new Random().nextInt(users.size()));
+        postDto.setUserId(randomUser.getId());
+        postDto.setCategory("expert");
+        postDto.setUserNickname(randomUser.getNickname());
+        postDto.setPostCreatedAt(Instant.now());
+        PostDto savedPost = postService.createPost(postDto);
+        return ResponseEntity.ok(savedPost);
     }
     @GetMapping("/expert_post.do")
     public String expertPost(Model model,
