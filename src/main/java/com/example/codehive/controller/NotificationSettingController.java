@@ -19,7 +19,7 @@ public class NotificationSettingController {
 
     @GetMapping("/notification_setting.do")
     public String getSettingsPage(Model model) {
-        NotificationSetting settings = notificationSettingService.getSettingsForUser();
+        NotificationSetting settings = notificationSettingService.getSettingsForUser(1);
         if (settings == null) {
             settings = new NotificationSetting();
 
@@ -27,6 +27,11 @@ public class NotificationSettingController {
         model.addAttribute("settings", settings);
         return "setting/support/notifications/notification_setting"; // 템플릿 경로 정확히 맞춰줌
     }
+
+
+
+
+
 
     @PostMapping("/save-auto")
     @ResponseBody
@@ -37,7 +42,7 @@ public class NotificationSettingController {
             String field = (String) payload.get("field");
             boolean value = (Boolean) payload.get("value");
 
-            NotificationSetting settings = notificationSettingService.getSettingsForUser();
+            NotificationSetting settings = notificationSettingService.getSettingsForUser(1);
             if (settings == null) {
                 settings = new NotificationSetting();
             }
