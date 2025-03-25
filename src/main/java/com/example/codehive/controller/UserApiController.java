@@ -80,4 +80,24 @@ public class UserApiController {
         userService.unfollow(1, followingUserNo);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/{userNo}/followers")
+    public List<FollowDto.Follower> getUserFollowers(
+            @PathVariable Integer userNo,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userService.readFollowersByUserNo(userNo, pageable);
+    }
+
+    @GetMapping("/{userNo}/followings")
+    public List<FollowDto.Following> getUserFollowings(
+            @PathVariable Integer userNo,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userService.readFollowingsByUserNo(userNo, pageable);
+    }
 }
