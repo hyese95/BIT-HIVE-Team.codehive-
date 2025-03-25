@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns=""
+      th:replace="~{fragments/default :: html(content=~{::body})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="container">
+    <h1>유저정보</h1>
+
+    <div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <img th:src="@{${userDto.profileImgUrl}}" alt="프로필" style="width: 100px;height: 100px;">
+            <div>
+                <p style="margin: 0; font-weight: bold; font-size: 30px;" th:text="${userDto.nickname}">닉네임</p>
+                <button th:value="${userDto.id}">팔로우</button>
+                <div class="card text-center my-1" style="align-items: center;">
+                    <p style="margin: 0;">가입일 : <span th:text="${userDto.createdAt}"></span></p>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="d-flex justify-content-between">
+            <div class="card text-center flex-grow-1 mx-1">
+                <p th:text="${userDto.postCount}" class="mb-0 fw-bold"></p>
+                <span>게시물</span>
+            </div>
+            <div class="card text-center flex-grow-1 mx-1">
+                <a href="/user/follow_list?tab=followers">
+                    <p th:text="${userDto.followerCount}" class="mb-0 fw-bold"></p>
+                    <span>팔로워</span>
+                </a>
+            </div>
+            <div class="card text-center flex-grow-1 mx-1">
+                <a href="/user/follow_list?tab=followings">
+                    <p th:text="${userDto.followingCount}" class="mb-0 fw-bold"></p>
+                    <span>팔로잉</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="card">
+            <p>보유자산</p>
+            <p>456456 <span>원</span></p>
+            <p><span>평가손익</span><span>+123123</span></p>
+            <p><span>수익률</span><span>+12.34%</span></p>
+        </div>
+
+
+        <div class="card">
+            <p style="font-weight: bold">자기소개</p>
+            <p th:text="${userDto.selfIntroduction}"></p>
+        </div>
+
+    </div>
+</div>
+
+
+</body>
+</html>
