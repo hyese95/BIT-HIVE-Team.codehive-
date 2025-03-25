@@ -2,6 +2,7 @@ package com.example.codehive.service;
 
 import com.example.codehive.dto.FollowDto;
 import com.example.codehive.entity.Follow;
+import com.example.codehive.entity.FollowId;
 import com.example.codehive.entity.User;
 import com.example.codehive.repository.FollowRepository;
 import com.example.codehive.repository.PostRepository;
@@ -9,6 +10,7 @@ import com.example.codehive.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -75,5 +77,11 @@ public class UserServiceImp implements UserService {
     @Override
     public List<FollowDto.Following> readFollowingsByUserNo(Integer userNo, Pageable pageable) {
         return followRepository.findFollowingsByUserNo(userNo, pageable);
+    }
+
+    @Transactional
+    @Override
+    public void unfollow(Integer followerUserNo, Integer followingUserNo) {
+        followRepository.deleteByIdFollowerUserNoAndIdFollowingUserNo(followerUserNo, followingUserNo);
     }
 }

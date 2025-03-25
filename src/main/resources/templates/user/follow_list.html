@@ -25,7 +25,6 @@
     <hr>
     <input type="text">
     <hr>
-    <p>정렬기준 기본</p>
     <div id="listContainer">
 
     </div>
@@ -37,23 +36,54 @@
     const followingListBtn = document.getElementById('followingListBtn');
 
     const urlParams = new URLSearchParams(window.location.search);
-    const tabParam= urlParams.get('tab');
+    const tabParam = urlParams.get('tab');
+    let currentTab = tabParam === 'following' ? 'following' : 'followers';
+
+    let page = 0;
+    const size = 10;
+    let loading = false;
 
     document.addEventListener('DOMContentLoaded', function () {
-        if (tabParam === 'followers' || tabParam ===null) {
+        if (tabParam === 'followers' || tabParam === null) {
             loadFollowers();
         } else {
             loadFollowings();
         }
 
+        window.addEventListener('scroll', handleScroll);
+        // listContainer.addEventListener('click', handleUnfollow);
+
     });
 
-    async function loadFollowers() {
-        followerListBtn.classList.add('active');
-        followingListBtn.classList.remove('active');
-        const url = '/api/users/me/followers';
+    function handleScroll() {
+        if (loading) return;
+
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) {
+            if (currentTab === 'followers') {
+                loadFollowers(true);
+            } else {
+                loadFollowings(true);
+            }
+        }
+    }
+
+    async function loadFollowers(append = false) {
+        if (loading) return;
+        loading = true;
+        if (!append) {
+            page = 0;
+            listContainer.innerHTML = '';
+            followerListBtn.classList.add('active');
+            followingListBtn.classList.remove('active');
+            currentTab = 'followers';
+        }
+        const url = `/api/users/me/followers?page=${page}&size=${size}`;
         const response = await fetch(url);
         const data = await response.json();
+        if (data.length === 0) {
+            loading = false;
+            return;
+        }
         let html = ''
         for (const follower of data) {
             html +=
@@ -65,25 +95,42 @@
                             <p style="margin: 0; font-weight: lighter">${follower.name}</p>
                         </div>
                     </div>
-
                 </div>`
         }
-        listContainer.innerHTML = html;
+        if (append) {
+            listContainer.insertAdjacentHTML('beforeend', html);
+        } else {
+            listContainer.innerHTML = html;
+        }
+        page++;
+        loading = false;
     }
-    followerListBtn.addEventListener('click', loadFollowers);
 
+    async function loadFollowings(append = false) {
+        if (loading) return;
+        loading = true;
 
+        if (!append) {
+            page = 0;
+            listContainer.innerHTML = '';
+            followingListBtn.classList.add('active');
+            followerListBtn.classList.remove('active');
+            currentTab = 'following';
+        }
 
-    async function loadFollowings() {
-        followingListBtn.classList.add('active');
-        followerListBtn.classList.remove('active');
-        const url = '/api/users/me/followings';
+        const url = `/api/users/me/followings?page=${page}&size=${size}`;
         const response = await fetch(url);
         const data = await response.json();
-        let html = ''
+
+        if (data.length === 0) {
+            loading = false;
+            return;
+        }
+
+        let html = '';
         for (const following of data) {
             html +=
-                `<div class="my-4" style="display: flex; justify-content: space-between; align-items: center;">
+                `<div class="my-4 followingList" style="display: flex; justify-content: space-between; align-items: center;">
                     <div style="display: flex; align-items: center;">
                         <img src="${following.profileImgUrl}" alt="${following.profileImgUrl}" style="margin-right: 10px; width: 50px; height: 50px;">
                         <div>
@@ -91,12 +138,126 @@
                             <p style="margin: 0; font-weight: lighter">${following.name}</p>
                         </div>
                     </div>
-                    <button style="height: 2em;" value="${following.followingUserNo}">삭제</button>
-                </div>`
+                    <button style="height: 2em;" value="${following.followingUserNo}"
+                     data-img-url="${following.profileImgUrl}" data-nickname="${following.nickname}">삭제</button>
+                </div>`;
         }
-        listContainer.innerHTML = html;
+
+        if (append) {
+            listContainer.insertAdjacentHTML('beforeend', html);
+        } else {
+            listContainer.innerHTML = html;
+        }
+        page++;
+        loading = false;
     }
-    followingListBtn.addEventListener('click', loadFollowings);
+    followerListBtn.addEventListener('click', () => loadFollowers());
+    followingListBtn.addEventListener('click', () => loadFollowings());
+
+
+    //언팔로우 모달식 구현
+    function showModal(followingUserNo, element,followingUserImgUrl,followingUserNickname) {
+
+        const existingModal = document.getElementById('confirmModal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+
+
+        const modalHTML = `
+    <div id="confirmModal" class="position-fixed bottom-0 start-0 w-100" style="z-index: 1050;">
+      <div class="modal-backdrop position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50" style="z-index: -1;"></div>
+      <div class="bg-white p-3 rounded-top shadow-lg border-top" style="animation: slideUp 0.3s ease;">
+        <div style="display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 1rem;">
+            <img src="${followingUserImgUrl}" alt="프로필이미지" style="width: 50px; height: 50px;">
+            <p>${followingUserNickname}</p>
+        </div>
+        <p class="mb-3 text-center fw-bold">팔로우를 취소하시겠습니까?</p>
+        <hr>
+        <button id="confirmUnfollow" class="btn btn-danger w-100" data-user-no="${followingUserNo}">삭제</button>
+      </div>
+    </div>`;
+
+        //스타일
+        if (!document.getElementById('modalStyles')) {
+            const styleElement = document.createElement('style');
+            styleElement.id = 'modalStyles';
+            styleElement.textContent = `
+            @keyframes slideUp {
+                from { transform: translateY(100%); }
+                to { transform: translateY(0); }
+            }
+
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+
+            .modal-backdrop {
+                animation: fadeIn 0.3s ease;
+            }
+
+            body.modal-open {
+                overflow: hidden;
+            }
+        `;
+            document.head.appendChild(styleElement);
+        }
+
+
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        document.body.classList.add('modal-open');
+
+        const modal = document.getElementById('confirmModal');
+        const confirmBtn = document.getElementById('confirmUnfollow');
+        const backdrop = modal.querySelector('.modal-backdrop');
+
+        backdrop.addEventListener('click', hideModal);
+
+        confirmBtn.addEventListener('click', async () => {
+            try {
+                const userNo = confirmBtn.dataset.userNo;
+                const response = await fetch(`/api/users/unfollow/${userNo}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    element.remove();
+                }
+            } catch (error) {
+                alert('언팔로우에 실패했습니다.')
+                console.error('언팔로우 오류:', error);
+            } finally {
+                hideModal();
+            }
+        });
+
+        // 모달표시
+        setTimeout(() => {
+            modal.style.display = 'block';
+        }, 10);
+    }
+
+    //모달숨기기
+    function hideModal() {
+        const modal = document.getElementById('confirmModal');
+        if (modal) {
+            document.body.classList.remove('modal-open');
+            modal.remove();
+        }
+    }
+
+    //삭제버튼
+    function handleUnfollowClick(event) {
+        if (event.target.tagName === 'BUTTON' && event.target.value) {
+            const followingUserNo = event.target.value;
+            const followingUserImgUrl=event.target.dataset.imgUrl;
+            const followingUserNickname = event.target.dataset.nickname;
+            const element = event.target.closest('.followingList');
+            showModal(followingUserNo, element,followingUserImgUrl,followingUserNickname);
+        }
+    }
+    listContainer.addEventListener('click', handleUnfollowClick);
 
 </script>
 

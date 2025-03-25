@@ -41,7 +41,7 @@ public class UserApiController {
                 userService.updateSelfIntroduction(1, dto.getSelfIntroduction());
             }
             return ResponseEntity.ok().build();
-        } catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -50,7 +50,7 @@ public class UserApiController {
     public UserDto meSummary() {
         Optional<User> userOpt = userService.readByUserNo(1);
         User user = userOpt.get();
-        UserDto userDto=UserDto.from(user);
+        UserDto userDto = UserDto.from(user);
         userDto.setPostCount(userService.readPostsCount(1));
         userDto.setFollowingCount(userService.readFollowingCount(1));
         userDto.setFollowerCount(userService.readFollowersCount(1));
@@ -58,14 +58,26 @@ public class UserApiController {
     }
 
     @GetMapping("/me/followers")
-    public List<FollowDto.Follower> meFollowers() {
-        Pageable pageable = PageRequest.of(0, 10);
+    public List<FollowDto.Follower> meFollowers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
         return userService.readFollowersByUserNo(1, pageable);
     }
 
     @GetMapping("/me/followings")
-    public List<FollowDto.Following> meFollowings() {
-        Pageable pageable = PageRequest.of(0, 10);
+    public List<FollowDto.Following> meFollowings(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
         return userService.readFollowingsByUserNo(1, pageable);
+    }
+
+    @DeleteMapping("/unfollow/{followingUserNo}")
+    public ResponseEntity<Void> unfollow(@PathVariable Integer followingUserNo) {
+        userService.unfollow(1, followingUserNo);
+        return ResponseEntity.ok().build();
     }
 }
