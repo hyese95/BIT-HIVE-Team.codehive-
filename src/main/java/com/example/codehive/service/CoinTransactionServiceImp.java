@@ -88,4 +88,9 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
 
         return new ProfitResult(coinDetails, totalPurchaseValuation, totalCurrentValuation, totalProfit, overallProfitRate);
     }
+
+    @Override
+    public List<CoinTransaction> findTransactionsByCoinStatusAndUser(String coin, String transactionState, String user) {
+        return List.of();
+    }
 }

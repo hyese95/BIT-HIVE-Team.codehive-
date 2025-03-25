@@ -12,6 +12,7 @@ import com.example.codehive.service.PriceService;
 import lombok.AllArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -99,8 +100,18 @@ public class TradeController {
     public String coinOrderSell(Model model) {
         return "trade/sell";
     }
-    @GetMapping("history.do")
-    public String coinOrderHistory(Model model) {
-        return "trade/history";
+
+    @GetMapping("/history.do")
+    public String historyView(
+            @RequestParam("coin") String coin,
+            @RequestParam(value = "status", required = false, defaultValue = "COMPLETED") String transactionState,
+            @RequestParam(value = "user", required = false, defaultValue = "user1") String user,
+            Model model) {
+
+        List<CoinTransaction> orders = coinTransactionService.findTransactionsByCoinStatusAndUser(coin, transactionState, user);
+        model.addAttribute("orders", orders);
+        model.addAttribute("coin", coin);
+        model.addAttribute("status", transactionState);
+        return "trade/history";  // 뷰 이름을 "trade/history"로 변경
     }
 }
