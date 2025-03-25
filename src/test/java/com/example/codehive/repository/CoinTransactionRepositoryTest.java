@@ -14,4 +14,12 @@ class CoinTransactionRepositoryTest {
     @Autowired
     CoinTransactionRepository coinTransactionRepository;
 
+    @Test
+    void findSumCoinTransactionsByUserNoWithBuy() {
+        System.out.println(coinTransactionRepository.findSumCoinTransactionsByUserNoWithBuy(1));
+    }
+
+    @Test
+    void findSumCoinTransactionsByUserNoWithSell() {
+    }
 }

@@ -1,10 +1,8 @@
 package com.example.codehive.controller;
 
-import com.example.codehive.dto.CoinTransactionDto;
-import com.example.codehive.dto.ProfitResult;
+import com.example.codehive.dto.CoinDetailDto;
+import com.example.codehive.dto.ProfitResultDto;
 import com.example.codehive.entity.CoinTransaction;
-import com.example.codehive.entity.FavoriteMarket;
-import com.example.codehive.repository.CoinTransactionRepository;
 import com.example.codehive.service.CoinTransactionService;
 import com.example.codehive.service.FavoriteCoinMarketService;
 import com.example.codehive.service.MyAssetService;
@@ -19,10 +17,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/trade")
@@ -50,8 +48,8 @@ public class TradeController {
             currentPriceMap.put(market, currentPrice);
         }
 
-        ProfitResult profitResult = coinTransactionService.calculateProfit(1, currentPriceMap);
-        model.addAttribute("profitResult", profitResult);
+        ProfitResultDto profitResultDto = coinTransactionService.calculateProfit(1, currentPriceMap);
+        model.addAttribute("profitResult", profitResultDto);
 
         return "trade/main";
     }
@@ -62,17 +60,29 @@ public class TradeController {
     }
 
     @GetMapping("/favorite_coin.do")
-    public String favoriteMarket(Model model) {
-                List<FavoriteMarket> favoriteMarketList = favoriteCoinMarketService.readByUserNo(1);
-        model.addAttribute("favoriteMarketList", favoriteMarketList);
+    public String favoriteMarket() {
 
     return "trade/favorite_coin";
     }
-    // 거래소 홈 화면 보유자산 표시
+
     @GetMapping("/holding_coin.do")
     public String holdingCoin(Model model) {
+        Map<String, Double> myAssetMap = myAssetService.readAssetByUserNo(1);
+        Map<String, Double> currentPriceMap = new HashMap<>();
 
-
+        for (String market : myAssetMap.keySet()) {
+            if (!"KRW-KRW".equalsIgnoreCase(market)) {
+                String upbitMarket = market.startsWith("KRW-") ? market : "KRW-" + market;
+                double price = priceService.getCoinPrice(upbitMarket);
+                currentPriceMap.put(market, price);
+            }
+        }
+        ProfitResultDto result = coinTransactionService.calculateProfit(1, currentPriceMap);
+        List<String> holdingMarkets = result.getCoinDetails().stream()
+                .filter(dto -> dto.getHoldingQty() > 0)
+                .map(CoinDetailDto::getMarket)
+                .collect(Collectors.toList());
+        model.addAttribute("holdingMarkets", holdingMarkets);
         return "trade/holding_coin";
     }
 
@@ -107,11 +117,6 @@ public class TradeController {
             @RequestParam(value = "status", required = false, defaultValue = "COMPLETED") String transactionState,
             @RequestParam(value = "user", required = false, defaultValue = "user1") String user,
             Model model) {
-
-        List<CoinTransaction> orders = coinTransactionService.findTransactionsByCoinStatusAndUser(coin, transactionState, user);
-        model.addAttribute("orders", orders);
-        model.addAttribute("coin", coin);
-        model.addAttribute("status", transactionState);
-        return "trade/history";  // 뷰 이름을 "trade/history"로 변경
-    }
+                return "trade/history";
+            }
 }

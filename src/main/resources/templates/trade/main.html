@@ -14,20 +14,13 @@
             <p>수익률: <span th:text="${#numbers.formatDecimal(profitResult.overallProfitRate, 0, 'COMMA', 2, 'POINT')}"></span></p>
         </div>
     </div>
-<!--    <div>-->
-<!--        <p>보유자산: <span th:text="${#numbers.formatDecimal(profitResult.totalCurrentValuation, 0, 'COMMA', 2, 'POINT')}"></span> 원</p>-->
-<!--        <p>평가손익: <span th:text="${#numbers.formatDecimal(profitResult.totalProfit, 0, 'COMMA', 2, 'POINT')}"></span> 원</p>-->
-<!--        <p>수익률: <span th:text="${#numbers.formatDecimal(profitResult.overallProfitRate, 0, 'COMMA', 2, 'POINT')}"></span> %</p>-->
-<!--    </div>-->
-<!---->
-    <!-- 각 코인별 상세 내역 (옵션) -->
     <table class="table table-bordered">
         <thead>
         <tr>
             <th>코인명</th>
             <th>평단가</th>
-            <th>잔여수량</th>
-            <th>구매 평가금액</th>
+            <th>보유수량</th>
+            <th>구매 금액</th>
             <th>현재 평가금액</th>
             <th>평가손익</th>
             <th>수익률</th>
@@ -36,11 +29,11 @@
         <tbody>
         <tr th:each="coin : ${profitResult.coinDetails}">
             <td th:text="${coin.market}"></td>
-            <td th:text="${#numbers.formatDecimal(coin.weightedAvgPrice, 0, 'COMMA', 2, 'POINT')}"></td>
-            <td th:text="${#numbers.formatDecimal(coin.holdingQty, 0, 'COMMA', 2, 'POINT')}"></td>
-            <td th:text="${#numbers.formatDecimal(coin.purchaseValuation, 0, 'COMMA', 2, 'POINT')}"></td>
-            <td th:text="${#numbers.formatDecimal(coin.currentValuation, 0, 'COMMA', 2, 'POINT')}"></td>
-            <td th:text="${#numbers.formatDecimal(coin.profit, 0, 'COMMA', 2, 'POINT')}"></td>
+            <td th:text="${#numbers.formatDecimal(coin.weightedAvgPrice, 0, 'COMMA', 0, 'POINT')}"></td>
+            <td th:text="${#numbers.formatDecimal(coin.holdingQty, 1, 'COMMA', 1, 'POINT')}"></td>
+            <td th:text="${#numbers.formatDecimal(coin.purchaseValuation, 0, 'COMMA', 0, 'POINT')}"></td>
+            <td th:text="${#numbers.formatDecimal(coin.currentValuation, 0, 'COMMA', 0, 'POINT')}"></td>
+            <td th:text="${#numbers.formatDecimal(coin.profit, 0, 'COMMA', 0, 'POINT')}"></td>
             <td th:text="${#numbers.formatDecimal(coin.profitRate, 0, 'COMMA', 2, 'POINT')}"></td>
         </tr>
         </tbody>
@@ -49,7 +42,6 @@
     <p><a href="#">원화</a></p>
     <p><a href="/trade/favorite_coin.do">관심</a></p>
     <p><a href="/trade/holding_coin.do">보유</a></p>
-    <!-- 코인 실시간 가격 목록 (티커 테이블) -->
     <table id="tickerTable" class="table table-hover">
         <thead class="table-dark">
         <tr>
@@ -66,9 +58,7 @@
 </div>
 
 <script>
-        // 내 자산(수량) 정보를 저장 (예: {"KRW-BTC": 0.5"}
     let myAssets = {};
-
     // 1. 내 자산(수량) API 호출 (페이지 로드 시 1회)
     async function fetchAssets() {
         try {
@@ -95,7 +85,7 @@
             totalValue += myAssets["KRW-KRW"] * 1;
         }
 
-        // 실제 거래 가능한 코인들의 가격은 Upbit API에서 가져옵니다 (KRW-KRW 제외)
+        // (KRW-KRW 제외)
         const realMarkets = markets.filter(market => market !== "KRW-KRW");
         if (realMarkets.length > 0) {
             // ★ Upbit API 예시: https://api.upbit.com/v1/ticker?markets=KRW-BTC,KRW-ETH,...

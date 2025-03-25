@@ -20,5 +20,4 @@ public class FavoriteCoinMarketServiceImp implements FavoriteCoinMarketService {
     public List<FavoriteMarket> readByUserNo(int userNo) {
         return favoriteMarketRepository.findByUserNo(userNo);
     }
-
 }

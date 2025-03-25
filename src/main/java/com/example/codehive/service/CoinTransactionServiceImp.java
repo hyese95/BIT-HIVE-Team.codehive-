@@ -1,15 +1,12 @@
 package com.example.codehive.service;
 
 import com.example.codehive.dto.CoinDetailDto;
-import com.example.codehive.dto.MyAssetDto;
-import com.example.codehive.dto.ProfitResult;
+import com.example.codehive.dto.ProfitResultDto;
 import com.example.codehive.entity.CoinTransaction;
 import com.example.codehive.repository.CoinTransactionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -20,7 +17,7 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
     private final CoinTransactionRepository coinTransactionRepository;
 
     @Override
-    public ProfitResult calculateProfit(int userNo, Map<String, Double> currentPriceMap) {
+    public ProfitResultDto calculateProfit(int userNo, Map<String, Double> currentPriceMap) {
         // 모든 거래 내역 조회 후, COMPLETED 상태인 BUY/SELL 거래만 필터링
         List<CoinTransaction> allTransactions = coinTransactionRepository.findByUserNo(userNo);
 
@@ -86,11 +83,6 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
         double totalProfit = totalCurrentValuation - totalPurchaseValuation;
         double overallProfitRate = totalPurchaseValuation != 0 ? (totalProfit / totalPurchaseValuation) * 100 : 0;
 
-        return new ProfitResult(coinDetails, totalPurchaseValuation, totalCurrentValuation, totalProfit, overallProfitRate);
-    }
-
-    @Override
-    public List<CoinTransaction> findTransactionsByCoinStatusAndUser(String coin, String transactionState, String user) {
-        return List.of();
+        return new ProfitResultDto(coinDetails, totalPurchaseValuation, totalCurrentValuation, totalProfit, overallProfitRate);
     }
 }

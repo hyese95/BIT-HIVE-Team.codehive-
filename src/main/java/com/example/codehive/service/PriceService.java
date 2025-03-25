@@ -1,5 +1,6 @@
 package com.example.codehive.service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@AllArgsConstructor
 public class PriceService {
     private final RestTemplate restTemplate;
 
