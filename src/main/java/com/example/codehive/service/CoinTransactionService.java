@@ -10,4 +10,6 @@ import java.util.Map;
 
 public interface CoinTransactionService {
     ProfitResult calculateProfit(int userNo, Map<String, Double> currentPriceMap);
+
+    List<CoinTransaction> findTransactionsByCoinStatusAndUser(String coin, String transactionState, String user);
 }
