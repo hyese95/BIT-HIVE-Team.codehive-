@@ -39,5 +39,6 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
     List<Comment> deleteCommentByPostNo(@Param("postNo") int postNo);
 
     int countByParentNo(int parentNo);
+
 }
 

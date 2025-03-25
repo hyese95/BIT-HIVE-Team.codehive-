@@ -1,8 +1,10 @@
 package com.example.codehive.service;
 
 
+import com.example.codehive.dto.PostDto;
 import com.example.codehive.entity.Post;
 import com.example.codehive.entity.PostLike;
+import com.example.codehive.entity.User;
 import com.example.codehive.repository.CommentRepository;
 import com.example.codehive.repository.PostRepository;
 import lombok.AllArgsConstructor;
@@ -16,18 +18,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
 public class PostServiceImp implements PostService {
     @Autowired
     PostRepository postRepository;
+    UserService userService;
     CommentRepository commentRepository;
     @Override
     public Page<Post> readByCategoryWithKeyword(String category, String keyword, String sortType, Pageable pageable) {
@@ -95,5 +95,23 @@ public class PostServiceImp implements PostService {
         else {
             throw new IllegalArgumentException("게시글을 찾을 수 없습니다");
         }
+    }
+
+    @Override
+    public PostDto createPost(PostDto postDto) {
+        Post newPost = new Post();
+        newPost.setPostCont(postDto.getPostCont());
+//        newPost.setUser(user); // 현재 로그인한 사용자 정보 추가
+        newPost.setPostCreatedAt(Instant.now());
+        newPost.setCategory(postDto.getCategory());
+        User user = userService.findAll().getFirst();
+        if (user == null) {
+            throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
+        }
+        newPost.setUser(user);  // 실제 User 객체 설정
+        newPost.setComment(new ArrayList<>());
+
+        Post savedPost = postRepository.save(newPost);
+        return new PostDto(savedPost);
     }
 }

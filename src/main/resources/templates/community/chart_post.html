@@ -9,21 +9,37 @@
 <body>
 <nav th:replace="fragments/nav_bars :: communitySubNav"></nav>
 <div class="container">
-    <a href="/community/search.do">검색</a>
+    <div class="d-flex justify-content-between decoration-none">
+        <span><a href="/community/search.do" style="text-decoration: none; color: black">검색</a></span>
+        <span><a href="#" style="text-decoration: none; color: black"><b>최신순</b></a>
+        인기
+        <a href="#" style="text-decoration: none; color: gray">일간</a>
+        <a href="#" style="text-decoration: none; color: gray">주간</a>
+        <a href="#" style="text-decoration: none; color: gray">월간</a>
+    </span>
+    </div>
 <h1>차트 분석 게시판</h1>
     <div>
-        <form th:action="@{/community}"  method="post">
-
-            <div class="form-group" style="justify-content: space-between;">
+        <form id="postForm" action="/community/api/chart_post_write"  method="post">
+            <div class="form-group " style="justify-content: space-between;">
                 <label>
-                <textarea class="form-control" rows="10" style="width: 1200px; height: 500px;position: relative;
-                user-select: none; align-items: center;"
-                placeholder="로그인 후 이용해주세요!" name="textarea" ></textarea>
-                    <span>
-                        <button type="submit" ><a href="#"><img src="/img/ImageIcon/ImageIcon.png" alt="이미지" style="width: 20px; height: 20px">이미지 첨부</a></button>
-                    </span>
-                    <span><button type="submit" style=" position: absolute;">
-                            <a href="#" >게시하기</a></button>
+                    <input type="hidden" name="category">
+                    <input type="hidden" name="id">
+                    <input type="hidden" name="userNickname">
+                    <textarea class="form-control" rows="10" style="width: 1300px; height: 500px;position: relative;
+                user-select: none; align-items: center; resize: none;"
+                              placeholder="로그인 후 이용해주세요!" name="postCont" id="postCont"></textarea>
+                    <span class="d-flex justify-content-between">
+                <span>
+                    <button type="button" onclick="attachImage()" style="text-decoration: none; color: black">
+                        <img src="/img/ImageIcon/ImageIcon.png" alt="이미지" style="width: 20px; height: 20px"> 이미지 첨부
+                    </button>
+                </span>
+                <span>
+                    <button type="button" onclick="submitPost()" style="position: absolute; right: 300px;">
+                        게시하기
+                    </button>
+                </span>
                     </span>
                 </label>
             </div>
@@ -83,6 +99,40 @@
 <br>
 <br>
 <script>
+    function submitPost() {
+        let postContent = document.getElementById("postCont").value.trim();
+        if (postContent === "") {
+            alert("내용을 입력해주세요!");
+            return;
+        }
+        // AJAX 요청으로 서버에 전송
+        fetch("/community/api/chart_post_write", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                postCont: postContent
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                // 게시글 등록 성공시 처리
+                if (data) {
+                    alert("게시글이 등록되었습니다!");
+                    // 성공적으로 등록되면 페이지를 리다이렉트하거나 내용을 갱신할 수 있습니다.
+                    window.location.href = "/community/chart_post.do"; // 게시글 목록 페이지로 이동
+                }
+            })
+            .catch(error => {
+                console.error("게시글 등록 실패:", error);
+                alert("게시글 등록에 실패했습니다.");
+            });
+    }
+    function attachImage() {
+        alert("이미지 업로드 기능은 아직 구현되지 않았습니다.");
+    }
+
     let page = 1;
     const pageSize = 10;
     let loading = false;

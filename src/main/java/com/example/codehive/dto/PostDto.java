@@ -3,6 +3,7 @@ package com.example.codehive.dto;
 import com.example.codehive.entity.Post;
 import com.example.codehive.entity.PostLike;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 public class PostDto {
     private Integer id;
     private String postCont;
@@ -41,7 +43,7 @@ public class PostDto {
             this.category = post.getCategory();
             this.userNickname = post.getUser().getNickname();
             this.userId = post.getUser().getId();
-            this.commentCount=post.getComment().size();
+            this.commentCount = (post.getComment() != null) ? post.getComment().size() : 0;
 
             // 좋아요/싫어요 카운트
             this.likeCount = 0;
