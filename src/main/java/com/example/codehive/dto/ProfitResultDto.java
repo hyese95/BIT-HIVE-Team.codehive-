@@ -10,7 +10,7 @@ import java.util.List;
 @Setter
 @ToString
 @AllArgsConstructor
-public class ProfitResult {
+public class ProfitResultDto {
     // 코인별 상세 계산 결과 리스트
     private List<CoinDetailDto> coinDetails;
     // 전체 구매 평가금액 합계

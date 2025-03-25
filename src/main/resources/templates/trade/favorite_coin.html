@@ -8,8 +8,14 @@
 <body>
 <div class="container">
   <h1>관심 목록</h1>
-  <div th:each="f : ${favoriteMarketList}">
-    <p th:text="${f.market.replace('-KRW','')}"></p>
+  <table>
+    <thead class="HoldingInterestCategories">
+    <p><a href="/trade/main.do">원화</a></p>
+    <p><a href="/trade/favorite_coin.do">관심</a></p>
+    <p><a href="/trade/holding_coin.do">보유</a></p>
+    </thead>
+  </table>
+
   </div>
 
 </div>
