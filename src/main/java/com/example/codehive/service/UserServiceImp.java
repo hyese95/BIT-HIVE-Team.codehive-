@@ -1,11 +1,13 @@
 package com.example.codehive.service;
 
+import com.example.codehive.dto.FollowDto;
 import com.example.codehive.entity.Follow;
 import com.example.codehive.entity.User;
 import com.example.codehive.repository.FollowRepository;
 import com.example.codehive.repository.PostRepository;
 import com.example.codehive.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -57,21 +59,21 @@ public class UserServiceImp implements UserService {
 
     @Override
     public int readFollowersCount(int userNo) {
-        return followRepository.countFollowersByUserNo(userNo);
+        return followRepository.countByFollowerUser_Id(userNo);
     }
 
     @Override
     public int readFollowingCount(int userNo) {
-        return followRepository.countFollowingsByUserNo(userNo);
+        return followRepository.countByFollowingUser_Id(userNo);
     }
 
     @Override
-    public List<Follow> readFollowersByUserNo(int userNo) {
-        return followRepository.findFollowersByUserNo(userNo);
+    public List<FollowDto.Follower> readFollowersByUserNo(Integer userNo, Pageable pageable) {
+        return followRepository.findFollowersByUserNo(userNo, pageable);
     }
 
     @Override
-    public List<Follow> readFollowingsByUserNo(int userNo) {
-        return followRepository.findFollowingsByUserNo(userNo);
+    public List<FollowDto.Following> readFollowingsByUserNo(Integer userNo, Pageable pageable) {
+        return followRepository.findFollowingsByUserNo(userNo, pageable);
     }
 }

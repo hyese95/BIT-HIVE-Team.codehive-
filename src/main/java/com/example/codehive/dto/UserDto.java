@@ -26,11 +26,10 @@ public class UserDto {
     private LocalDate birthDate;
     private String theme;
 
-    private Integer followerCount = 0;     // 팔로워 수
-    private Integer followingCount = 0;    // 팔로잉 수
-    private Integer postCount = 0;         // 게시글 수
+    private Integer followerCount = 0;
+    private Integer followingCount = 0;
+    private Integer postCount = 0;
 
-    // Entity -> DTO 변환 팩토리 메서드
     public static UserDto from(User user) {
         UserDto dto = new UserDto();
         dto.setId(user.getId());
@@ -49,7 +48,6 @@ public class UserDto {
         return dto;
     }
 
-    // 통계 정보 설정 메서드
     public UserDto withStats(Integer postCount, Integer followerCount, Integer followingCount) {
         this.postCount = postCount;
         this.followerCount = followerCount;

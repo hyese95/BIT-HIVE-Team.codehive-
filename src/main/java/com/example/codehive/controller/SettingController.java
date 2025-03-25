@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -26,10 +27,12 @@ public class SettingController {
     public String main() {
         return "setting/main";
     }
+
     @GetMapping("/support/support_main.do")
     public String supportMain() {
         return "setting/support/support_main";
     }
+
     @GetMapping("/support/notice/notice.do")
     public String notice(Model model) {
         List<Guide> guides=guideService.readAll();
@@ -80,6 +83,8 @@ public class SettingController {
         model.addAttribute("questions", questions);
         return "setting/support/qna/qna_complete";
     }
+
+
 
     @GetMapping("/support/qna/qna_detail.do")
     public String qnaDetail(Model model, @RequestParam int questionNo) {

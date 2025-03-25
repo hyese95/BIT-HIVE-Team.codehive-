@@ -1,11 +1,14 @@
 package com.example.codehive.controller;
 
+import com.example.codehive.dto.FollowDto;
 import com.example.codehive.dto.UserDto;
 import com.example.codehive.dto.UserUpdateDto;
 import com.example.codehive.entity.Follow;
 import com.example.codehive.entity.User;
 import com.example.codehive.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +28,7 @@ public class UserApiController {
         User user = userOpt.get();
         return UserDto.from(user);
     }
+
 
     @PatchMapping("/me")
     public ResponseEntity<Void> updateUserInfo(@RequestBody UserUpdateDto dto
@@ -54,12 +58,14 @@ public class UserApiController {
     }
 
     @GetMapping("/me/followers")
-    public List<Follow> meFollowers() {
-        return userService.readFollowersByUserNo(1);
+    public List<FollowDto.Follower> meFollowers() {
+        Pageable pageable = PageRequest.of(0, 10);
+        return userService.readFollowersByUserNo(1, pageable);
     }
 
     @GetMapping("/me/followings")
-    public List<Follow> meFollowings() {
-        return userService.readFollowingsByUserNo(1);
+    public List<FollowDto.Following> meFollowings() {
+        Pageable pageable = PageRequest.of(0, 10);
+        return userService.readFollowingsByUserNo(1, pageable);
     }
 }

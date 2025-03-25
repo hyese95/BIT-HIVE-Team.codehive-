@@ -1,9 +1,13 @@
 package com.example.codehive.repository;
 
+import com.example.codehive.dto.FollowDto;
 import com.example.codehive.entity.Follow;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -26,7 +30,11 @@ class FollowRepositoryTest {
 
     @Test
     void findFollowersByUserNo() {
-        List<Follow> list= followRepository.findFollowersByUserNo(1);
-        System.out.println(list.size());
+
+    }
+
+    @Test
+    void countByFollowerUser_Id() {
+        System.out.println(followRepository.countByFollowerUser_Id(1));
     }
 }

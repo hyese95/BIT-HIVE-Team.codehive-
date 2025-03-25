@@ -36,6 +36,18 @@
     const followerListBtn = document.getElementById('followerListBtn');
     const followingListBtn = document.getElementById('followingListBtn');
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabParam= urlParams.get('tab');
+
+    document.addEventListener('DOMContentLoaded', function () {
+        if (tabParam === 'followers' || tabParam ===null) {
+            loadFollowers();
+        } else {
+            loadFollowings();
+        }
+
+    });
+
     async function loadFollowers() {
         followerListBtn.classList.add('active');
         followingListBtn.classList.remove('active');
@@ -45,9 +57,15 @@
         let html = ''
         for (const follower of data) {
             html +=
-                `<div class="my-3">
-                    <img src="${follower.followerUser.profileImgUrl}" alt="${follower.followerUser.profileImgUrl}">
-                    <span>${follower.followerUser.nickname}</span>
+                `<div class="my-4" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; align-items: center;">
+                        <img src="${follower.profileImgUrl}" alt="${follower.profileImgUrl}" style="margin-right: 10px; width: 50px; height: 50px;">
+                        <div>
+                            <p style="margin: 0; font-weight: bold">${follower.nickname}</p>
+                            <p style="margin: 0; font-weight: lighter">${follower.name}</p>
+                        </div>
+                    </div>
+
                 </div>`
         }
         listContainer.innerHTML = html;
@@ -65,9 +83,15 @@
         let html = ''
         for (const following of data) {
             html +=
-                `<div class="my-3">
-                    <img src="${following.followingUser.profileImgUrl}" alt="${following.followingUser.profileImgUrl}">
-                    <span>${following.followingUser.nickname}</span>
+                `<div class="my-4" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; align-items: center;">
+                        <img src="${following.profileImgUrl}" alt="${following.profileImgUrl}" style="margin-right: 10px; width: 50px; height: 50px;">
+                        <div>
+                            <p style="margin: 0; font-weight: bold">${following.nickname}</p>
+                            <p style="margin: 0; font-weight: lighter">${following.name}</p>
+                        </div>
+                    </div>
+                    <button style="height: 2em;" value="${following.followingUserNo}">삭제</button>
                 </div>`
         }
         listContainer.innerHTML = html;
