@@ -1,10 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>지정가 알림</title>
+    <title> 시세 변동 알림</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body>
+<div class="container py-4">
+    <h2 class="mb-4"> 시세 변동 알림</h2>
 
+    <table class="table table-hover">
+        <tbody>
+        <tr th:each="alert : ${volatilityAlerts}">
+            <td th:text="${alert.market}">BTC/USDT</td>
+            <td>
+                <div class="form-check form-switch">
+                    <input class="form-check-input toggle-switch"
+                           type="checkbox"
+                           th:checked="${!alert.market.contains('OFF')}"
+                           th:attr="data-id=${alert.id}">
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a href="/setting/support/notifications/notification_setting.do" class="btn btn-secondary mt-3"> 돌아가기</a>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.toggle-switch').forEach(toggle => {
+            toggle.addEventListener('change', function () {
+                const alertId = this.getAttribute('data-id');
+                const enabled = this.checked;
+
+                fetch('/setting/support/notifications/volatility_alerts/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id: alertId,
+                        enabled: enabled
+                    })
+                });
+            });
+        });
+    });
+</script>
 </body>
 </html>
