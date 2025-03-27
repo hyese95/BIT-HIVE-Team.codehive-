@@ -19,6 +19,7 @@ import java.util.Set;
 public class Comment {
     @Id
     @Column(name = "comment_no", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "parent_no")

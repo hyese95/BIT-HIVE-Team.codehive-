@@ -6,6 +6,7 @@ import com.example.codehive.entity.*;
 import com.example.codehive.repository.CommentLikeRepository;
 import com.example.codehive.repository.CommentRepository;
 import com.example.codehive.repository.PostLikeRepository;
+import com.example.codehive.repository.UserRepository;
 import com.example.codehive.service.CommentLikeService;
 import com.example.codehive.service.CommentService;
 import com.example.codehive.service.PostService;
@@ -31,11 +32,14 @@ import java.util.*;
 @RequestMapping("/community")
 @AllArgsConstructor
 public class CommunityController {
+
     private final PostService postService;
     private final UserService userService;
     private final CommentService commentService;
     private final CommentLikeService commentLikeService;
     private final CommentLikeRepository commentLikeRepository;
+    private final UserRepository userRepository;
+
     public String convertNewlineToBr(String text) {
         return text.replace("\n", "<br>");
     }
@@ -198,6 +202,8 @@ public class CommunityController {
     public String detail(Model model,
                          @RequestParam("postNo") int postNo
     ) {
+        User user = new User();
+        user.setId(1);
         Post post=postService.getPostByPostId(postNo);
         PostDto postDto=new PostDto(post);
         String formattedContent = convertNewlineToBr(post.getPostCont());
@@ -215,6 +221,7 @@ public class CommunityController {
                 replyCounts.put(comment.getId(), count);
             }
         }// 변환된 내용 전달
+        model.addAttribute("user", user);
         model.addAttribute("replyCounts", replyCounts);
         model.addAttribute("cntCommentLike", cntCommentLike);
         model.addAttribute("cntComment",cntComment);
@@ -222,6 +229,14 @@ public class CommunityController {
         model.addAttribute("comments", comments);
 
         return "community/postDetail";
+    }
+    @PostMapping("/api/commentWrite")
+    @ResponseBody
+    public String commentWrite(Model model,int postNo) {
+        User user = new User();
+        user.setId(1);
+        model.addAttribute("user", user);
+        return null;
     }
 
     @GetMapping("modifyPost.do")

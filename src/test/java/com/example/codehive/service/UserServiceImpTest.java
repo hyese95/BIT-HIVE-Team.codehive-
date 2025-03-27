@@ -37,4 +37,20 @@ class UserServiceImpTest {
     @Test
     void findAllByUserNameLike() {
     }
+
+    @Test
+    @Transactional
+    void findAll() {
+        System.out.println(userService.findAll());
+    }
+
+    @Test
+    void updateNickname() {
+    }
+
+    @Test
+    @Transactional
+    void readByUserNo() {
+        System.out.println(userService.readByUserNo(1));
+    }
 }

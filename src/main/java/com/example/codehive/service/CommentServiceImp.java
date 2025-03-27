@@ -18,6 +18,7 @@ import java.util.List;
 public class CommentServiceImp implements CommentService {
     @Autowired
     private final CommentRepository commentRepository;
+    @Autowired
     private final EntityManager entityManager;
 
     @Override
@@ -69,18 +70,15 @@ public class CommentServiceImp implements CommentService {
     }
 
     @Override
-    @Transactional
-    public void modifyComment(Comment comment) {
+    public void writeComments(Comment comment) {
         comment.setParentNo(comment.getPostNo());
-        comment.setId(comment.getId());
-        comment.setCommentCont(comment.getCommentCont());
         comment.setCommentCreatedAt(Instant.now());
         commentRepository.save(comment);
-        entityManager.persist(comment);
-
-
-
     }
 
+    @Override
+    public void modifyComment(Comment comment) {
+
+    }
 
 }
