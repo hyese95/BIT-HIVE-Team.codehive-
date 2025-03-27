@@ -28,24 +28,24 @@
             </div>
             <div class="card-body">
                 <div class="form-check form-switch d-flex align-items-center justify-content-between">
-                    <label class="form-check-label" for="volatility">급격한 시세변동 알림</label>
+                    <label class="form-check-label" >급격한 시세변동 알림</label>
                     <a href="/setting/support/notifications/volatility_alerts.do" class="btn btn-sm btn-outline-primary ms-2">목록보기</a>
                     <input class="form-check-input auto-save" type="checkbox" id="volatility" data-field="volatilityYn" th:checked="${settings.volatilityYn}">
                 </div>
 
                 <div class="form-check form-switch d-flex align-items-center justify-content-between">
-                    <label class="form-check-label" for="portfolio">보유 자산 알림</label>
+                    <label class="form-check-label" >보유 자산 알림</label>
                     <input class="form-check-input auto-save" type="checkbox" id="portfolio" data-field="portfolioYn" th:checked="${settings.portfolioYn}">
                 </div>
 
                 <div class="form-check form-switch d-flex align-items-center justify-content-between">
-                    <label class="form-check-label" for="targetPrice">지정가 알림</label>
+                    <label class="form-check-label" >지정가 알림</label>
                     <a href="/setting/support/notifications/target_price_alerts.do" class="btn btn-sm btn-outline-primary ms-2">목록보기</a>
                     <input class="form-check-input auto-save" type="checkbox" id="targetPrice" data-field="targetPriceYn" th:checked="${settings.targetPriceYn}">
                 </div>
 
                 <div class="form-check form-switch d-flex align-items-center justify-content-between">
-                    <label class="form-check-label" for="trade">매수/매도 체결시 알림</label>
+                    <label class="form-check-label" >매수/매도 체결시 알림</label>
                     <input class="form-check-input auto-save" type="checkbox" id="trade" data-field="tradeYn" th:checked="${settings.tradeYn}">
                 </div>
             </div>
@@ -57,59 +57,66 @@
             </div>
             <div class="card-body">
                 <div class="form-check form-switch d-flex align-items-center justify-content-between">
-                    <label class="form-check-label" for="like">내 게시물 좋아요 </label>
+                    <label class="form-check-label" >내 게시물 좋아요 </label>
                     <input class="form-check-input auto-save" type="checkbox" id="like" data-field="likeYn" th:checked="${settings.likeYn}">
                 </div>
 
                 <div class="form-check form-switch d-flex align-items-center justify-content-between">
-                    <label class="form-check-label" for="comment">내 게시물에 댓글 </label>
+                    <label class="form-check-label" >내 게시물에 댓글 </label>
                     <input class="form-check-input auto-save" type="checkbox" id="comment" data-field="commentYn" th:checked="${settings.commentYn}">
                 </div>
 
                 <div class="form-check form-switch d-flex align-items-center justify-content-between">
-                    <label class="form-check-label" for="reply">나를 언급한 댓글 </label>
+                    <label class="form-check-label" >나를 언급한 댓글 </label>
                     <input class="form-check-input auto-save" type="checkbox" id="reply" data-field="replyYn" th:checked="${settings.replyYn}">
                 </div>
 
                 <div class="form-check form-switch d-flex align-items-center justify-content-between">
-                    <label class="form-check-label" for="follower">새로운 팔로워 </label>
+                    <label class="form-check-label" >새로운 팔로워 </label>
                     <input class="form-check-input auto-save" type="checkbox" id="follower" data-field="followerYn" th:checked="${settings.followerYn}">
                 </div>
             </div>
+
+        </div>
+        <div class="text-start mt-3">
+            <a href="/setting/main.do" class="btn btn-secondary btn-sm">돌아가기</a>
         </div>
         <script>
-            // 체크박스 상태 변경 감지하여 자동 저장 (JavaScript 코드)
-            document.addEventListener('DOMContentLoaded', function() {
-                document.querySelectorAll('.auto-save').forEach(function(checkbox) {
-                    checkbox.addEventListener('change', function() {
-                        const field = this.getAttribute('data-field');
-                        const checked = this.checked;
+            document.addEventListener('DOMContentLoaded', () => {
+                const allCheckbox = document.getElementById('all_notifications');
+                const checkboxes = document.querySelectorAll('.auto-save:not(#all_notifications)');
 
-                        fetch('/setting/support/notifications/save-auto', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                field: field,
-                                value: checked
-                            })
+                const autoSave = (field, value) => {
+                    fetch('/setting/support/notifications/save-auto', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({field, value})
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            if(data.success) console.log(field + ' 저장 성공');
+                            else console.error('저장 실패:', data.message);
                         })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.success) {
-                                    console.log(field + ' 저장 성공');
-                                } else {
-                                    console.error('저장 실패:', data.message);
-                                }
-                            })
-                            .catch(error => {
-                                console.error('오류:', error);
-                            });
+                        .catch(err => console.error('오류:', err));
+                };
+
+                allCheckbox.addEventListener('change', function() {
+                    checkboxes.forEach(cb => {
+                        cb.checked = this.checked;
+                        autoSave(cb.getAttribute('data-field'), this.checked);
+                    });
+                    autoSave('allNotifications', this.checked);
+                });
+
+                checkboxes.forEach(cb => {
+                    cb.addEventListener('change', function() {
+                        autoSave(this.getAttribute('data-field'), this.checked);
+                        allCheckbox.checked = [...checkboxes].every(chk => chk.checked);
                     });
                 });
             });
         </script>
+
 
 
     </form>
