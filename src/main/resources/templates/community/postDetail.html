@@ -9,16 +9,16 @@
 <body>
 <div class="container" style="width: 80%; max-width: 1500px;">
     <h1 th:text="${post.userNickname}+'님의 게시글 내용'"></h1>
-    <div id="edit" class="d-flex justify-content-between" th:if="${post.userId}==${user.id}">
+    <div id="edit" class="d-flex justify-content-between mb-2" th:if="${post.userId}==${user.id}">
         <form action="/community/modifyPost.do" method="get" >
         <label for="modify">
             <input type="hidden"  name="postNo" th:value="${post.id}">
-            <button id="modify" type="submit" >수정하기</button>
+            <button id="modify" class="btn btn-info " type="submit" >수정하기</button>
         </label>
         </form>
         <form>
                 <input type="hidden" name="postNo" th:value="${post.id}">
-            <button type="button" th:onclick="|deletePost(${post.id})|">삭제하기</button>
+            <button type="button" class="btn btn-danger" th:onclick="|deletePost(${post.id})|">삭제하기</button>
         </form>
     </div>
 <!--<p th:text="${post.postCont}"></p>-->
