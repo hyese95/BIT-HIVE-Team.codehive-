@@ -19,4 +19,12 @@ public interface CoinTransactionRepository extends JpaRepository<CoinTransaction
     // SELL 총 합계
     @Query("SELECT new com.example.codehive.dto.CoinTransactionDto( c.market, SUM(c.transactionCnt)) FROM CoinTransaction c WHERE c.userNo=:userNo AND c.transactionType = 'SELL' AND c.transactionState = 'COMPLETED' GROUP BY c.market")
     List<CoinTransactionDto> findSumCoinTransactionsByUserNoWithSell(int userNo);
+
+    // KRW-BUY 총 합계
+    @Query("SELECT new com.example.codehive.dto.CoinTransactionDto( c.market, SUM(c.transactionCnt)) FROM CoinTransaction c WHERE c.userNo=:userNo AND c.transactionType = 'BUY' AND c.market='KRW-KRW' GROUP BY c.market")
+    List<CoinTransactionDto> findSumKRWTransactionsByUserNoWithBuy(int userNo);
+
+    // KRW-SELL 총 합계
+    @Query("SELECT new com.example.codehive.dto.CoinTransactionDto( c.market, SUM(c.transactionCnt)) FROM CoinTransaction c WHERE c.userNo=:userNo AND c.transactionType = 'SELL' AND c.market='KRW-KRW' GROUP BY c.market")
+    List<CoinTransactionDto> findSumKRWTransactionsByUserNoWithSell(int userNo);
 }

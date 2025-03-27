@@ -14,7 +14,7 @@
 <div class="container">
     <h1 id="coinTitle">주문 페이지</h1>
     <p id="tradeprice"></p>
-    <div id="coindiv"></div>
+    <div id="coindiv" style="display: none"></div>
     <p>
         <a id="buyLink" href="#">매수</a>
         <a id="sellLink" href="#">매도</a>
@@ -27,7 +27,7 @@
                 시장 <input type="radio" name="market">
             </label>
         </p>
-        <p>주문가능: 원</p>
+        <p>주문가능: <span id="deposit"></span>원</p>
         <p>
             <label>
                 <input type="text" placeholder="수량">
@@ -106,9 +106,30 @@
                 alert("호가 데이터를 불러올 수 없습니다.");
             }
         }
-
         // 페이지 로딩 시 데이터 불러오기
         loadCoin();
+        const deposit=document.getElementById("deposit");
+
+        async function getKrwDeposit(userNo) {
+            try {
+                const URL1=`http://localhost:8801/api/transaction/${userNo}/KRW/buy`
+                const resp1=await fetch(URL1);
+                const data1=await resp1.json();
+                buySum=data1.quantity;
+
+                const URL2=`http://localhost:8801/api/transaction/${userNo}/KRW/sell`
+                const resp2=await fetch(URL2);
+                const data2=await resp2.json();
+                sellSum=data2.quantity;
+
+                console.log(buySum-sellSum);
+
+                deposit.innerText=`${buySum-sellSum}`
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        getKrwDeposit(1);
     </script>
 </div>
 </body>
