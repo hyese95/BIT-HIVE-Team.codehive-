@@ -5,6 +5,7 @@ import com.example.codehive.entity.User;
 import com.example.codehive.repository.CommentRepository;
 import com.example.codehive.repository.UserRepository;
 import jakarta.persistence.EntityManager;
+import org.hibernate.Hibernate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -76,11 +77,12 @@ class CommentServiceImpTest {
     @Transactional
     void writeComment() {
         Comment comment = new Comment();
-        User user = userService.readByUserNo(1).orElse(null);
-        System.out.println(user);
+        User user = entityManager.find(User.class, 1);
+        Hibernate.initialize(user);
+        System.out.println(user.getId());
         comment.setCommentCont("앙 기모띠 살려줘");
         comment.setCommentCreatedAt(Instant.now());
-        comment.setPostNo(90);
+        comment.setPostNo(91);
         comment.setUserNo(user);
         commentRepository.save(comment);
     }

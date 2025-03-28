@@ -32,27 +32,29 @@
     </div>
 <h1>자유게시판</h1>
     <div>
-        <form id="postForm" action="/community/api/free_post_write"  method="post">
-            <div class="form-group " style="justify-content: space-between;">
-                <label>
+        <form id="postForm"  class="form-group " action="/community/api/free_post_write"  method="post">
+            <div>
+                <label style="display: flex; flex-direction: column;">
                 <input type="hidden" name="category">
                     <input type="hidden" name="id">
                     <input type="hidden" name="userNickname">
-                <textarea class="form-control" rows="10" style="width: 1300px; height: 500px;position: relative;
-                user-select: none; align-items: center; resize: none;"
+                <textarea class="form-control" rows="10" style=" height: 500px;
+                user-select: none;  resize: none;"
                 placeholder="로그인 후 이용해주세요!" name="postCont" id="postCont"></textarea>
-                    <span class="d-flex justify-content-between">
+                    <span>
+                    <span class="d-flex justify-space-between" >
                 <span>
-                    <button type="button" onclick="attachImage()" style="text-decoration: none; color: black">
+                    <button type="button" class="btn btn-info" onclick="attachImage()" style="text-decoration: none; color: black">
                         <img src="/img/ImageIcon/ImageIcon.png" alt="이미지" style="width: 20px; height: 20px"> 이미지 첨부
                     </button>
                 </span>
                 <span>
-                    <button type="button" onclick="submitPost()" style="position: absolute; right: 300px;">
+                    <button type="button" class="btn btn-success" onclick="submitPost()">
                         게시하기
                     </button>
                 </span>
                     </span>
+                        </span>
                 </label>
             </div>
 

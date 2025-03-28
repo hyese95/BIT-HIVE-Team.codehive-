@@ -1,15 +1,13 @@
 package com.example.codehive.dto;
 
 import com.example.codehive.entity.User;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.Instant;
 import java.time.LocalDate;
 
 @Data
+@ToString
 @NoArgsConstructor
 public class UserDto {
     private Integer id;

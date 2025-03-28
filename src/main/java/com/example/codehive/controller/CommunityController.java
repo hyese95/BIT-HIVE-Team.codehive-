@@ -10,11 +10,13 @@ import com.example.codehive.repository.UserRepository;
 import com.example.codehive.service.CommentLikeService;
 import com.example.codehive.service.CommentService;
 import com.example.codehive.service.PostService;
+import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import com.example.codehive.service.UserService;
 import lombok.AllArgsConstructor;
+import org.hibernate.Hibernate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +26,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.Instant;
 import java.util.*;
@@ -32,13 +36,14 @@ import java.util.*;
 @RequestMapping("/community")
 @AllArgsConstructor
 public class CommunityController {
-
+    private final EntityManager entityManager;
     private final PostService postService;
     private final UserService userService;
     private final CommentService commentService;
     private final CommentLikeService commentLikeService;
     private final CommentLikeRepository commentLikeRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 
     public String convertNewlineToBr(String text) {
         return text.replace("\n", "<br>");
@@ -231,12 +236,19 @@ public class CommunityController {
         return "community/postDetail";
     }
     @PostMapping("/api/commentWrite")
-    @ResponseBody
-    public String commentWrite(Model model,int postNo) {
-        User user = new User();
-        user.setId(1);
-        model.addAttribute("user", user);
-        return null;
+    public ModelAndView commentWrite(@ModelAttribute Comment comment, RedirectAttributes redirectAttributes,
+    @RequestParam int postNo
+    ) {
+        User user = entityManager.find(User.class, 1);
+        Hibernate.initialize(user);
+        comment.setPostNo(comment.getPostNo());
+        comment.setUserNo(user);
+        comment.setCommentCreatedAt(Instant.now());
+        comment.setCommentCont(comment.getCommentCont());
+        Comment savedComment = commentRepository.save(comment);
+        commentRepository.flush();
+        redirectAttributes.addFlashAttribute("savedComment", savedComment);
+        return new ModelAndView("redirect:/community/postDetail.do?postNo=" + postNo);
     }
 
     @GetMapping("modifyPost.do")

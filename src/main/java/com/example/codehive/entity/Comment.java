@@ -34,7 +34,7 @@ public class Comment {
     @JsonBackReference
     private Post post;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "user_no", nullable = false)
     @ToString.Exclude
     @JsonBackReference
