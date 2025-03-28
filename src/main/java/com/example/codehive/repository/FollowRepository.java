@@ -45,6 +45,19 @@ public interface FollowRepository  extends JpaRepository<Follow, FollowId> {
              ORDER BY f.followingDate DESC
             """)
     List<FollowDto.Following> findFollowingsByUserNo(@Param("userNo") Integer userNo, Pageable pageable);
+    @Query("""
+            SELECT new com.example.codehive.dto.FollowDto$Following(
+            f.followingUser.id,
+            f.followingUser.nickname,
+            f.followingUser.profileImgUrl,
+            f.followingUser.name,
+            f.followingDate
+            )
+             FROM Follow f
+             WHERE f.followerUser.id = :userNo
+             ORDER BY f.followingDate DESC
+            """)
+    List<FollowDto.Following> findAllFollowingsByUserNo(@Param("userNo") Integer userNo);
 
     int countByFollowerUser_Id(Integer userNo);
 

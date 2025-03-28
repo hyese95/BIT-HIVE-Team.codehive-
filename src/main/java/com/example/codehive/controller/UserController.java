@@ -24,6 +24,16 @@ public class UserController {
         return "/user/my_follow_list";
     }
 
+    @GetMapping("{userNo}/follow_list")
+    public String followList(@PathVariable int userNo, Model model){
+        Optional<User> userOpt=userService.readByUserNo(userNo);
+        User user=userOpt.get();
+        UserDto userDto=UserDto.from(user);
+        model.addAttribute("user",userDto);
+
+        return "/user/user_follow_list";
+    }
+
     @GetMapping("/{userNo}")
     public String userProfile(@PathVariable("userNo") Integer userNo, Model model){
         Optional<User> userOpt = userService.readByUserNo(userNo);

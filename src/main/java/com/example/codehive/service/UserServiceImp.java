@@ -8,6 +8,7 @@ import com.example.codehive.repository.FollowRepository;
 import com.example.codehive.repository.PostRepository;
 import com.example.codehive.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class UserServiceImp implements UserService {
@@ -61,12 +63,13 @@ public class UserServiceImp implements UserService {
 
     @Override
     public int readFollowersCount(int userNo) {
-        return followRepository.countByFollowerUser_Id(userNo);
+        return followRepository.countByFollowingUser_Id(userNo);
+
     }
 
     @Override
     public int readFollowingCount(int userNo) {
-        return followRepository.countByFollowingUser_Id(userNo);
+        return followRepository.countByFollowerUser_Id(userNo);
     }
 
     @Override
@@ -83,5 +86,18 @@ public class UserServiceImp implements UserService {
     @Override
     public void unfollow(Integer followerUserNo, Integer followingUserNo) {
         followRepository.deleteByIdFollowerUserNoAndIdFollowingUserNo(followerUserNo, followingUserNo);
+    }
+
+    @Override
+    public boolean isFollowing(int userNo, int followingUserNo) {
+        List<FollowDto.Following> list=followRepository.findAllFollowingsByUserNo(userNo);
+        boolean isFollowing=false;
+        for(FollowDto.Following following:list){
+            if(following.followingUserNo()==followingUserNo){
+                isFollowing=true;
+                break;
+            }
+        }
+        return isFollowing;
     }
 }

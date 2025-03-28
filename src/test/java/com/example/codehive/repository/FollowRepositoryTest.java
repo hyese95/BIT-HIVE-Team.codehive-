@@ -37,4 +37,11 @@ class FollowRepositoryTest {
     void countByFollowerUser_Id() {
         System.out.println(followRepository.countByFollowerUser_Id(1));
     }
+
+
+    @Test
+    void findAllFollowingsByUserNo() {
+        List<FollowDto.Following> followings = followRepository.findAllFollowingsByUserNo(1);
+        System.out.println(followings);
+    }
 }

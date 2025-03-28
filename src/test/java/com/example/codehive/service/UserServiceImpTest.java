@@ -37,4 +37,10 @@ class UserServiceImpTest {
     @Test
     void findAllByUserNameLike() {
     }
+
+    @Test
+    void isFollowing() {
+        boolean isFollowing=userService.isFollowing(1,6);
+        System.out.println(isFollowing);
+    }
 }

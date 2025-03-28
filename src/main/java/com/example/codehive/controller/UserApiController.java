@@ -100,4 +100,13 @@ public class UserApiController {
         Pageable pageable = PageRequest.of(page, size);
         return userService.readFollowingsByUserNo(userNo, pageable);
     }
+
+    @GetMapping("/{userNo}/isFollowing")
+    public boolean isFollowing(@PathVariable Integer userNo) {
+
+        //일단은 내 유저넘버를 1로 가정
+        boolean isFollowing = userService.isFollowing(1,userNo);
+        return isFollowing;
+
+    }
 }

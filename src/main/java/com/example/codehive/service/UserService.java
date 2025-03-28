@@ -19,6 +19,7 @@ public interface UserService {
     int readFollowingCount(int userNo);
     List<FollowDto.Follower> readFollowersByUserNo(Integer userNo, Pageable pageable);
     List<FollowDto.Following> readFollowingsByUserNo(Integer userNo, Pageable pageable);
+    boolean isFollowing(int userNo, int followingUserNo);
     void unfollow(Integer followerUserNo, Integer followingUserNo);
 
 }

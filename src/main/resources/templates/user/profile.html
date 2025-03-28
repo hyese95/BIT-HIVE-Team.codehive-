@@ -14,7 +14,8 @@
             <img th:src="@{${userDto.profileImgUrl}}" alt="프로필" style="width: 100px;height: 100px;">
             <div>
                 <p style="margin: 0; font-weight: bold; font-size: 30px;" th:text="${userDto.nickname}">닉네임</p>
-                <button th:value="${userDto.id}">팔로우</button>
+                <button th:value="${userDto.id}" id="followBtn" class="btn btn-info" style="display: none">팔로우</button>
+                <button th:value="${userDto.id}" id="followingBtn" class="btn btn-success" style="display: none">팔로잉</button>
                 <div class="card text-center my-1" style="align-items: center;">
                     <p style="margin: 0;">가입일 : <span th:text="${userDto.createdAt}"></span></p>
                 </div>
@@ -28,13 +29,13 @@
                 <span>게시물</span>
             </div>
             <div class="card text-center flex-grow-1 mx-1">
-                <a href="/users/follow_list?tab=followers">
+                <a th:href="@{/users/{userNo}/follow_list(userNo=${userDto.id}, tab='followers')}">
                     <p th:text="${userDto.followerCount}" class="mb-0 fw-bold"></p>
                     <span>팔로워</span>
                 </a>
             </div>
             <div class="card text-center flex-grow-1 mx-1">
-                <a href="/users/follow_list?tab=followings">
+                <a th:href="@{/users/{userNo}/follow_list(userNo=${userDto.id}, tab='followings')}">
                     <p th:text="${userDto.followingCount}" class="mb-0 fw-bold"></p>
                     <span>팔로잉</span>
                 </a>
@@ -57,6 +58,38 @@
     </div>
 </div>
 
+<script>
+
+    const followBtn = document.getElementById("followBtn");
+    const followingBtn = document.getElementById("followingBtn");
+    const targetUserNo = document.getElementById("followBtn").value;
+
+
+    async function updateFollowing(targetUserNo) {
+        const url = `/api/users/${targetUserNo}/isFollowing`;
+        const response = await fetch(url);
+        const data = await response.json();
+        if (data == true) {
+            followBtn.style.display = "none";
+            followingBtn.style.display = 'block';
+            console.log(data+'트루냐?')
+        }
+        else{
+            followingBtn.style.display = 'none';
+            followBtn.style.display = 'block';
+            console.log(data+'폴스냐?')
+        }
+    }
+    updateFollowing(targetUserNo);
+
+    followBtn.onclick = async function () {
+        const URL =
+
+        await updateFollowing(targetUserNo);
+    }
+
+
+</script>
 
 </body>
 </html>
