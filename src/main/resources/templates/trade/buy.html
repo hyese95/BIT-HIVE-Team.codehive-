@@ -2,8 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org/"
       th:replace="~{fragments/default :: html(content=~{::body})}">
 <style>
-    button>a {
-        color:black; text-decoration: none;
+    button > a {
+        color: black;
+        text-decoration: none;
     }
 </style>
 <head>
@@ -14,35 +15,44 @@
 <div class="container">
     <h1 id="coinTitle">주문 페이지</h1>
     <p id="tradeprice"></p>
-    <div id="coindiv"></div>
+    <div id="coindiv" style="display: none"></div>
     <p>
         <a id="buyLink" href="#">매수</a>
         <a id="sellLink" href="#">매도</a>
         <a id="historyLink" href="#">내역</a>
     </p>
-    <form id="buyform" action="buy.html" method="post">
+
+    <button>지정</button>
+    <button>시장</button>
+    <form id="buyForm">
+        <p>주문가능: <span id="deposit"></span> 원</p>
         <p>
             <label>
-                지정 <input type="radio" name="market" checked>
-                시장 <input type="radio" name="market">
-            </label>
-        </p>
-        <p>주문가능: 원</p>
-        <p>
-            <label>
-                <input type="text" placeholder="수량">
+                수량 <input type="number" placeholder="수량" id="buyAmount" name="buyAmount">
             </label>
         </p>
         <p>
             <label>
-                <input type="text" placeholder="가격">
+                가격 <input type="number" placeholder="가격" id="buyPrice" name="buyPrice">
             </label>
         </p>
-        <p><button type="reset">초기화</button></p>
-        <p><button type="submit">매수</button></p>
+
+        <hr>
+
+        <p>
+            <label>
+                총 금액 <input type="text" placeholder="총 주문금액" id="totalPrice" name="totalPrice">
+            </label>
+        </p>
+        <p>
+            <button type="reset">초기화</button>
+        </p>
+        <p>
+            <button type="submit">매수</button>
+        </p>
     </form>
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             const queryString = window.location.search;
             const urlParams = new URLSearchParams(queryString);
             const coinTicker = urlParams.get("coin");
@@ -53,6 +63,10 @@
             document.getElementById("buyLink").href = `buy.do?coin=${coinTicker}`;
             document.getElementById("sellLink").href = `sell.do?coin=${coinTicker}`;
             document.getElementById("historyLink").href = `history.do?coin=${coinTicker}`;
+            document.getElementById("buyAmount").addEventListener("input", updateTotal);
+            document.getElementById("buyPrice").addEventListener("input", updateTotal);
+            document.getElementById("totalPrice").addEventListener("input", updateAmount);
+
         });
         // URL 파라미터로 전달된 코인 티커를 읽음
         const queryString = window.location.search;
@@ -109,6 +123,96 @@
 
         // 페이지 로딩 시 데이터 불러오기
         loadCoin();
+
+        const deposit = document.getElementById("deposit");
+
+        async function getKrwDeposit(userNo) {
+            try {
+                const URL1 = `http://localhost:8801/api/transaction/${userNo}/KRW/buy`
+                const resp1 = await fetch(URL1);
+                const data1 = await resp1.json();
+                buySum = data1.quantity;
+                const URL2 = `http://localhost:8801/api/transaction/${userNo}/KRW/sell`
+                const resp2 = await fetch(URL2);
+                const data2 = await resp2.json();
+                sellSum = data2.quantity;
+                console.log(buySum - sellSum);
+                deposit.innerText = `${buySum - sellSum}`
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        getKrwDeposit(1);
+
+        const buyForm = document.getElementById("buyForm");
+        buyForm.addEventListener("submit", async event => {
+            event.preventDefault();
+            const buyAmount = document.getElementById("buyAmount");
+            const buyPrice = document.getElementById("buyPrice");
+            const totalPrice = document.getElementById("totalPrice");
+            const userNo = 1;
+
+            try {
+                const response = await fetch('/trade/api/transaction', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userNo: userNo,  // 현재는 임시로 1로 설정
+                        market: "KRW-" + coinTicker,
+                        transactionType: "BUY",
+                        price: parseInt(buyPrice.value),
+                        transactionCnt: parseFloat(buyAmount.value),
+                        transactionState: "COMPLETED"
+                    })
+                });
+                const response2 = await fetch('/trade/api/transaction', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userNo: userNo,
+                        market: "KRW-KRW",
+                        transactionType: "SELL",
+                        price: 1,
+                        transactionCnt: parseInt(totalPrice.value),
+                        transactionState: "COMPLETED"
+                    })
+                });
+                if (response.ok && response2.ok) {
+                    alert("거래가 성공적으로 저장되었습니다.");
+                    window.location.reload();
+                }
+            } catch
+                (error) {
+                console.error("Error:", error);
+                alert("거래 처리 중 오류가 발생했습니다.");
+            }
+        });
+
+        function updateTotal() {
+            const buyAmount = document.getElementById("buyAmount");
+            const buyPrice = document.getElementById("buyPrice");
+            const totalPrice = document.getElementById("totalPrice");
+            let amount = buyAmount.value;
+            let price = buyPrice.value;
+            totalPrice.value = amount * price;
+        }
+
+        function updateAmount() {
+            const buyAmount = document.getElementById("buyAmount");
+            const buyPrice = document.getElementById("buyPrice");
+            const totalPrice = document.getElementById("totalPrice");
+            let price = buyPrice.value;
+            let total = totalPrice.value;
+            buyAmount.value = total / price;
+
+        }
+
+
     </script>
 </div>
 </body>

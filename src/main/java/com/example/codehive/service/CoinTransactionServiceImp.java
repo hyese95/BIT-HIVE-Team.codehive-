@@ -85,4 +85,9 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
 
         return new ProfitResultDto(coinDetails, totalPurchaseValuation, totalCurrentValuation, totalProfit, overallProfitRate);
     }
+
+    @Override
+    public void saveCoinTransaction(CoinTransaction coinTransaction) {
+        coinTransactionRepository.save(coinTransaction);
+    }
 }
