@@ -15,7 +15,11 @@
             <div>
                 <p style="margin: 0; font-weight: bold; font-size: 30px;" th:text="${userDto.nickname}">닉네임</p>
                 <button th:value="${userDto.id}" id="followBtn" class="btn btn-info" style="display: none">팔로우</button>
-                <button th:value="${userDto.id}" id="followingBtn" class="btn btn-success" style="display: none">팔로잉</button>
+                <!--                data-img-url="${following.profileImgUrl}" data-nickname="${following.nickname}"-->
+                <button th:value="${userDto.id}" th:data-img-url="${userDto.profileImgUrl}"
+                        th:data-nickname="${userDto.nickname}" id="followingBtn" class="btn btn-success"
+                        style="display: none">팔로잉
+                </button>
                 <div class="card text-center my-1" style="align-items: center;">
                     <p style="margin: 0;">가입일 : <span th:text="${userDto.createdAt}"></span></p>
                 </div>
@@ -72,21 +76,124 @@
         if (data == true) {
             followBtn.style.display = "none";
             followingBtn.style.display = 'block';
-            console.log(data+'트루냐?')
-        }
-        else{
+            console.log(data + '트루냐?')
+        } else {
             followingBtn.style.display = 'none';
             followBtn.style.display = 'block';
-            console.log(data+'폴스냐?')
+            console.log(data + '폴스냐?')
         }
     }
+
     updateFollowing(targetUserNo);
 
     followBtn.onclick = async function () {
-        const URL =
 
         await updateFollowing(targetUserNo);
     }
+
+
+    function showModal(followingUserNo, element, followingUserImgUrl, followingUserNickname) {
+
+        const existingModal = document.getElementById('confirmModal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+
+
+        const modalHTML = `
+    <div id="confirmModal" class="position-fixed bottom-0 start-0 w-100" style="z-index: 1050;">
+      <div class="modal-backdrop position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50" style="z-index: -1;"></div>
+      <div class="bg-white p-3 rounded-top shadow-lg border-top" style="animation: slideUp 0.3s ease;">
+        <div style="display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 1rem;">
+            <img src="${followingUserImgUrl}" alt="프로필이미지" style="width: 50px; height: 50px;">
+            <p>${followingUserNickname}</p>
+        </div>
+        <p class="mb-3 text-center fw-bold">팔로우를 취소하시겠습니까?</p>
+        <hr>
+        <button id="confirmUnfollow" class="btn btn-danger w-100" data-user-no="${followingUserNo}">삭제</button>
+      </div>
+    </div>`;
+
+        //스타일
+        if (!document.getElementById('modalStyles')) {
+            const styleElement = document.createElement('style');
+            styleElement.id = 'modalStyles';
+            styleElement.textContent = `
+            @keyframes slideUp {
+                from { transform: translateY(100%); }
+                to { transform: translateY(0); }
+            }
+
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+
+            .modal-backdrop {
+                animation: fadeIn 0.3s ease;
+            }
+
+            body.modal-open {
+                overflow: hidden;
+            }
+        `;
+            document.head.appendChild(styleElement);
+        }
+
+
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        document.body.classList.add('modal-open');
+
+        const modal = document.getElementById('confirmModal');
+        const confirmBtn = document.getElementById('confirmUnfollow');
+        const backdrop = modal.querySelector('.modal-backdrop');
+
+        backdrop.addEventListener('click', hideModal);
+
+        confirmBtn.addEventListener('click', async () => {
+            try {
+                const userNo = confirmBtn.dataset.userNo;
+                const response = await fetch(`/api/users/unfollow/${userNo}`, {
+                    method: 'DELETE'
+                });
+                await updateFollowing(userNo);
+
+
+
+            } catch (error) {
+                alert('언팔로우에 실패했습니다.')
+                console.error('언팔로우 오류:', error);
+            } finally {
+                hideModal();
+            }
+        });
+
+        // 모달표시
+        setTimeout(() => {
+            modal.style.display = 'block';
+        }, 10);
+    }
+
+    function hideModal() {
+        const modal = document.getElementById('confirmModal');
+        if (modal) {
+            document.body.classList.remove('modal-open');
+            modal.remove();
+        }
+    }
+
+
+    function handleUnfollowClick(event) {
+        if (event.target.tagName === 'BUTTON' && event.target.value) {
+            const followingUserNo = event.target.value;
+            const followingUserImgUrl = event.target.dataset.imgUrl;
+            const followingUserNickname = event.target.dataset.nickname;
+            const element = event.target.closest('.followingList');
+            showModal(followingUserNo, element, followingUserImgUrl, followingUserNickname);
+        }
+    }
+
+    followingBtn.addEventListener('click', handleUnfollowClick);
 
 
 </script>
