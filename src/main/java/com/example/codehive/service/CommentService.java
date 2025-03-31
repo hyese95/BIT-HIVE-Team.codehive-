@@ -14,5 +14,6 @@ public interface CommentService {
     List<Comment>  readCommentByPostNoAndParentNo(int postNo,Integer parentNo);
     List<Comment> removeCommentByPostNo(int postNo);
     int getReplyCount(int parentNo);
+    void writeComments(Comment comment);
     void modifyComment(Comment comment);
 }
