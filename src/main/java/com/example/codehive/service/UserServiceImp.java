@@ -7,12 +7,14 @@ import com.example.codehive.entity.User;
 import com.example.codehive.repository.FollowRepository;
 import com.example.codehive.repository.PostRepository;
 import com.example.codehive.repository.UserRepository;
+import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +25,8 @@ public class UserServiceImp implements UserService {
     private UserRepository userRepository;
     private PostRepository postRepository;
     private FollowRepository followRepository;
+    private EntityManager entityManager;
+
 
     @Override
     public List<User> findAll() {
@@ -56,6 +60,7 @@ public class UserServiceImp implements UserService {
             userRepository.save(user);
         });
     }
+
     @Override
     public int readPostsCount(int userNo) {
         return postRepository.countPostsByUserNo(userNo);
@@ -90,14 +95,38 @@ public class UserServiceImp implements UserService {
 
     @Override
     public boolean isFollowing(int userNo, int followingUserNo) {
-        List<FollowDto.Following> list=followRepository.findAllFollowingsByUserNo(userNo);
-        boolean isFollowing=false;
-        for(FollowDto.Following following:list){
-            if(following.followingUserNo()==followingUserNo){
-                isFollowing=true;
+        List<FollowDto.Following> list = followRepository.findAllFollowingsByUserNo(userNo);
+        boolean isFollowing = false;
+        for (FollowDto.Following following : list) {
+            if (following.followingUserNo() == followingUserNo) {
+                isFollowing = true;
                 break;
             }
         }
         return isFollowing;
+    }
+
+    @Transactional
+    @Override
+    public void follow(int followerUserNo, int followingUserNo) {
+        FollowId followId = new FollowId();
+        followId.setFollowerUserNo(followerUserNo);
+        followId.setFollowingUserNo(followingUserNo);
+        Follow exsistFollow = entityManager.find(Follow.class, followId);
+        if (exsistFollow != null) {
+            throw new IllegalArgumentException("이미 팔로우 중입니다.");
+        }
+        User followUser = userRepository.findById(followerUserNo)
+                .orElseThrow(() -> new IllegalArgumentException("팔로워 유저 없음"));
+        User followingUser = userRepository.findById(followingUserNo)
+                .orElseThrow(() -> new IllegalArgumentException("팔로잉할 유저 없음"));
+
+
+        Follow follow = new Follow();
+        follow.setId(followId);
+        follow.setFollowingUser(followingUser);
+        follow.setFollowerUser(followUser);
+        follow.setFollowingDate(Instant.now());
+        entityManager.persist(follow);
     }
 }

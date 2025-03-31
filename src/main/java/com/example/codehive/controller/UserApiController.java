@@ -75,6 +75,23 @@ public class UserApiController {
         return userService.readFollowingsByUserNo(1, pageable);
     }
 
+    @PostMapping("/follow/{followingUserNo}")
+    public ResponseEntity<Void> follow(@PathVariable int followingUserNo) {
+        try {
+            userService.follow(1,followingUserNo);
+            return ResponseEntity.ok().build();
+        }catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
+        catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+
+
+    }
+
+
     @DeleteMapping("/unfollow/{followingUserNo}")
     public ResponseEntity<Void> unfollow(@PathVariable Integer followingUserNo) {
         userService.unfollow(1, followingUserNo);

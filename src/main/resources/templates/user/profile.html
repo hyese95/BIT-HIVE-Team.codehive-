@@ -194,6 +194,27 @@
     }
 
     followingBtn.addEventListener('click', handleUnfollowClick);
+    followBtn.addEventListener('click', handleFollow);
+    async function handleFollow(event) {
+        const URL=`/api/users/follow/${event.target.value}`
+        const currentUserNo=1;
+        const response = await fetch(URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                followingUserNo: event.target.value,
+                followerUserNo: currentUserNo
+            })
+        })
+        if (response.ok) {
+            alert('follow성공')
+            await updateFollowing(targetUserNo)
+        }
+        if(!response.ok){
+            alert(response.status)
+        }
+
+
+    }
 
 
 </script>
