@@ -208,10 +208,8 @@ style="border:none; background: rgba(221, 60, 68, .08); height: 45px;  width: 10
 
             try {
                 let deposit= document.getElementById("deposit").innerText;
-                let totalPrice= document.getElementById("totalPrice").value;
-                console.log(deposit+"디파짓요");
-                console.log(totalPrice)
-                if (deposit < totalPrice) {
+
+                if (deposit < totalPrice.value) {
                     alert("주문금액 초과!!")
                     return;
                 }
