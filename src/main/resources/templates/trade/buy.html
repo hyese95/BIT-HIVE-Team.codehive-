@@ -14,43 +14,52 @@
 <body>
 <div class="container">
     <h1 id="coinTitle">주문 페이지</h1>
-    <p id="tradeprice"></p>
-    <div id="coindiv" style="display: none"></div>
     <p>
         <a id="buyLink" href="#">매수</a>
         <a id="sellLink" href="#">매도</a>
         <a id="historyLink" href="#">내역</a>
     </p>
+    <div style="display: flex; justify-content: space-between">
+        <div>
+            <p id="tradeprice" style="font-weight: bold; font-size: 24px;"></p>
+            <div id="coindiv"
+                 style="height: 400px; overflow-y: auto; border: 1px solid #ddd; border-radius: 5px; padding: 10px;">
 
-    <button>지정</button>
-    <button>시장</button>
-    <form id="buyForm">
-        <p>주문가능: <span id="deposit"></span> 원</p>
-        <p>
-            <label>
-                수량 <input type="number" placeholder="수량" id="buyAmount" name="buyAmount">
-            </label>
-        </p>
-        <p>
-            <label>
-                가격 <input type="number" placeholder="가격" id="buyPrice" name="buyPrice">
-            </label>
-        </p>
+            </div>
+        </div>
 
-        <hr>
+        <div id="formContainer">
+            <button>지정</button>
+            <button>시장</button>
+            <form id="buyForm">
+                <p>주문가능: <span id="deposit"></span> 원</p>
+                <p>
+                    <label>
+                        수량 <input type="number" placeholder="수량" id="buyAmount" name="buyAmount">
+                    </label>
+                </p>
+                <p>
+                    <label>
+                        가격 <input type="number" placeholder="가격" id="buyPrice" name="buyPrice">
+                    </label>
+                </p>
 
-        <p>
-            <label>
-                총 금액 <input type="text" placeholder="총 주문금액" id="totalPrice" name="totalPrice">
-            </label>
-        </p>
-        <p>
-            <button type="reset">초기화</button>
-        </p>
-        <p>
-            <button type="submit">매수</button>
-        </p>
-    </form>
+                <hr>
+
+                <p>
+                    <label>
+                        총 금액 <input type="text" placeholder="총 주문금액" id="totalPrice" name="totalPrice">
+                    </label>
+                </p>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-danger">매수</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const queryString = window.location.search;
@@ -67,6 +76,7 @@
             document.getElementById("buyPrice").addEventListener("input", updateTotal);
             document.getElementById("totalPrice").addEventListener("input", updateAmount);
 
+
         });
         // URL 파라미터로 전달된 코인 티커를 읽음
         const queryString = window.location.search;
@@ -75,7 +85,12 @@
         console.log("선택된 종목:", coinTicker);
 
         // 선택된 종목에 맞게 데이터 API 호출
+        let isInitialLoad=true;
+
         async function loadCoin() {
+            let coindiv = document.getElementById("coindiv");
+            let tradeprice = document.getElementById("tradeprice");
+            const currentScrollTop=coindiv.scrollTop;
             if (!coinTicker) {
                 alert("종목 정보를 불러올 수 없습니다.");
                 return;
@@ -84,8 +99,7 @@
             const coinTitle = document.getElementById("coinTitle");
             coinTitle.innerText = `${coinTicker}/KRW 주문 페이지`;
 
-            let coindiv = document.getElementById("coindiv");
-            let tradeprice = document.getElementById("tradeprice");
+
 
             // URL (코인 티커에 맞게 동적 생성)
             const url = `https://api.upbit.com/v1/orderbook?markets=KRW-${coinTicker}`;
@@ -106,14 +120,49 @@
 
                 // 매수/매도 호가 표시
                 let html = "";
-                for (const o of orderbook.reverse()) {
-                    html += `<p>매수 ${o.ask_price.toLocaleString()} 잔량: ${o.ask_size.toFixed(3)}</p>`;
+                for (const o of orderbook.reverse()) {//매도
+                    html += `<p style="margin: 0;padding: 1px 0;">
+<button data-price="${o.ask_price}" class="askPriceBtn"
+ style="border:none; background: rgba(19, 117, 236, .08); height: 45px;  width: 100%; color:#0062df;text-align: left; "
+ >매도 ${o.ask_price.toLocaleString()} 잔량: ${o.ask_size.toFixed(3)}</button></p>`;
                 }
-                html += "<hr>";
-                for (const o of orderbook) {
-                    html += `<p>매도 ${o.bid_price.toLocaleString()} 잔량: ${o.bid_size.toFixed(3)}</p>`;
+
+                for (const o of orderbook.reverse()) {//매수
+                    html += `<p style="margin: 0;padding: 1px 0;">
+<button data-price="${o.bid_price}" class="bidPriceBtn"
+style="border:none; background: rgba(221, 60, 68, .08); height: 45px;  width: 100%; color:#dd3c44;text-align: left; "
+>매수 ${o.bid_price.toLocaleString()} 잔량: ${o.bid_size.toFixed(3)}</button></p>`;
                 }
                 coindiv.innerHTML = html;
+                if (isInitialLoad) {
+                    coindiv.scrollTop = (coindiv.scrollHeight - coindiv.clientHeight) / 2;
+                    isInitialLoad=false;
+                }else {
+                    coindiv.scrollTop=currentScrollTop;
+                }
+
+                const bidPriceBtns = document.getElementsByClassName("bidPriceBtn");
+                const askPriceBtns = document.getElementsByClassName("askPriceBtn")
+                const buyPrice = document.getElementById("buyPrice")
+
+                for (askPriceBtn of askPriceBtns) {
+                    askPriceBtn.addEventListener("click", function (e) {
+                        e.preventDefault();
+                        const price = e.target.dataset.price;
+                        buyPrice.value = price;
+                        updateTotal();
+
+                    });
+                }
+                for (bidPriceBtn of bidPriceBtns) {
+                    bidPriceBtn.addEventListener("click", function (e) {
+                        e.preventDefault();
+                        const price = e.target.dataset.price;
+                        buyPrice.value = price;
+                        updateTotal();
+
+                    });
+                }
 
             } catch (error) {
                 console.error("호가 데이터를 불러오는 중 오류 발생:", error);
@@ -123,6 +172,9 @@
 
         // 페이지 로딩 시 데이터 불러오기
         loadCoin();
+
+        setInterval(loadCoin, 2000);
+
 
         const deposit = document.getElementById("deposit");
 
@@ -152,8 +204,13 @@
             const buyPrice = document.getElementById("buyPrice");
             const totalPrice = document.getElementById("totalPrice");
             const userNo = 1;
+            const deposit = document.getElementById("deposit").innerText;
 
             try {
+                if (deposit < totalPrice) {
+                    alert("주문금액 초과!!")
+                    return;
+                }
                 const response = await fetch('/trade/api/transaction', {
                     method: 'POST',
                     headers: {
