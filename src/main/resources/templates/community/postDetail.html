@@ -66,7 +66,7 @@
     </div>
     <div th:each="comment : ${comments}" th:if="${comment.parentNo == null}" style="margin-bottom: 10px; justify-content: space-between; align-items: center">
         <!-- 부모 댓글 -->
-        <div id="comment" class="comment-container" style="width: 100%; height: auto; border: 1px solid black; border-radius: 5px; padding: 5px; ">
+        <div id="comment" class="comment-container" style="width: 100%;  height: auto; min-height:120px;  border: 1px solid black; border-radius: 5px; padding: 5px; ">
             <div class="pe-3 text-end" style="right:100%" th:if="${comment.getUserNo().id}==${user.id}">
                 <button type="button" name="modifyComment" class="btn btn-info" onclick="modifyCommentForm(this)">수정</button>
                 <button type="button" name="deleteComment" class="btn btn-danger" onclick="deleteComments(this)">삭제</button>
@@ -94,13 +94,14 @@
             <div>
                 <div class="modifyComments" style="display:none; width:100%; height: 100px; flex-direction: column;">
                     <label>
-                        <input type="hidden" th:value="${comment.commentCreatedAt}" name="commentCreatedAt">
-                        <input type="hidden" th:value="${comment.id}" name="id">
-                        <input type="hidden" th:value="${comment.postNo}" name="postNo">
-                        <input type="hidden" th:value="${null}" name="parentNo">
+                        <input type="hidden" th:value="${comment.commentCreatedAt}" name="commentCreatedAt" class="commentCreatedAt">
+                        <input type="hidden" th:value="${comment.id}" name="id" class="id">
+                        <input type="hidden" th:value="${comment.postNo}" name="postNo" class="postNo">
+                        <input type="hidden" th:value="${comment.userNo.getNickname()}" name="userNo" class="userNo">
+                        <input type="hidden" th:value="${null}" name="parentNo" class="parentNo">
                         <textarea name="commentCont" rows="3" style="user-select: none; resize: none; width: 100%;"
                         th:text="${comment.commentCont}" placeholder="수정할 댓글을 입력해 주세요."></textarea>
-                        <button type="button" id="modifyCommentsBtn" onclick="EditComments">수정완료</button>
+                        <button class="mb-2 btn btn-primary" type="button" onclick="EditComments(this)" th:data-comment-id="${comment.id}">수정하기</button>
                     </label>
                 </div>
             </div>
@@ -149,14 +150,53 @@
             reply.style.display = (reply.style.display === "none" || reply.style.display === "") ? "flex" : "none"
         });
     }
+
     function modifyCommentForm(button) {
         let commentContainer = button.closest(".comment-container");
         let modifyForm = commentContainer.querySelector(".modifyComments");
         modifyForm.style.display = (modifyForm.style.display === "none" ||
             modifyForm.style.display === "") ? "flex" : "none";
     }
-    function EditComments(button){
-        console.log("버튼아 눌려라")
+
+    async function EditComments(button){
+        const confirmation = confirm("바꾸시겠습니까?");
+        if(!confirmation) return;
+        if(confirmation){
+            try {
+                const commentId = button.getAttribute("data-comment-id");
+                let commentContainer = button.closest(".comment-container");
+                let modifyForm = commentContainer.querySelector(".modifyComments");
+                let commentInput = modifyForm.querySelector("textarea").value;
+                let commentCreatedAt = new Date().toISOString().valueOf();
+                let postNo=modifyForm.querySelector(".postNo").value;
+                let userNo=modifyForm.querySelector(".userNo").value;
+                const requestBody = {
+                    id: commentId,
+                    commentCont: commentInput,
+                    commentCreatedAt: commentCreatedAt,  // 서버에서 처리하도록 전달
+                    postNo: postNo,
+                    userNo: userNo,
+                    parentNo: null  // 부모 댓글이 없는 경우
+                };
+                console.log(requestBody)
+                const response = await fetch(`/community/modifyComment/${commentId}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+                if(response.ok) {
+                    alert("댓글이 수정되었습니다.")
+                    window.location.reload();
+                }else {
+                    alert("수정 실패!")
+                }
+            }catch (error){
+                console.log(error);
+                alert("수정중 오류 발생!")
+            }
+        }
         let commentContainer = button.closest(".comment-container");
         let modifyForm = commentContainer.querySelector(".modifyComments");
         modifyForm.style.display = "none";

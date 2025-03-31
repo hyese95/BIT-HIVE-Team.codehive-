@@ -84,6 +84,19 @@ class CommentServiceImpTest {
         comment.setCommentCreatedAt(Instant.now());
         comment.setPostNo(91);
         comment.setUserNo(user);
-        commentRepository.save(comment);
+        commentService.writeComments(comment);
+    }
+
+    @Test
+    void modifyComment() {
+        Comment comment = new Comment();
+        User user = entityManager.find(User.class, 1);
+        Hibernate.initialize(user);
+        comment.setCommentCont("쉬바라");
+        comment.setCommentCreatedAt(Instant.now());
+        comment.setUserNo(user);
+        comment.setId(94);
+        commentService.modifyComment(comment);
+        System.out.println(comment);
     }
 }

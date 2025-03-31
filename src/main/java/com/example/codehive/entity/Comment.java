@@ -1,6 +1,7 @@
 package com.example.codehive.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -42,6 +43,7 @@ public class Comment {
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "comment_created_at", nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd a h시 M분", shape = JsonFormat.Shape.STRING)
     private Instant commentCreatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
