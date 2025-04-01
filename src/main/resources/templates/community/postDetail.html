@@ -66,7 +66,7 @@
     </div>
     <div th:each="comment : ${comments}" th:if="${comment.parentNo == null}" style="margin-bottom: 10px; justify-content: space-between; align-items: center">
         <!-- 부모 댓글 -->
-        <div id="comment" class="comment-container" style="width: 100%;  height: auto; min-height:120px;  border: 1px solid black; border-radius: 5px; padding: 5px; ">
+        <div id="comment" class="comment-container" style="width: 100%;  height: fit-content; min-height:120px;  border: 1px solid black; border-radius: 5px; padding: 5px; ">
             <div class="pe-3 text-end" style="right:100%" th:if="${comment.getUserNo().id}==${user.id}">
                 <button type="button" name="modifyComment" class="btn btn-info" onclick="modifyCommentForm(this)" th:data-comment-id="${comment.id}">수정</button>
                 <button type="button" name="deleteComment" class="btn btn-danger" onclick="deleteComments(this)" th:data-comment-id="${comment.id}">삭제</button>
@@ -85,7 +85,7 @@
                 <span th:text="좋아요 +${cntCommentLike[comment.id]?.likeCount ?: 0}"></span>&nbsp;
                 <span th:text="싫어요 +${cntCommentLike[comment.id]?.dislikeCount ?: 0}"></span>
                 </span>
-                <button type="button">답글 달기</button>
+                <button type="button" class="btn btn-info" onclick="toggleWriteChildComments(this)" th:data-comment-parent="${comment.id}">답글 달기</button>
             <button th:if="${comment.parentNo==null && replyCounts[comment.id] > 0}" th:data-parent="${comment.id}"  class="seeComment"
                     onclick="toggleReplies(this)">
                 대댓글 <span th:text="${replyCounts[comment.id] ?: 0}+개"></span> 보기
@@ -105,6 +105,14 @@
                         <button class="mb-2 btn btn-primary" type="button" onclick="EditComments(this)" th:data-comment-id="${comment.id}">수정하기</button>
                     </label>
                 </div>
+            </div>
+            <div class="writeChildComment" style="display: none;width:100%; height: 100px; flex-direction: column;">
+                <label>
+                    <input type="hidden" th:value="${comment.id}" name="parentNo" class="parentNo">
+                    <textarea name="postCont" rows="3" style="user-select: none; resize: none; width: 100%;"
+                               placeholder="답글을 입력해 주세요."></textarea>
+                    <button class="mb-2 btn btn-primary" type="button" onclick="writeChildComment(this)" th:data-comment-id="${comment.id}">답글달기</button>
+                </label>
             </div>
         </div>
 
@@ -151,6 +159,19 @@
             reply.style.display = (reply.style.display === "none" || reply.style.display === "") ? "flex" : "none"
         });
     }
+    function toggleWriteChildComments(button){
+        let commentId = button.getAttribute("data-comment-parent");
+        let commentContainer = button.closest(".comment-container");
+        let writeChildCommentForm = commentContainer.querySelector(".writeChildComment");
+        let writeChildCommentBtn = commentContainer.querySelector(`[data-comment-parent='${commentId}']`);
+        if(writeChildCommentForm.style.display === "none"){
+            writeChildCommentForm.style.display = "flex";
+            writeChildCommentBtn.innerText="답글 취소";
+        }else if(writeChildCommentForm.style.display === "flex"){
+            writeChildCommentForm.style.display = "none";
+            writeChildCommentBtn.innerText="답글"
+        }
+    }
 
     function modifyCommentForm(button) {
         let commentContainer = button.closest(".comment-container");
@@ -162,7 +183,7 @@
         }else if(modifyForm.style.display === "flex") {
             modifyForm.style.display = "none";
             modifyBtn.innerText="수정"
-        }else {}
+        }
     }
 
     async function EditComments(button){
