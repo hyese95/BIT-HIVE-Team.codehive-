@@ -6,150 +6,63 @@
     <title>보유 자산</title>
 </head>
 <body>
-<div>
-    <h1>보유자산</h1>
-    <div>
-        <p th:text="${holdingMarkets}"></p>
-    </div>
+<div class="container">
+        <a href="/trade/main.do">원화</a>
+        <a href="/trade/favorite_coin.do">관심</a>
+        <a href="/trade/holding_coin.do">보유</a>
 
-<!--    -->
-    <script th:inline="javascript">
-        let holdingMarkets = /*[[${holdingMarkets}]]*/ [];
-    </script>
-<!--    -->
+<table class="table table-hover">
+    <thead class="table-dark">
+    <tr>
+        <th>코인명</th>
+        <th>평가금액</th>
+        <th>평균 매수가</th>
+        <th>수익률</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="coin : ${coinDetails}">
+        <td
+                style="cursor: pointer"
+                onclick="goToChart(this)"
+                th:text="${coin.market}"
+                th:attr="data-symbol=${coin.market.replace('KRW-','')}"
+        >
 
-    </div>
-    <table>
-        <thead class="HoldingInterestCategories">
-        <p><a href="/trade/main.do">원화</a></p>
-        <p><a href="/trade/favorite_coin.do">관심</a></p>
-        <p><a href="/trade/holding_coin.do">보유</a></p>
-        </thead>
-    </table>
-    <table>
-        <thead>
-        </thead>
-        <tbody>
-        <!-- coinInfo 리스트의 각 항목을 순회하며 출력 -->
-        <tr th:each="coin : ${coinInfo}">
-            <td th:text="${coin.ticker}"></td>
-            <td th:text="${coin.koreanName}"></td>
-            <td th:text="${coin.tradePrice}"></td>
-        </tr>
-        </tbody>
-    </table>
-    <table id="tickerTable" class="table table-hover">
-        <thead class="table-dark">
-        <tr>
-            <th>코인명</th>
-            <th>현재가</th>
-            <th>전일대비</th>
-            <th>거래대금</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-    <script>
+        </td>
+        <td th:text="${#numbers.formatDecimal(coin.currentValuation, 0, 'COMMA', 0, 'POINT')} + ' 원'"></td>
+        <td th:text="${#numbers.formatDecimal(coin.buyAvgPrice, 0, 'COMMA', 0, 'POINT')} + ' KRW'"></td>
+        <td th:text="${#numbers.formatDecimal(coin.profitRate, 0, 'COMMA', 2, 'POINT')} + ' %'"
+            th:attr="data-rate=${coin.profitRate}"></td>
+    </tr>
+    </tbody>
 
-        // 코인명 클릭했을 시 매수,매도 페이지로 이동시켜주는 함수
-        function goToChart(coinTicker) {
-            // 예: 차트 상세 페이지 URL이 /chart 라고 가정하고, coin 파라미터에 티커를 전달
-            window.location.href = '/trade/buy.do?coin=' + coinTicker;
-        }
-
-
-        // 코인 한글 명을 받아오기 위한 api
-        Promise.all([
-            fetch('https://api.upbit.com/v1/market/all?is_details=true')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                }),
-            // 거래대금, 현재가를 가져오기 위한 api
-            fetch('https://api.upbit.com/v1/ticker/all?quote_currencies=KRW,BTC')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-        ])
-            // marketData 를 이용해 티커와 한글 이름의 매핑 객체를 생성
-            .then(([marketData, tickerData]) => {
-                const coinNameMapping = {};
-                marketData.forEach(item => {
-                    if (item.market.startsWith('KRW-')) {
-                        // "KRW-" 부분을 제거하여 티커만 남김
-                        const ticker = item.market.replace('KRW-', '');
-                        coinNameMapping[ticker] = item.korean_name;
-                    }
-                });
-
-                const tbody = document.querySelector('#tickerTable tbody');
-
-                // tickerData 의 각 항목에 대해 표 행을 생성, KRW 로 시작하는 코인만 찾아내고 KRW 로 시작하는 코인의 KRW 부분만 지움
-                // 필터링된 보유 코인만 출력
-                tickerData.forEach(item => {
-                    if (item.market.startsWith('KRW')) {
-                        const ticker = item.market.replace("KRW-", "");
-
-                        // ✅ 여기에 필터 조건 추가
-                        if (!holdingMarkets.includes(`KRW-${ticker}`)) return;
-
-                        const coinName = coinNameMapping[ticker] || ticker;
-
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `
-            <td onclick="goToChart('${ticker}')" style="cursor: pointer;">${coinName}<br>${ticker}/KRW</td>
-            <td>${(item.trade_price).toLocaleString('en-US', {
-                            minimumFractionDigits: 0,
-                            maximumFractionDigits: 2
-                        })}</td>
-            <td style="color: ${item.signed_change_rate > 0 ? 'red' : (item.signed_change_rate < 0 ? 'blue' : 'black')}">
-                ${item.signed_change_rate > 0 ? '+' : ''}${(item.signed_change_rate * 100).toFixed(2)}%
-            </td>
-            <td>${(item.acc_trade_price_24h / 1000000).toLocaleString('en-US', {maximumFractionDigits: 0})}백만</td>
-        `;
-                        tbody.appendChild(tr);
-                    }
-                });
-            })
-            // 에러 메시지
-            .catch(error => {
-                console.error('Error fetching data:', error);
-                document.getElementById('tickerTable').innerHTML = '<tr><td colspan="4">데이터를 불러오는 중 오류가 발생했습니다.</td></tr>';
-            });
-
-        // 필터링된 보유 코인만 출력
-        tickerData.forEach(item => {
-            if (item.market.startsWith('KRW')) {
-                const ticker = item.market.replace("KRW-", "");
-
-                // ✅ 여기에 필터 조건 추가
-                if (!holdingMarkets.includes(`KRW-${ticker}`)) return;
-
-                const coinName = coinNameMapping[ticker] || ticker;
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-            <td onclick="goToChart('${ticker}')" style="cursor: pointer;">${coinName}<br>${ticker}/KRW</td>
-            <td>${(item.trade_price).toLocaleString('en-US', {
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 2
-                })}</td>
-            <td style="color: ${item.signed_change_rate > 0 ? 'red' : (item.signed_change_rate < 0 ? 'blue' : 'black')}">
-                ${item.signed_change_rate > 0 ? '+' : ''}${(item.signed_change_rate * 100).toFixed(2)}%
-            </td>
-            <td>${(item.acc_trade_price_24h / 1000000).toLocaleString('en-US', {maximumFractionDigits: 0})}백만</td>
-        `;
-                tbody.appendChild(tr);
+</table>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const rows = document.querySelectorAll("td[data-rate]");
+        rows.forEach(td => {
+            const rate = parseFloat(td.dataset.rate);
+            if (rate > 0) {
+                td.style.color = "red";
+            } else if (rate < 0) {
+                td.style.color = "blue";
+            } else {
+                td.style.color = "black";
             }
         });
+    });
 
-    </script>
+    function goToChart(element){
+        const symbol = element.dataset.symbol;
+        const url = `/trade/buy.do?coin=${symbol}`;
+        console.log(`${symbol}`)
+        window.location.href = url;
+    }
+
+</script>
+
 </div>
+
 </body>
 </html>

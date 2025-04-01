@@ -3,7 +3,6 @@
 <body>
 <div class="container">
     <h1>거래소 홈</h1>
-
     <div>
         <p>보유자산</p>
         <div id="myAsset">
@@ -11,37 +10,14 @@
         </div>
         <div>
             <p>평가손익: <span th:text="${#numbers.formatDecimal(profitResult.totalProfit, 0, 'COMMA', 0, 'POINT')}"></span></p>
-            <p>수익률: <span th:text="${#numbers.formatDecimal(profitResult.overallProfitRate, 0, 'COMMA', 2, 'POINT')}"></span></p>
+            <p>수익률: <span th:text="${#numbers.formatDecimal(profitResult.overallProfitRate, 0, 'COMMA', 2, 'POINT')}+'%'"></span></p>
         </div>
     </div>
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th>코인명</th>
-            <th>평단가</th>
-            <th>보유수량</th>
-            <th>구매 금액</th>
-            <th>현재 평가금액</th>
-            <th>평가손익</th>
-            <th>수익률</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="coin : ${profitResult.coinDetails}">
-            <td th:text="${coin.market}"></td>
-            <td th:text="${#numbers.formatDecimal(coin.weightedAvgPrice, 0, 'COMMA', 0, 'POINT')}"></td>
-            <td th:text="${#numbers.formatDecimal(coin.holdingQty, 1, 'COMMA', 1, 'POINT')}"></td>
-            <td th:text="${#numbers.formatDecimal(coin.purchaseValuation, 0, 'COMMA', 0, 'POINT')}"></td>
-            <td th:text="${#numbers.formatDecimal(coin.currentValuation, 0, 'COMMA', 0, 'POINT')}"></td>
-            <td th:text="${#numbers.formatDecimal(coin.profit, 0, 'COMMA', 0, 'POINT')}"></td>
-            <td th:text="${#numbers.formatDecimal(coin.profitRate, 0, 'COMMA', 2, 'POINT')}"></td>
-        </tr>
-        </tbody>
-    </table>
-<!--    -->
-    <p><a href="#">원화</a></p>
-    <p><a href="/trade/favorite_coin.do">관심</a></p>
-    <p><a href="/trade/holding_coin.do">보유</a></p>
+
+    <a href="#">원화</a>
+    <a href="/trade/favorite_coin.do">관심</a>
+    <a href="/trade/holding_coin.do">보유</a>
+
     <table id="tickerTable" class="table table-hover">
         <thead class="table-dark">
         <tr>
@@ -52,7 +28,6 @@
         </tr>
         </thead>
         <tbody>
-
         </tbody>
     </table>
 </div>

@@ -15,12 +15,52 @@
             <p><span>원</span></p>
         </div>
         <div>
-            <p>평가손익: <span></span></p>
-            <p>수익률: <span></span></p>
+            <p>평가손익: <span th:text="${#numbers.formatDecimal(profitResultDto.totalProfit,0,'COMMA',0,'POINT')}"></span></p>
+            <p>수익률: <span th:text="${#numbers.formatDecimal(profitResultDto.overallProfitRate,0,'COMMA',2,'POINT')}+'%'"></span></p>
+            <button>보유자산 초기화하기</button>
         </div>
+        <hr/>
+        <div th:each="coin : ${profitResultDto.coinDetails}" class="coin-box">
+            <h2 th:text="${coin.market}"></h2>
+            <p>
+                평가손익 :
+                <span th:text="${#numbers.formatDecimal(coin.profit, 0, 'COMMA', 0, 'POINT')} + ' KRW'"></span>
+            </p>
+            <p>수익률:
+                <span th:text="${coin.profitRate > 0 ? '+' : ''} +
+                   ${#numbers.formatDecimal(coin.profitRate, 0, 'COMMA', 2, 'POINT')} + '%'"></span>
+            </p>
+            <p>
+                보유 수량:
+                <span th:text="${#numbers.formatDecimal(coin.holdingQty, 0, 'COMMA', 2, 'POINT')} + ${coin.market}"></span>
+            </p>
+            <p>
+                매수 평균가:
+                <span th:text="${#numbers.formatDecimal(coin.buyAvgPrice, 0, 'COMMA', 0, 'POINT')}"></span> KRW
+            </p>
+            <p>
+                평가금액:
+                <span th:text="${#numbers.formatDecimal(coin.currentValuation, 0, 'COMMA', 0, 'POINT')}"></span> KRW
+            </p>
+            <p>
+                매수금액:
+                <span th:text="${#numbers.formatDecimal(coin.purchaseValuation, 0, 'COMMA', 0, 'POINT')}"></span> KRW
+            </p>
+            <hr/>
+        </div>
+
     </div>
 
 </div>
+<script>
+    // const resp = await fetch("/trade/my_assets");
+    // myAssets = await resp.json();
+    //
+    // const url = `https://api.upbit.com/v1/ticker?markets=${realMarkets.join(",")}`;
+    // const priceData = await response.json();
+
+    // 타임리프로 th:attr 로 보유중인 원화를 구한뒤에 총 평가손익 더하기
+</script>
 
 </body>
 </html>
