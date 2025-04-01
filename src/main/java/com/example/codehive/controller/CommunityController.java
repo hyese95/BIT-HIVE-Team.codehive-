@@ -248,6 +248,9 @@ public class CommunityController {
         comment.setCommentCreatedAt(Instant.now());
         comment.setCommentCont(comment.getCommentCont());
         Comment savedComment = commentRepository.save(comment);
+        if(Objects.equals(savedComment.getCommentCont(), "")){
+            return null;
+        }
         commentRepository.flush();
         redirectAttributes.addFlashAttribute("savedComment", savedComment);
         return new ModelAndView("redirect:/community/postDetail.do?postNo=" + postNo);

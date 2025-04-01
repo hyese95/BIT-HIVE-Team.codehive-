@@ -85,7 +85,7 @@
                 <span th:text="좋아요 +${cntCommentLike[comment.id]?.likeCount ?: 0}"></span>&nbsp;
                 <span th:text="싫어요 +${cntCommentLike[comment.id]?.dislikeCount ?: 0}"></span>
                 </span>
-                <button type="button" class="btn btn-info" onclick="toggleWriteChildComments(this)" th:data-comment-parent="${comment.id}">답글 달기</button>
+                <button type="button" class="btn btn-info mb-1" onclick="toggleWriteChildComments(this)" th:data-comment-parent="${comment.id}">답글 달기</button>
             <button th:if="${comment.parentNo==null && replyCounts[comment.id] > 0}" th:data-parent="${comment.id}"  class="seeComment"
                     onclick="toggleReplies(this)">
                 대댓글 <span th:text="${replyCounts[comment.id] ?: 0}+개"></span> 보기
@@ -169,10 +169,9 @@
             writeChildCommentBtn.innerText="답글 취소";
         }else if(writeChildCommentForm.style.display === "flex"){
             writeChildCommentForm.style.display = "none";
-            writeChildCommentBtn.innerText="답글"
+            writeChildCommentBtn.innerText="답글 달기"
         }
     }
-
     function modifyCommentForm(button) {
         let commentContainer = button.closest(".comment-container");
         let modifyForm = commentContainer.querySelector(".modifyComments");
