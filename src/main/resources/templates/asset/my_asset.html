@@ -28,7 +28,9 @@
             </p>
             <p>수익률:
                 <span th:text="${coin.profitRate > 0 ? '+' : ''} +
-                   ${#numbers.formatDecimal(coin.profitRate, 0, 'COMMA', 2, 'POINT')} + '%'"></span>
+                   ${#numbers.formatDecimal(coin.profitRate, 0, 'COMMA', 2, 'POINT')} + '%'"
+                      th:attr="data-rate=${coin.profitRate}"
+                ></span>
             </p>
             <p>
                 보유 수량:
@@ -60,6 +62,21 @@
     // const priceData = await response.json();
 
     // 타임리프로 th:attr 로 보유중인 원화를 구한뒤에 총 평가손익 더하기
+
+
+    document.addEventListener("DOMContentLoaded", ()=>{
+        const rows = document.querySelectorAll("span[data-rate]");
+        rows.forEach(span => {
+            const rate = parseFloat(span.dataset.rate);
+            if (rate > 0){
+                span.style.color = "red";
+            }else if (rate < 0) {
+                span.style.color = "blue";
+            } else {
+                span.style.color = "black";
+            }
+        })
+    })
 </script>
 
 </body>
