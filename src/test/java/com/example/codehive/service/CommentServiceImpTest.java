@@ -99,4 +99,9 @@ class CommentServiceImpTest {
         commentService.modifyComment(comment);
         System.out.println(comment);
     }
+
+    @Test
+    void removeCommentByCommentNo() {
+        commentService.removeCommentByCommentNo(97);
+    }
 }

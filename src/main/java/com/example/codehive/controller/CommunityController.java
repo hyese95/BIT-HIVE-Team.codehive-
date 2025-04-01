@@ -252,11 +252,20 @@ public class CommunityController {
         redirectAttributes.addFlashAttribute("savedComment", savedComment);
         return new ModelAndView("redirect:/community/postDetail.do?postNo=" + postNo);
     }
-    @PutMapping("/modifyComment/{commentId}")
+    @PutMapping("/modifyComment")
     @ResponseBody
-    public ResponseEntity<String> modifyComment(@RequestBody Comment comment, @PathVariable int commentId) {
+    public ResponseEntity<String> modifyComment(@RequestBody Comment comment) {
         try {
-            comment.setId(commentId);
+        // 댓글이 존재하는지 확인
+        Optional<Comment> existingComment = commentRepository.findById(comment.getId());
+        if (existingComment.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 댓글을 찾을 수 없습니다.");
+        }
+
+        // 기존 내용과 비교하여 변경된 것이 없는 경우
+        if (existingComment.get().getCommentCont().equals(comment.getCommentCont())) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("댓글 내용이 변경되지 않았습니다.");
+        }
             commentService.modifyComment(comment);
             String redirectUrl = "/community/postDetail.do?postNo=" + comment.getPostNo();
             return ResponseEntity.ok(redirectUrl);
@@ -265,7 +274,16 @@ public class CommunityController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("댓글 수정 중 오류 발생");
         }
     }
-
+    @DeleteMapping("/deleteComment/{commentNo}")
+    public ResponseEntity<String> deleteComment(@PathVariable int commentNo) {
+        try{
+            commentService.removeCommentByCommentNo(commentNo);
+            return ResponseEntity.ok("댓글이 삭제되었습니다.");
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
     @GetMapping("modifyPost.do")
     public String modifyPost(Model model
             ,@RequestParam("postNo") int postNo) {
@@ -278,13 +296,16 @@ public class CommunityController {
         return "community/postDetail";
     }
     @PutMapping("/modifyPostAction.do")
-    public ResponseEntity<String> modifyPostAction(@RequestBody PostDto.ModifyPostRequest request) {
+    public ResponseEntity<String> modifyPostAction(@RequestBody PostDto postDto
+    ) {
+        int id = postDto.getId();
+        String postCont = postDto.getPostCont();
+        System.out.println(id);
+        System.out.println(postCont);
         try {
-            int postNo = request.getPostNo();
-            String postCont = request.getPostCont();
             // 게시글 수정 서비스 호출
-            postService.modifyPost(postNo, postCont);
-            String redirectUrl = "/community/postDetail.do?postNo=" + request.getPostNo();
+            postService.modifyPost(id, postCont);
+            String redirectUrl = "/community/postDetail.do?postNo=" + id;
             ResponseEntity.ok("게시글이 성공적으로 수정되었습니다.");
             return ResponseEntity.ok(redirectUrl);
         } catch (Exception e) {
@@ -313,9 +334,7 @@ public class CommunityController {
             Set<String> keywordSet = new HashSet<>(Arrays.asList(recentKeywords.split("-")));
             model.addAttribute("keywordSet", keywordSet);
             model.addAttribute("category", category);
-
         }
-
         return "community/search";
     }
 

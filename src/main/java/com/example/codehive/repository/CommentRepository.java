@@ -33,10 +33,9 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
     int countByPostNo(int postNo);
     int countChildCommentByPostNoAndParentNo(int postNo, int parentNo);
 
-    @Transactional
     @Modifying
-    @Query("DELETE FROM Comment c WHERE c.postNo = :postNo")
-    List<Comment> deleteCommentByPostNo(@Param("postNo") int postNo);
+    @Query("DELETE FROM Comment c WHERE c.id = :commentNo")
+    void deleteCommentByPostNo(@Param("commentNo") int commentNo);
     int countByParentNo(int parentNo);
 }
 

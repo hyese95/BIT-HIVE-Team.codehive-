@@ -60,8 +60,8 @@ public class CommentServiceImp implements CommentService {
 
     @Override
     @Transactional
-    public List<Comment> removeCommentByPostNo(int postNo) {
-        return commentRepository.deleteCommentByPostNo(postNo);
+    public void removeCommentByCommentNo(int commentNo) {
+        commentRepository.deleteCommentByPostNo(commentNo);
     }
 
     @Override
