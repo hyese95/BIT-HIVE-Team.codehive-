@@ -115,4 +115,23 @@ public class SettingController {
     }
 
 
+
+    @GetMapping("/support/terms_of_service.do")
+    public String termsOfService() {
+        return "setting/support/terms_of_service";
+    }
+    @GetMapping("/support/terms/bit_hive.do")
+    public String termsBitHive() {
+        return "setting/support/terms/bit_hive";
+    }
+    @GetMapping("/support/terms/open_api.do")
+    public String termsOpenApi() {
+        return "setting/support/terms/open_api";
+    }
+    @GetMapping("/support/terms/nft.do")
+    public String termsNft() {
+        return "setting/support/terms/nft";
+    }
+
+
 }

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/"
+      th:replace="~{fragments/default :: html(content=~{::body})}">
+<head>
+    <meta charset="UTF-8">
+    <title>NFT 이용약관</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; padding: 2rem; }
+        .container { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); max-width: 800px; }
+        h2 { margin-bottom: 1rem; }
+        ul { margin-left: 1rem; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2 class="text-primary">NFT 이용약관</h2>
+    <ul>
+        <li><strong>제1조 (목적)</strong><br>NFT 거래 시 회사와 회원 간의 권리와 의무를 규정합니다.</li>
+        <li><strong>제2조 (정의)</strong><br>NFT는 디지털 자산이며 디지털 저작물과 연동됩니다.</li>
+        <li><strong>제3조 (보유자의 권리)</strong><br>보유자는 NFT 권리를 행사할 수 있으며 저작권은 포함되지 않습니다.</li>
+        <li><strong>제4조 (서비스 제한)</strong><br>문제 발생 시 거래 제한 및 종료가 가능합니다.</li>
+        <li><strong>제5조 (금지 행위)</strong><br>불법 복제나 가격 조작 등 행위는 금지됩니다.</li>
+    </ul>
+    <div class="mt-4">
+        <a href="/setting/support/terms_of_service.do" class="btn btn-secondary">돌아가기</a>
+    </div>
+</div>
+</body>
+</html>
