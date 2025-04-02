@@ -1,40 +1,63 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{fragments/default :: html(content=~{::body})}">
+
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
+<script defer src="/js/util/profit.js"></script>
+<script defer src="/js/util/myAsset.js"></script>
 <nav th:replace="fragments/nav_bars :: assetSubNav"></nav>
 <div class="container">
-<h1>내자산</h1>
+    <h1>내자산</h1>
     <div>
         <p>보유자산</p>
         <div id="myAsset">
             <p><span>원</span></p>
         </div>
         <div>
-            <p>평가손익: <span th:text="${#numbers.formatDecimal(profitResultDto.totalProfit,0,'COMMA',0,'POINT')}"></span></p>
-            <p>수익률: <span th:text="${#numbers.formatDecimal(profitResultDto.overallProfitRate,0,'COMMA',2,'POINT')}+'%'"></span></p>
+            <p>
+                <strong>
+                    평가손익:
+                    <span th:text="${#numbers.formatDecimal(profitResultDto.totalProfit,0,'COMMA',0,'POINT')}"
+                          th:attr="data-profit=${profitResultDto.totalProfit}"
+                    ></span>
+                </strong>
+            </p>
+            <p>
+                <strong>
+                    수익률:
+                    <span th:text="${profitResultDto.overallProfitRate > 0 ? '+' : ''} +
+            ${#numbers.formatDecimal(profitResultDto.overallProfitRate,0,'COMMA',2,'POINT')}+'%'"
+                          th:attr="data-profit=${profitResultDto.overallProfitRate}"
+                    ></span>
+                </strong>
+            </p>
             <button>보유자산 초기화하기</button>
         </div>
         <hr/>
+
+        <hr/>
         <div th:each="coin : ${profitResultDto.coinDetails}" class="coin-box">
             <h2 th:text="${coin.market}"></h2>
-            <p>
+            <p><strong>
                 평가손익 :
-                <span th:text="${#numbers.formatDecimal(coin.profit, 0, 'COMMA', 0, 'POINT')} + ' KRW'"></span>
+                <span th:text="${#numbers.formatDecimal(coin.profit, 0, 'COMMA', 0, 'POINT')} + ' KRW'"
+                      th:attr="data-profit=${coin.profit}"
+                ></span></strong>
             </p>
-            <p>수익률:
-                <span th:text="${coin.profitRate > 0 ? '+' : ''} +
+            <p>
+                <strong>수익률:
+                    <span th:text="${coin.profitRate > 0 ? '+' : ''} +
                    ${#numbers.formatDecimal(coin.profitRate, 0, 'COMMA', 2, 'POINT')} + '%'"
-                      th:attr="data-rate=${coin.profitRate}"
-                ></span>
+                          th:attr="data-profit=${coin.profitRate}"
+                    ></span></strong>
             </p>
             <p>
                 보유 수량:
-                <span th:text="${#numbers.formatDecimal(coin.holdingQty, 0, 'COMMA', 2, 'POINT')} + ${coin.market}"></span>
+                <span th:text="${#numbers.formatDecimal(coin.holdingQty, 0, 'COMMA', 2, 'POINT')} + ${coin.market.replace('KRW-','')}"></span>
             </p>
             <p>
                 매수 평균가:
@@ -51,33 +74,8 @@
             <hr/>
         </div>
 
+
     </div>
-
 </div>
-<script>
-    // const resp = await fetch("/trade/my_assets");
-    // myAssets = await resp.json();
-    //
-    // const url = `https://api.upbit.com/v1/ticker?markets=${realMarkets.join(",")}`;
-    // const priceData = await response.json();
-
-    // 타임리프로 th:attr 로 보유중인 원화를 구한뒤에 총 평가손익 더하기
-
-
-    document.addEventListener("DOMContentLoaded", ()=>{
-        const rows = document.querySelectorAll("span[data-rate]");
-        rows.forEach(span => {
-            const rate = parseFloat(span.dataset.rate);
-            if (rate > 0){
-                span.style.color = "red";
-            }else if (rate < 0) {
-                span.style.color = "blue";
-            } else {
-                span.style.color = "black";
-            }
-        })
-    })
-</script>
-
 </body>
 </html>

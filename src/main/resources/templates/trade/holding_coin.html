@@ -6,6 +6,7 @@
     <title>보유 자산</title>
 </head>
 <body>
+<script defer src="/js/util/profit.js"></script>
 <div class="container">
         <a href="/trade/main.do">원화</a>
         <a href="/trade/favorite_coin.do">관심</a>
@@ -32,27 +33,14 @@
         </td>
         <td th:text="${#numbers.formatDecimal(coin.currentValuation, 0, 'COMMA', 0, 'POINT')} + ' 원'"></td>
         <td th:text="${#numbers.formatDecimal(coin.buyAvgPrice, 0, 'COMMA', 0, 'POINT')} + ' KRW'"></td>
-        <td th:text="${#numbers.formatDecimal(coin.profitRate, 0, 'COMMA', 2, 'POINT')} + ' %'"
-            th:attr="data-rate=${coin.profitRate}"></td>
+        <td th:text="${coin.profitRate > 0 ? '+' : ''} +
+        ${#numbers.formatDecimal(coin.profitRate, 0, 'COMMA', 2, 'POINT')} + ' %'"
+            th:attr="data-profit=${coin.profitRate}"></td>
     </tr>
     </tbody>
 
 </table>
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const rows = document.querySelectorAll("td[data-rate]");
-        rows.forEach(td => {
-            const rate = parseFloat(td.dataset.rate);
-            if (rate > 0) {
-                td.style.color = "red";
-            } else if (rate < 0) {
-                td.style.color = "blue";
-            } else {
-                td.style.color = "black";
-            }
-        });
-    });
-
     function goToChart(element){
         const symbol = element.dataset.symbol;
         const url = `/trade/buy.do?coin=${symbol}`;

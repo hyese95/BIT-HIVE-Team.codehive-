@@ -19,7 +19,6 @@ public class TradeRestController {
     private final MyAssetService myAssetService;
     private final CoinTransactionService coinTransactionService;
 
-    // 사용자의 보유 자산(수량) 조회 (예: 유저 번호 1)
     @GetMapping("/my_assets")
     public ResponseEntity<Map<String, Double>> getMyAssets() {
         Map<String, Double> myAssetMap = myAssetService.readAssetByUserNo(1);
