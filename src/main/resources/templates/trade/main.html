@@ -1,47 +1,37 @@
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{fragments/default :: html(content=~{::body})}">
 <body>
+<script defer src="/js/util/profit.js"></script>
+<script defer src="/js/util/myAsset.js"></script>
 <div class="container">
     <h1>거래소 홈</h1>
-
     <div>
         <p>보유자산</p>
         <div id="myAsset">
             <p><span>원</span></p>
         </div>
         <div>
-            <p>평가손익: <span th:text="${#numbers.formatDecimal(profitResult.totalProfit, 0, 'COMMA', 0, 'POINT')}"></span></p>
-            <p>수익률: <span th:text="${#numbers.formatDecimal(profitResult.overallProfitRate, 0, 'COMMA', 2, 'POINT')}"></span></p>
+            <p>
+                평가손익:
+                <span th:text="${profitResult.totalProfit > 0 ? '+' : ''} +
+                    ${#numbers.formatDecimal(profitResult.totalProfit, 0, 'COMMA', 0, 'POINT')}"
+                      th:attr="data-profit=${profitResult.totalProfit}"
+                ></span>
+            </p>
+            <p>
+                수익률:
+                <span th:text="${profitResult.overallProfitRate > 0 ? '+' : ''}+
+                    ${#numbers.formatDecimal(profitResult.overallProfitRate, 0, 'COMMA', 2, 'POINT')}+'%'"
+                      th:attr="data-profit=${profitResult.overallProfitRate}"
+                ></span>
+            </p>
         </div>
     </div>
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th>코인명</th>
-            <th>평단가</th>
-            <th>보유수량</th>
-            <th>구매 금액</th>
-            <th>현재 평가금액</th>
-            <th>평가손익</th>
-            <th>수익률</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="coin : ${profitResult.coinDetails}">
-            <td th:text="${coin.market}"></td>
-            <td th:text="${#numbers.formatDecimal(coin.weightedAvgPrice, 0, 'COMMA', 0, 'POINT')}"></td>
-            <td th:text="${#numbers.formatDecimal(coin.holdingQty, 1, 'COMMA', 1, 'POINT')}"></td>
-            <td th:text="${#numbers.formatDecimal(coin.purchaseValuation, 0, 'COMMA', 0, 'POINT')}"></td>
-            <td th:text="${#numbers.formatDecimal(coin.currentValuation, 0, 'COMMA', 0, 'POINT')}"></td>
-            <td th:text="${#numbers.formatDecimal(coin.profit, 0, 'COMMA', 0, 'POINT')}"></td>
-            <td th:text="${#numbers.formatDecimal(coin.profitRate, 0, 'COMMA', 2, 'POINT')}"></td>
-        </tr>
-        </tbody>
-    </table>
-<!--    -->
-    <p><a href="#">원화</a></p>
-    <p><a href="/trade/favorite_coin.do">관심</a></p>
-    <p><a href="/trade/holding_coin.do">보유</a></p>
+
+    <a href="#">원화</a>
+    <a href="/trade/favorite_coin.do">관심</a>
+    <a href="/trade/holding_coin.do">보유</a>
+
     <table id="tickerTable" class="table table-hover">
         <thead class="table-dark">
         <tr>
@@ -52,70 +42,13 @@
         </tr>
         </thead>
         <tbody>
-
         </tbody>
     </table>
 </div>
 
 <script>
-    let myAssets = {};
-    // 1. 내 자산(수량) API 호출 (페이지 로드 시 1회)
-    async function fetchAssets() {
-        try {
-            // ★ controller 로 내가 보유한 자산 수량 계산 결과를 매핑한 주소를 fetch로 받아온다.
-            const response = await fetch("/trade/my_assets");
-            if (!response.ok) throw new Error("보유 자산 데이터를 불러오는데 실패했습니다.");
-            myAssets = await response.json();
-            // 내 자산을 가져온 후, 즉시 가격 업데이트를 호출합니다.
-            fetchAssetPrices();
-        } catch (error) {
-            console.error(error.message);
-        }
-    }
-
-    // 2. 내 자산 관련 실시간 가격 불러오기 (1초마다 호출)
-    async function fetchAssetPrices() {
-        const markets = Object.keys(myAssets);
-        if (markets.length === 0) return;
-
-        let totalValue = 0;
-
-        // KRW-KRW는 가상코인이므로 가격은 항상 1
-        if (markets.includes("KRW-KRW")) {
-            totalValue += myAssets["KRW-KRW"] * 1;
-        }
-
-        // (KRW-KRW 제외)
-        const realMarkets = markets.filter(market => market !== "KRW-KRW");
-        if (realMarkets.length > 0) {
-            // ★ Upbit API 예시: https://api.upbit.com/v1/ticker?markets=KRW-BTC,KRW-ETH,...
-            const url = `https://api.upbit.com/v1/ticker?markets=${realMarkets.join(",")}`;
-            try {
-                const response = await fetch(url);
-                if (!response.ok) throw new Error("실시간 가격을 불러오는 데 실패했습니다.");
-                const priceData = await response.json();
-                // 응답 데이터에서 각 코인의 현재가(trade_price)를 사용하여 총합 자산 가치를 계산
-                priceData.forEach(item => {
-                    totalValue += (myAssets[item.market] || 0) * item.trade_price;
-                });
-            } catch (error) {
-                console.error(error.message);
-            }
-        }
-
-        // 총 보유 자산 가치를 업데이트
-        updateTotalAssetValue(totalValue);
-    }
-
-    // 3. 총 보유 자산 가치를 보이는 영역(#myAsset)에 업데이트
-    function updateTotalAssetValue(totalValue) {
-        document.getElementById("myAsset").innerHTML =
-            `<p><span>${new Intl.NumberFormat('ko-KR').format(totalValue)} 원</span></p>`;
-    }
-
-    // 4. 코인 티커 정보(실시간 가격, 전일대비, 거래대금)를 업데이트하는 함수 (1초마다 호출)
-    // 코인명 매핑은 한 번 호출하여 정적 데이터를 저장합니다.
     let coinNameMapping = {};
+
     async function fetchCoinNameMapping() {
         try {
             const response = await fetch('https://api.upbit.com/v1/market/all?is_details=true');
@@ -123,7 +56,6 @@
             const marketData = await response.json();
             marketData.forEach(item => {
                 if (item.market.startsWith('KRW-')) {
-                    // "KRW-" 제거 후 티커만 사용
                     const ticker = item.market.replace('KRW-', '');
                     coinNameMapping[ticker] = item.korean_name;
                 }
@@ -135,15 +67,14 @@
 
     async function updateTickerTable() {
         try {
-            // Upbit의 모든 KRW 마켓 티커 정보 (실시간 가격, 전일 대비, 거래대금 등)
             const response = await fetch('https://api.upbit.com/v1/ticker/all?quote_currencies=KRW,BTC');
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const tickerData = await response.json();
             const tbody = document.querySelector('#tickerTable tbody');
-            tbody.innerHTML = "";  // 기존 테이블 내용 초기화
+            tbody.innerHTML = "";
 
             tickerData.forEach(item => {
-                if (item.market.startsWith('KRW')) {  // KRW 마켓만 표시
+                if (item.market.startsWith('KRW')) {
                     const ticker = item.market.replace("KRW-", "");
                     const coinName = coinNameMapping[ticker] || ticker;
                     const priceFormatted = item.trade_price.toLocaleString('en-US', {
@@ -155,11 +86,11 @@
 
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                <td onclick="goToChart('${ticker}')" style="cursor: pointer;">${coinName}<br>${ticker}/KRW</td>
-                <td>${priceFormatted}</td>
-                <td style="color: ${changeColor}">${item.signed_change_rate > 0 ? '+' : ''}${changeRateFormatted}%</td>
-                <td>${(item.acc_trade_price_24h / 1000000).toLocaleString('en-US', {maximumFractionDigits: 0})}백만</td>
-              `;
+                        <td onclick="goToChart('${ticker}')" style="cursor: pointer;">${coinName}<br>${ticker}/KRW</td>
+                        <td>${priceFormatted}</td>
+                        <td style="color: ${changeColor}">${item.signed_change_rate > 0 ? '+' : ''}${changeRateFormatted}%</td>
+                        <td>${(item.acc_trade_price_24h / 1000000).toLocaleString('en-US', {maximumFractionDigits: 0})}백만</td>
+                    `;
                     tbody.appendChild(tr);
                 }
             });
@@ -170,27 +101,16 @@
         }
     }
 
-    // 5. 코인명 클릭 시 매수/매도 페이지로 이동하는 함수
     function goToChart(coinTicker) {
         const url = `/trade/buy.do?coin=${coinTicker}`;
-        console.log("이동할 URL:", url);
         window.location.href = url;
     }
 
-    // -------------------------------
-    // 초기 실행 및 주기적 업데이트 설정
-    // -------------------------------
+    // 초기 실행
     document.addEventListener("DOMContentLoaded", async () => {
-        await fetchCoinNameMapping();  // 코인명 매핑 정보는 한 번만 불러옴
-        await fetchAssets();           // 내 자산 수량은 한 번 불러옴
-
-        // 내 자산 가격(총합) 업데이트: 1초마다 실행
-        // setInterval(fetchAssetPrices, 1000000);
-        // 티커 테이블 업데이트: 1초마다 실행
-        // setInterval(updateTickerTable, 1000000);
+        await fetchCoinNameMapping();
+        updateTickerTable();
     });
-    fetchAssetPrices()
-    updateTickerTable()
 </script>
 </body>
 </html>

@@ -85,12 +85,12 @@
         console.log("선택된 종목:", coinTicker);
 
         // 선택된 종목에 맞게 데이터 API 호출
-        let isInitialLoad=true;
+        let isInitialLoad = true;
 
         async function loadCoin() {
             let coindiv = document.getElementById("coindiv");
             let tradeprice = document.getElementById("tradeprice");
-            const currentScrollTop=coindiv.scrollTop;
+            const currentScrollTop = coindiv.scrollTop;
             if (!coinTicker) {
                 alert("종목 정보를 불러올 수 없습니다.");
                 return;
@@ -98,7 +98,6 @@
             // 코인명 및 타이틀 수정
             const coinTitle = document.getElementById("coinTitle");
             coinTitle.innerText = `${coinTicker}/KRW 주문 페이지`;
-
 
 
             // URL (코인 티커에 맞게 동적 생성)
@@ -136,9 +135,9 @@ style="border:none; background: rgba(221, 60, 68, .08); height: 45px;  width: 10
                 coindiv.innerHTML = html;
                 if (isInitialLoad) {
                     coindiv.scrollTop = (coindiv.scrollHeight - coindiv.clientHeight) / 2;
-                    isInitialLoad=false;
-                }else {
-                    coindiv.scrollTop=currentScrollTop;
+                    isInitialLoad = false;
+                } else {
+                    coindiv.scrollTop = currentScrollTop;
                 }
 
                 const bidPriceBtns = document.getElementsByClassName("bidPriceBtn");
@@ -207,7 +206,7 @@ style="border:none; background: rgba(221, 60, 68, .08); height: 45px;  width: 10
 
 
             try {
-                let deposit= document.getElementById("deposit").innerText;
+                let deposit = document.getElementById("deposit").innerText;
 
                 if (deposit < totalPrice.value) {
                     alert("주문금액 초과!!")

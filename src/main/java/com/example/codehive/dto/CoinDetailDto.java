@@ -13,7 +13,7 @@ public class CoinDetailDto {
     // 코인명 (예: ADA, BTC, SAND)
     private String market;
     // 가중평균 매수 단가 (구매 수량*가격 총합 / 총 구매 수량)
-    private double weightedAvgPrice;
+    private double buyAvgPrice;
     // 잔여 수량 = 총 구매 수량 - 총 판매 수량
     private double holdingQty;
     // 구매 평가금액 = 가중평균 매수 단가 * 잔여 수량

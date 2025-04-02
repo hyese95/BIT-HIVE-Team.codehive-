@@ -24,13 +24,18 @@ public class AssetController {
     @GetMapping("my_asset.do")
     public String myAsset(Model model) {
         Map<String, Double> myAssetMap = myAssetService.readAssetByUserNo(1);
-        Map<String, Double> currentMap = new HashMap<>();
+        model.addAttribute("myAssetMap", myAssetMap);
 
+        Map<String, Double> currentPriceMap = new HashMap<>();
         for (String market : myAssetMap.keySet()) {
-            double price = priceService.getCoinPrice(market);
-            currentMap.put(market, price);
+            if( "KRW-KRW".equalsIgnoreCase(market)){
+                continue;
+            }
+            String upbitMarket = market;
+            double currentPrice = priceService.getCoinPrice(upbitMarket);
+            currentPriceMap.put(market, currentPrice);
         }
-        ProfitResultDto profitResultDto = coinTransactionService.calculateProfit(1, currentMap);
+        ProfitResultDto profitResultDto = coinTransactionService.calculateProfit(1, currentPriceMap);
         model.addAttribute("profitResultDto", profitResultDto);
 
         return "asset/my_asset";

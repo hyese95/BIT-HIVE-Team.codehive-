@@ -43,7 +43,7 @@ public class TradeController {
                 continue;
             }
             // 만약 key가 이미 "KRW-"로 시작하면 그대로 사용, 그렇지 않으면 접두어 추가
-            String upbitMarket = market.startsWith("KRW-") ? market : "KRW-" + market;
+            String upbitMarket = market;
             double currentPrice = priceService.getCoinPrice(upbitMarket);
             currentPriceMap.put(market, currentPrice);
         }
@@ -77,12 +77,10 @@ public class TradeController {
                 currentPriceMap.put(market, price);
             }
         }
+
         ProfitResultDto result = coinTransactionService.calculateProfit(1, currentPriceMap);
-        List<String> holdingMarkets = result.getCoinDetails().stream()
-                .filter(dto -> dto.getHoldingQty() > 0)
-                .map(CoinDetailDto::getMarket)
-                .collect(Collectors.toList());
-        model.addAttribute("holdingMarkets", holdingMarkets);
+
+        model.addAttribute("coinDetails", result.getCoinDetails());
         return "trade/holding_coin";
     }
 

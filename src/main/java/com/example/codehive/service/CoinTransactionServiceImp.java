@@ -18,8 +18,10 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
 
     @Override
     public ProfitResultDto calculateProfit(int userNo, Map<String, Double> currentPriceMap) {
+        // 1. 해당 유저의 전체 거래 내역 조회
         List<CoinTransaction> allTransactions = coinTransactionRepository.findByUserNo(userNo);
 
+        // 2. 매수 / 매도 거래만 각각 필터링 (거래 상태는 COMPLETED만)
         List<CoinTransaction> buyTransactions = allTransactions.stream()
                 .filter(tx -> "BUY".equalsIgnoreCase(tx.getTransactionType()) &&
                         "COMPLETED".equalsIgnoreCase(tx.getTransactionState()))
@@ -30,42 +32,66 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
                         "COMPLETED".equalsIgnoreCase(tx.getTransactionState()))
                 .collect(Collectors.toList());
 
+        // 3. 코인 마켓별로 그룹핑
         Map<String, List<CoinTransaction>> buyMap = buyTransactions.stream()
                 .collect(Collectors.groupingBy(CoinTransaction::getMarket));
         Map<String, List<CoinTransaction>> sellMap = sellTransactions.stream()
                 .collect(Collectors.groupingBy(CoinTransaction::getMarket));
 
         List<CoinDetailDto> coinDetails = new ArrayList<>();
-        double totalPurchaseValuation = 0;
-        double totalCurrentValuation = 0;
+        double totalPurchaseValuation = 0.0; // 전체 매입 금액
+        double totalCurrentValuation = 0.0;  // 전체 현재 평가 금액
 
         for (String market : buyMap.keySet()) {
-            if ("KRW-KRW".equalsIgnoreCase(market)) {
-                continue;
-            }
+            // 예외 처리: KRW 자체 마켓은 계산 제외
+            if ("KRW-KRW".equalsIgnoreCase(market)) continue;
+
             List<CoinTransaction> coinBuys = buyMap.get(market);
-            double totalBuyQty = coinBuys.stream().mapToDouble(CoinTransaction::getTransactionCnt).sum();
-            double totalBuyAmount = coinBuys.stream().mapToDouble(tx -> tx.getPrice() * tx.getTransactionCnt()).sum();
-            double weightedAvgPrice = totalBuyAmount / totalBuyQty;
 
-            double totalSellQty = 0;
-            if (sellMap.containsKey(market)) {
-                totalSellQty = sellMap.get(market).stream().mapToDouble(CoinTransaction::getTransactionCnt).sum();
+            // 4. 총 매수 수량 계산
+            double totalBuyQty = 0.0;
+            double totalBuyAmount = 0.0;
+            for (CoinTransaction tx : coinBuys) {
+                double qty = tx.getTransactionCnt();
+                double amount = tx.getPrice() * qty;
+                totalBuyQty += qty;
+                totalBuyAmount += amount;
             }
-            double remainingQty = totalBuyQty - totalSellQty;
-            if (remainingQty <= 0) continue;
 
-            double purchaseValuation = weightedAvgPrice * remainingQty;
+            // 5. 평균 매수 단가 계산 (divide by zero 방지)
+            if (totalBuyQty == 0) continue;
+            double buyAvgPrice = totalBuyAmount / totalBuyQty;
+
+            // 6. 해당 코인의 총 매도 수량 계산
+            double totalSellQty = 0.0;
+            if (sellMap.containsKey(market)) {
+                for (CoinTransaction tx : sellMap.get(market)) {
+                    totalSellQty += tx.getTransactionCnt();
+                }
+            }
+
+            // 7. 현재 보유 수량 = 총 매수 - 총 매도
+            double remainingQty = totalBuyQty - totalSellQty;
+            if (remainingQty <= 0) continue; // 남은 수량 없으면 스킵
+
+            // 8. 매입 평가 금액 = 평균단가 * 잔여 수량
+            double purchaseValuation = buyAvgPrice * remainingQty;
+
+            // 9. 현재 시세가 없는 경우 스킵
             Double currentPrice = currentPriceMap.get(market);
             if (currentPrice == null) continue;
 
+            // 10. 현재 평가 금액 = 현재가 * 잔여 수량
             double currentValuation = currentPrice * remainingQty;
+
+            // 11. 수익 및 수익률 계산
             double profit = currentValuation - purchaseValuation;
             double profitRate = purchaseValuation != 0 ? (profit / purchaseValuation) * 100 : 0;
 
+            // 12. 각 코인별 상세 정보 저장 (필요하다면 Math.round 등 반올림 처리 추가 가능)
             coinDetails.add(new CoinDetailDto(
                     market,
-                    weightedAvgPrice,
+                    buyAvgPrice,
                     remainingQty,
                     purchaseValuation,
                     currentValuation,
@@ -73,16 +99,17 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
                     profitRate
             ));
 
+            // 13. 전체 합산
             totalPurchaseValuation += purchaseValuation;
             totalCurrentValuation += currentValuation;
         }
 
+        // 14. 전체 수익 및 수익률 계산
         double totalProfit = totalCurrentValuation - totalPurchaseValuation;
         double overallProfitRate = totalPurchaseValuation != 0 ? (totalProfit / totalPurchaseValuation) * 100 : 0;
 
         return new ProfitResultDto(coinDetails, totalPurchaseValuation, totalCurrentValuation, totalProfit, overallProfitRate);
     }
-
     @Override
     public void saveCoinTransaction(CoinTransaction coinTransaction) {
         coinTransactionRepository.save(coinTransaction);
