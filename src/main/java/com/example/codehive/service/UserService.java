@@ -1,7 +1,9 @@
 package com.example.codehive.service;
 
+import com.example.codehive.dto.FollowDto;
 import com.example.codehive.entity.Follow;
 import com.example.codehive.entity.User;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +17,10 @@ public interface UserService {
     int readPostsCount(int userNo);
     int readFollowersCount(int userNo);
     int readFollowingCount(int userNo);
-    List<Follow> readFollowersByUserNo(int userNo);
-    List<Follow> readFollowingsByUserNo(int userNo);
+    List<FollowDto.Follower> readFollowersByUserNo(Integer userNo, Pageable pageable);
+    List<FollowDto.Following> readFollowingsByUserNo(Integer userNo, Pageable pageable);
+    boolean isFollowing(int userNo, int followingUserNo);
+    void unfollow(Integer followerUserNo, Integer followingUserNo);
+    void follow(int followerUserNo, int followingUserNo);
 
 }

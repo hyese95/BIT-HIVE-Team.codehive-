@@ -17,6 +17,8 @@ public class Follow {
     @EmbeddedId
     private FollowId id;
 
+
+
     @MapsId("followerUserNo")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)

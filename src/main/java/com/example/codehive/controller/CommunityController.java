@@ -6,14 +6,17 @@ import com.example.codehive.entity.*;
 import com.example.codehive.repository.CommentLikeRepository;
 import com.example.codehive.repository.CommentRepository;
 import com.example.codehive.repository.PostLikeRepository;
+import com.example.codehive.repository.UserRepository;
 import com.example.codehive.service.CommentLikeService;
 import com.example.codehive.service.CommentService;
 import com.example.codehive.service.PostService;
+import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import com.example.codehive.service.UserService;
 import lombok.AllArgsConstructor;
+import org.hibernate.Hibernate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +26,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.Instant;
 import java.util.*;
@@ -31,11 +36,15 @@ import java.util.*;
 @RequestMapping("/community")
 @AllArgsConstructor
 public class CommunityController {
+    private final EntityManager entityManager;
     private final PostService postService;
     private final UserService userService;
     private final CommentService commentService;
     private final CommentLikeService commentLikeService;
     private final CommentLikeRepository commentLikeRepository;
+    private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
+
     public String convertNewlineToBr(String text) {
         return text.replace("\n", "<br>");
     }
@@ -73,10 +82,10 @@ public class CommunityController {
                            @RequestParam(defaultValue = "0") int page) {
         pageable = PageRequest.of(page, 10); // 기본 페이지 값 설정
         Page<Post> freePostPage = postService.readAllByCategory(pageable, "free");
-        List<User> user = userService.findAll();
+        User user = userService.readByUserNo(1).orElse(null);
+        model.addAttribute("user", user);
         Page<PostDto> postDto = freePostPage.map(PostDto::new);
         model.addAttribute("postDto", postDto);
-        model.addAttribute("userList", user);
         return "community/free_post";
     }
 
@@ -109,16 +118,16 @@ public class CommunityController {
                           @PageableDefault(size = 10) Pageable pageable,
                           @RequestParam(defaultValue = "0") int page) {
         Page<Post> pnlPostPage = postService.readAllByCategory(pageable, "pnl");
-        List<User> user = userService.findAll();
         User userName1=userService.findNicknameByUserNo(1);
         User userName2=userService.findNicknameByUserNo(2);
         User userName3=userService.findNicknameByUserNo(3);
+        User user = userService.readByUserNo(1).orElse(null);
+        model.addAttribute("user", user);
         Page<PostDto> postDto = pnlPostPage.map(PostDto::new);
         model.addAttribute("userName1", userName1);
         model.addAttribute("userName2", userName2);
         model.addAttribute("userName3", userName3);
         model.addAttribute("postDto", postDto);
-        model.addAttribute("userList", user);
         return "community/pnl_post";
     }
     @GetMapping("/api/chart_posts")
@@ -151,7 +160,8 @@ public class CommunityController {
                            @RequestParam(defaultValue = "0") int page) {
         pageable = PageRequest.of(page, 10); // 기본 페이지 값 설정
         Page<Post> chartPostPage = postService.readAllByCategory(pageable, "chart");
-        List<User> user = userService.findAll();
+        User user = userService.readByUserNo(1).orElse(null);
+        model.addAttribute("user", user);
         Page<PostDto> postDto = chartPostPage.map(PostDto::new);
         model.addAttribute("postDto", postDto);
         model.addAttribute("userList", user);
@@ -187,7 +197,8 @@ public class CommunityController {
                            @RequestParam(defaultValue = "0") int page) {
         pageable = PageRequest.of(page, 10); // 기본 페이지 값 설정
         Page<Post> expertPostPage = postService.readAllByCategory(pageable, "expert");
-        List<User> user = userService.findAll();
+        User user = userService.readByUserNo(1).orElse(null);
+        model.addAttribute("user", user);
         Page<PostDto> postDto = expertPostPage.map(PostDto::new);
         model.addAttribute("postDto", postDto);
         model.addAttribute("userList", user);
@@ -198,6 +209,8 @@ public class CommunityController {
     public String detail(Model model,
                          @RequestParam("postNo") int postNo
     ) {
+        User user = new User();
+        user.setId(1);
         Post post=postService.getPostByPostId(postNo);
         PostDto postDto=new PostDto(post);
         String formattedContent = convertNewlineToBr(post.getPostCont());
@@ -215,6 +228,7 @@ public class CommunityController {
                 replyCounts.put(comment.getId(), count);
             }
         }// 변환된 내용 전달
+        model.addAttribute("user", user);
         model.addAttribute("replyCounts", replyCounts);
         model.addAttribute("cntCommentLike", cntCommentLike);
         model.addAttribute("cntComment",cntComment);
@@ -222,6 +236,34 @@ public class CommunityController {
         model.addAttribute("comments", comments);
 
         return "community/postDetail";
+    }
+    @PostMapping("/api/commentWrite")
+    public ModelAndView commentWrite(@ModelAttribute Comment comment, RedirectAttributes redirectAttributes,
+    @RequestParam int postNo
+    ) {
+        User user = entityManager.find(User.class, 1);
+        Hibernate.initialize(user);
+        comment.setPostNo(comment.getPostNo());
+        comment.setUserNo(user);
+        comment.setCommentCreatedAt(Instant.now());
+        comment.setCommentCont(comment.getCommentCont());
+        Comment savedComment = commentRepository.save(comment);
+        commentRepository.flush();
+        redirectAttributes.addFlashAttribute("savedComment", savedComment);
+        return new ModelAndView("redirect:/community/postDetail.do?postNo=" + postNo);
+    }
+    @PutMapping("/modifyComment/{commentId}")
+    @ResponseBody
+    public ResponseEntity<String> modifyComment(@RequestBody Comment comment, @PathVariable int commentId) {
+        try {
+            comment.setId(commentId);
+            commentService.modifyComment(comment);
+            String redirectUrl = "/community/postDetail.do?postNo=" + comment.getPostNo();
+            return ResponseEntity.ok(redirectUrl);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("댓글 수정 중 오류 발생");
+        }
     }
 
     @GetMapping("modifyPost.do")
@@ -243,7 +285,8 @@ public class CommunityController {
             // 게시글 수정 서비스 호출
             postService.modifyPost(postNo, postCont);
             String redirectUrl = "/community/postDetail.do?postNo=" + request.getPostNo();
-            return ResponseEntity.ok("게시글이 성공적으로 수정되었습니다.");
+            ResponseEntity.ok("게시글이 성공적으로 수정되었습니다.");
+            return ResponseEntity.ok(redirectUrl);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글 수정 중 오류 발생");

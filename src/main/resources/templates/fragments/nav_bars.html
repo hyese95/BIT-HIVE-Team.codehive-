@@ -34,14 +34,16 @@
                         <span>게시물</span>
                     </div>
                     <div class="card text-center flex-grow-1 mx-1">
-                        <a href="/user/follow_list">
+                        <a href="/users/follow_list?tab=followers">
                             <p id="followerCount" class="mb-0 fw-bold"></p>
                             <span>팔로워</span>
                         </a>
                     </div>
                     <div class="card text-center flex-grow-1 mx-1">
-                        <p id="followingCount" class="mb-0 fw-bold"></p>
-                        <span>팔로잉</span>
+                        <a href="/users/follow_list?tab=followings">
+                            <p id="followingCount" class="mb-0 fw-bold"></p>
+                            <span>팔로잉</span>
+                        </a>
                     </div>
                 </div>
 
@@ -88,7 +90,6 @@
         const url = '/api/users/me/summary';
         const response = await fetch(url);
         const data = await response.json();
-        console.log(data)
         postCount.innerText = data.postCount;
         nickname.innerText = data.nickname;
         followingCount.innerText = data.followingCount;

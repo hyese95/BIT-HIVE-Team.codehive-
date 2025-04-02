@@ -1,6 +1,7 @@
 package com.example.codehive.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -19,6 +20,7 @@ import java.util.Set;
 public class Comment {
     @Id
     @Column(name = "comment_no", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "parent_no")
@@ -33,7 +35,7 @@ public class Comment {
     @JsonBackReference
     private Post post;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "user_no", nullable = false)
     @ToString.Exclude
     @JsonBackReference
@@ -41,6 +43,7 @@ public class Comment {
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "comment_created_at", nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd a h시 M분", shape = JsonFormat.Shape.STRING)
     private Instant commentCreatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

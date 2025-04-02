@@ -10,7 +10,7 @@
             <p><span>원</span></p>
         </div>
         <div>
-            <p>평가손익: <span th:text="${#numbers.formatDecimal(profitResult.totalProfit, 0, 'COMMA', 2, 'POINT')}"></span></p>
+            <p>평가손익: <span th:text="${#numbers.formatDecimal(profitResult.totalProfit, 0, 'COMMA', 0, 'POINT')}"></span></p>
             <p>수익률: <span th:text="${#numbers.formatDecimal(profitResult.overallProfitRate, 0, 'COMMA', 2, 'POINT')}"></span></p>
         </div>
     </div>

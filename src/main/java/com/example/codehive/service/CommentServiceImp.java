@@ -18,6 +18,7 @@ import java.util.List;
 public class CommentServiceImp implements CommentService {
     @Autowired
     private final CommentRepository commentRepository;
+    @Autowired
     private final EntityManager entityManager;
 
     @Override
@@ -69,18 +70,26 @@ public class CommentServiceImp implements CommentService {
     }
 
     @Override
-    @Transactional
-    public void modifyComment(Comment comment) {
-        comment.setParentNo(comment.getPostNo());
-        comment.setId(comment.getId());
-        comment.setCommentCont(comment.getCommentCont());
+    public void writeComments(Comment comment) {
+        comment.setPostNo(comment.getPostNo());
         comment.setCommentCreatedAt(Instant.now());
         commentRepository.save(comment);
-        entityManager.persist(comment);
-
-
-
     }
 
+    @Override
+    @Transactional
+    public void modifyComment(Comment comment) {
+        Comment existingComment = entityManager.find(Comment.class, comment.getId());
+        if (existingComment != null) {
+            if (comment.getCommentCont() != null) {
+                existingComment.setCommentCont(comment.getCommentCont());
+            }
+            if (comment.getCommentCreatedAt() != null) {
+                existingComment.setCommentCreatedAt(comment.getCommentCreatedAt());
+            } else {
+                existingComment.setCommentCreatedAt(Instant.now());  // 클라이언트에서 전달하지 않으면 서버에서 현재 시간으로 처리
+            }
+        }
+    }
 
 }

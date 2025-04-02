@@ -2,8 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org/"
       th:replace="~{fragments/default :: html(content=~{::body})}">
 <style>
-    button>a {
-        color:black; text-decoration: none;
+    button > a {
+        color: black;
+        text-decoration: none;
     }
 </style>
 <head>
@@ -13,36 +14,54 @@
 <body>
 <div class="container">
     <h1 id="coinTitle">주문 페이지</h1>
-    <p id="tradeprice"></p>
-    <div id="coindiv"></div>
     <p>
         <a id="buyLink" href="#">매수</a>
         <a id="sellLink" href="#">매도</a>
         <a id="historyLink" href="#">내역</a>
     </p>
-    <form id="buyform" action="buy.html" method="post">
-        <p>
-            <label>
-                지정 <input type="radio" name="market" checked>
-                시장 <input type="radio" name="market">
-            </label>
-        </p>
-        <p>주문가능: 원</p>
-        <p>
-            <label>
-                <input type="text" placeholder="수량">
-            </label>
-        </p>
-        <p>
-            <label>
-                <input type="text" placeholder="가격">
-            </label>
-        </p>
-        <p><button type="reset">초기화</button></p>
-        <p><button type="submit">매수</button></p>
-    </form>
+    <div style="display: flex; justify-content: space-between">
+        <div>
+            <p id="tradeprice" style="font-weight: bold; font-size: 24px;"></p>
+            <div id="coindiv"
+                 style="height: 400px; overflow-y: auto; border: 1px solid #ddd; border-radius: 5px; padding: 10px;">
+
+            </div>
+        </div>
+
+        <div id="formContainer">
+            <button>지정</button>
+            <button>시장</button>
+            <form id="buyForm">
+                <p>주문가능: <span id="deposit"></span> 원</p>
+                <p>
+                    <label>
+                        수량 <input type="number" placeholder="수량" id="buyAmount" name="buyAmount">
+                    </label>
+                </p>
+                <p>
+                    <label>
+                        가격 <input type="number" placeholder="가격" id="buyPrice" name="buyPrice">
+                    </label>
+                </p>
+
+                <hr>
+
+                <p>
+                    <label>
+                        총 금액 <input type="text" placeholder="총 주문금액" id="totalPrice" name="totalPrice">
+                    </label>
+                </p>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-danger">매수</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             const queryString = window.location.search;
             const urlParams = new URLSearchParams(queryString);
             const coinTicker = urlParams.get("coin");
@@ -53,6 +72,11 @@
             document.getElementById("buyLink").href = `buy.do?coin=${coinTicker}`;
             document.getElementById("sellLink").href = `sell.do?coin=${coinTicker}`;
             document.getElementById("historyLink").href = `history.do?coin=${coinTicker}`;
+            document.getElementById("buyAmount").addEventListener("input", updateTotal);
+            document.getElementById("buyPrice").addEventListener("input", updateTotal);
+            document.getElementById("totalPrice").addEventListener("input", updateAmount);
+
+
         });
         // URL 파라미터로 전달된 코인 티커를 읽음
         const queryString = window.location.search;
@@ -61,7 +85,12 @@
         console.log("선택된 종목:", coinTicker);
 
         // 선택된 종목에 맞게 데이터 API 호출
+        let isInitialLoad=true;
+
         async function loadCoin() {
+            let coindiv = document.getElementById("coindiv");
+            let tradeprice = document.getElementById("tradeprice");
+            const currentScrollTop=coindiv.scrollTop;
             if (!coinTicker) {
                 alert("종목 정보를 불러올 수 없습니다.");
                 return;
@@ -70,8 +99,7 @@
             const coinTitle = document.getElementById("coinTitle");
             coinTitle.innerText = `${coinTicker}/KRW 주문 페이지`;
 
-            let coindiv = document.getElementById("coindiv");
-            let tradeprice = document.getElementById("tradeprice");
+
 
             // URL (코인 티커에 맞게 동적 생성)
             const url = `https://api.upbit.com/v1/orderbook?markets=KRW-${coinTicker}`;
@@ -92,14 +120,49 @@
 
                 // 매수/매도 호가 표시
                 let html = "";
-                for (const o of orderbook.reverse()) {
-                    html += `<p>매수 ${o.ask_price.toLocaleString()} 잔량: ${o.ask_size.toFixed(3)}</p>`;
+                for (const o of orderbook.reverse()) {//매도
+                    html += `<p style="margin: 0;padding: 1px 0;">
+<button data-price="${o.ask_price}" class="askPriceBtn"
+ style="border:none; background: rgba(19, 117, 236, .08); height: 45px;  width: 100%; color:#0062df;text-align: left; "
+ >매도 ${o.ask_price.toLocaleString()} 잔량: ${o.ask_size.toFixed(3)}</button></p>`;
                 }
-                html += "<hr>";
-                for (const o of orderbook) {
-                    html += `<p>매도 ${o.bid_price.toLocaleString()} 잔량: ${o.bid_size.toFixed(3)}</p>`;
+
+                for (const o of orderbook.reverse()) {//매수
+                    html += `<p style="margin: 0;padding: 1px 0;">
+<button data-price="${o.bid_price}" class="bidPriceBtn"
+style="border:none; background: rgba(221, 60, 68, .08); height: 45px;  width: 100%; color:#dd3c44;text-align: left; "
+>매수 ${o.bid_price.toLocaleString()} 잔량: ${o.bid_size.toFixed(3)}</button></p>`;
                 }
                 coindiv.innerHTML = html;
+                if (isInitialLoad) {
+                    coindiv.scrollTop = (coindiv.scrollHeight - coindiv.clientHeight) / 2;
+                    isInitialLoad=false;
+                }else {
+                    coindiv.scrollTop=currentScrollTop;
+                }
+
+                const bidPriceBtns = document.getElementsByClassName("bidPriceBtn");
+                const askPriceBtns = document.getElementsByClassName("askPriceBtn")
+                const buyPrice = document.getElementById("buyPrice")
+
+                for (askPriceBtn of askPriceBtns) {
+                    askPriceBtn.addEventListener("click", function (e) {
+                        e.preventDefault();
+                        const price = e.target.dataset.price;
+                        buyPrice.value = price;
+                        updateTotal();
+
+                    });
+                }
+                for (bidPriceBtn of bidPriceBtns) {
+                    bidPriceBtn.addEventListener("click", function (e) {
+                        e.preventDefault();
+                        const price = e.target.dataset.price;
+                        buyPrice.value = price;
+                        updateTotal();
+
+                    });
+                }
 
             } catch (error) {
                 console.error("호가 데이터를 불러오는 중 오류 발생:", error);
@@ -109,6 +172,106 @@
 
         // 페이지 로딩 시 데이터 불러오기
         loadCoin();
+
+        setInterval(loadCoin, 2000);
+
+
+        const deposit = document.getElementById("deposit");
+
+        async function getKrwDeposit(userNo) {
+            try {
+                const URL1 = `http://localhost:8801/api/transaction/${userNo}/KRW/buy`
+                const resp1 = await fetch(URL1);
+                const data1 = await resp1.json();
+                buySum = data1.quantity;
+                const URL2 = `http://localhost:8801/api/transaction/${userNo}/KRW/sell`
+                const resp2 = await fetch(URL2);
+                const data2 = await resp2.json();
+                sellSum = data2.quantity;
+                console.log(buySum - sellSum);
+                deposit.innerText = `${buySum - sellSum}`
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        getKrwDeposit(1);
+
+        const buyForm = document.getElementById("buyForm");
+        buyForm.addEventListener("submit", async event => {
+            event.preventDefault();
+            const buyAmount = document.getElementById("buyAmount");
+            const buyPrice = document.getElementById("buyPrice");
+            const totalPrice = document.getElementById("totalPrice");
+            const userNo = 1;
+
+
+            try {
+                let deposit= document.getElementById("deposit").innerText;
+
+                if (deposit < totalPrice.value) {
+                    alert("주문금액 초과!!")
+                    return;
+                }
+                const response = await fetch('/trade/api/transaction', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userNo: userNo,  // 현재는 임시로 1로 설정
+                        market: "KRW-" + coinTicker,
+                        transactionType: "BUY",
+                        price: parseInt(buyPrice.value),
+                        transactionCnt: parseFloat(buyAmount.value),
+                        transactionState: "COMPLETED"
+                    })
+                });
+                const response2 = await fetch('/trade/api/transaction', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userNo: userNo,
+                        market: "KRW-KRW",
+                        transactionType: "SELL",
+                        price: 1,
+                        transactionCnt: parseInt(totalPrice.value),
+                        transactionState: "COMPLETED"
+                    })
+                });
+                if (response.ok && response2.ok) {
+                    alert("거래가 성공적으로 저장되었습니다.");
+                    window.location.reload();
+                }
+            } catch
+                (error) {
+                console.error("Error:", error);
+                alert("거래 처리 중 오류가 발생했습니다.");
+            }
+        });
+
+        function updateTotal() {
+            const buyAmount = document.getElementById("buyAmount");
+            const buyPrice = document.getElementById("buyPrice");
+            const totalPrice = document.getElementById("totalPrice");
+            let amount = buyAmount.value;
+            let price = buyPrice.value;
+            totalPrice.value = amount * price;
+        }
+
+        function updateAmount() {
+            const buyAmount = document.getElementById("buyAmount");
+            const buyPrice = document.getElementById("buyPrice");
+            const totalPrice = document.getElementById("totalPrice");
+            let price = buyPrice.value;
+            let total = totalPrice.value;
+            buyAmount.value = total / price;
+
+        }
+
+
     </script>
 </div>
 </body>

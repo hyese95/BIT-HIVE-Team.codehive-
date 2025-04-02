@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns=""
+      th:replace="~{fragments/default :: html(content=~{::body})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="container">
+    <h1>유저정보</h1>
+
+    <div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <img th:src="@{${userDto.profileImgUrl}}" alt="프로필" style="width: 100px;height: 100px;">
+            <div>
+                <p style="margin: 0; font-weight: bold; font-size: 30px;" th:text="${userDto.nickname}">닉네임</p>
+                <button th:value="${userDto.id}" id="followBtn" class="btn btn-info" style="display: none">팔로우</button>
+                <!--                data-img-url="${following.profileImgUrl}" data-nickname="${following.nickname}"-->
+                <button th:value="${userDto.id}" th:data-img-url="${userDto.profileImgUrl}"
+                        th:data-nickname="${userDto.nickname}" id="followingBtn" class="btn btn-success"
+                        style="display: none">팔로잉
+                </button>
+                <div class="card text-center my-1" style="align-items: center;">
+                    <p style="margin: 0;">가입일 : <span th:text="${userDto.createdAt}"></span></p>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="d-flex justify-content-between">
+            <div class="card text-center flex-grow-1 mx-1">
+                <p th:text="${userDto.postCount}" class="mb-0 fw-bold"></p>
+                <span>게시물</span>
+            </div>
+            <div class="card text-center flex-grow-1 mx-1">
+                <a th:href="@{/users/{userNo}/follow_list(userNo=${userDto.id}, tab='followers')}">
+                    <p th:text="${userDto.followerCount}" class="mb-0 fw-bold"></p>
+                    <span>팔로워</span>
+                </a>
+            </div>
+            <div class="card text-center flex-grow-1 mx-1">
+                <a th:href="@{/users/{userNo}/follow_list(userNo=${userDto.id}, tab='followings')}">
+                    <p th:text="${userDto.followingCount}" class="mb-0 fw-bold"></p>
+                    <span>팔로잉</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="card">
+            <p>보유자산</p>
+            <p>456456 <span>원</span></p>
+            <p><span>평가손익</span><span>+123123</span></p>
+            <p><span>수익률</span><span>+12.34%</span></p>
+        </div>
+
+
+        <div class="card">
+            <p style="font-weight: bold">자기소개</p>
+            <p th:text="${userDto.selfIntroduction}"></p>
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+    const followBtn = document.getElementById("followBtn");
+    const followingBtn = document.getElementById("followingBtn");
+    const targetUserNo = document.getElementById("followBtn").value;
+
+
+    async function updateFollowing(targetUserNo) {
+        const url = `/api/users/${targetUserNo}/isFollowing`;
+        const response = await fetch(url);
+        const data = await response.json();
+        if (data == true) {
+            followBtn.style.display = "none";
+            followingBtn.style.display = 'block';
+            console.log(data + '트루냐?')
+        } else {
+            followingBtn.style.display = 'none';
+            followBtn.style.display = 'block';
+            console.log(data + '폴스냐?')
+        }
+    }
+
+    updateFollowing(targetUserNo);
+
+    followBtn.onclick = async function () {
+
+        await updateFollowing(targetUserNo);
+    }
+
+
+    function showModal(followingUserNo, element, followingUserImgUrl, followingUserNickname) {
+
+        const existingModal = document.getElementById('confirmModal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+
+
+        const modalHTML = `
+    <div id="confirmModal" class="position-fixed bottom-0 start-0 w-100" style="z-index: 1050;">
+      <div class="modal-backdrop position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50" style="z-index: -1;"></div>
+      <div class="bg-white p-3 rounded-top shadow-lg border-top" style="animation: slideUp 0.3s ease;">
+        <div style="display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 1rem;">
+            <img src="${followingUserImgUrl}" alt="프로필이미지" style="width: 50px; height: 50px;">
+            <p>${followingUserNickname}</p>
+        </div>
+        <p class="mb-3 text-center fw-bold">팔로우를 취소하시겠습니까?</p>
+        <hr>
+        <button id="confirmUnfollow" class="btn btn-danger w-100" data-user-no="${followingUserNo}">삭제</button>
+      </div>
+    </div>`;
+
+        //스타일
+        if (!document.getElementById('modalStyles')) {
+            const styleElement = document.createElement('style');
+            styleElement.id = 'modalStyles';
+            styleElement.textContent = `
+            @keyframes slideUp {
+                from { transform: translateY(100%); }
+                to { transform: translateY(0); }
+            }
+
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+
+            .modal-backdrop {
+                animation: fadeIn 0.3s ease;
+            }
+
+            body.modal-open {
+                overflow: hidden;
+            }
+        `;
+            document.head.appendChild(styleElement);
+        }
+
+
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        document.body.classList.add('modal-open');
+
+        const modal = document.getElementById('confirmModal');
+        const confirmBtn = document.getElementById('confirmUnfollow');
+        const backdrop = modal.querySelector('.modal-backdrop');
+
+        backdrop.addEventListener('click', hideModal);
+
+        confirmBtn.addEventListener('click', async () => {
+            try {
+                const userNo = confirmBtn.dataset.userNo;
+                const response = await fetch(`/api/users/unfollow/${userNo}`, {
+                    method: 'DELETE'
+                });
+                await updateFollowing(userNo);
+
+
+
+            } catch (error) {
+                alert('언팔로우에 실패했습니다.')
+                console.error('언팔로우 오류:', error);
+            } finally {
+                hideModal();
+            }
+        });
+
+        // 모달표시
+        setTimeout(() => {
+            modal.style.display = 'block';
+        }, 10);
+    }
+
+    function hideModal() {
+        const modal = document.getElementById('confirmModal');
+        if (modal) {
+            document.body.classList.remove('modal-open');
+            modal.remove();
+        }
+    }
+
+
+    function handleUnfollowClick(event) {
+        if (event.target.tagName === 'BUTTON' && event.target.value) {
+            const followingUserNo = event.target.value;
+            const followingUserImgUrl = event.target.dataset.imgUrl;
+            const followingUserNickname = event.target.dataset.nickname;
+            const element = event.target.closest('.followingList');
+            showModal(followingUserNo, element, followingUserImgUrl, followingUserNickname);
+        }
+    }
+
+    followingBtn.addEventListener('click', handleUnfollowClick);
+    followBtn.addEventListener('click', handleFollow);
+    async function handleFollow(event) {
+        const URL=`/api/users/follow/${event.target.value}`
+        const currentUserNo=1;
+        const response = await fetch(URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                followingUserNo: event.target.value,
+                followerUserNo: currentUserNo
+            })
+        })
+        if (response.ok) {
+            alert('follow성공')
+            await updateFollowing(targetUserNo)
+        }
+        if(!response.ok){
+            alert(response.status)
+        }
+
+
+    }
+
+
+</script>
+
+</body>
+</html>

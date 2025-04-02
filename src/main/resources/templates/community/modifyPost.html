@@ -50,7 +50,6 @@
     //     });
     const modifyPostHandler = async (e) => {
         e.preventDefault();
-        console.log(document.querySelector('input[name="postNo"]').value);
         const form = e.target;
         const formData = new FormData(form);
         const postNo = formData.get("postNo"); // `postNo` 값을 가져옴
@@ -60,8 +59,6 @@
             postNo: postNo,
             postCont: postCont
         };
-
-        console.log(requestData);  // 데이터 확인
 
         try {
             const response = await fetch(url, {

@@ -18,7 +18,6 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
 
     @Override
     public ProfitResultDto calculateProfit(int userNo, Map<String, Double> currentPriceMap) {
-        // 모든 거래 내역 조회 후, COMPLETED 상태인 BUY/SELL 거래만 필터링
         List<CoinTransaction> allTransactions = coinTransactionRepository.findByUserNo(userNo);
 
         List<CoinTransaction> buyTransactions = allTransactions.stream()
@@ -31,7 +30,6 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
                         "COMPLETED".equalsIgnoreCase(tx.getTransactionState()))
                 .collect(Collectors.toList());
 
-        // 코인별 그룹화 (BUY, SELL 각각)
         Map<String, List<CoinTransaction>> buyMap = buyTransactions.stream()
                 .collect(Collectors.groupingBy(CoinTransaction::getMarket));
         Map<String, List<CoinTransaction>> sellMap = sellTransactions.stream()
@@ -41,7 +39,6 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
         double totalPurchaseValuation = 0;
         double totalCurrentValuation = 0;
 
-        // 각 코인별 계산 (단, KRW-KRW는 제외)
         for (String market : buyMap.keySet()) {
             if ("KRW-KRW".equalsIgnoreCase(market)) {
                 continue;
@@ -56,11 +53,11 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
                 totalSellQty = sellMap.get(market).stream().mapToDouble(CoinTransaction::getTransactionCnt).sum();
             }
             double remainingQty = totalBuyQty - totalSellQty;
-            if (remainingQty <= 0) continue;  // 보유 수량이 없으면 건너뜀
+            if (remainingQty <= 0) continue;
 
             double purchaseValuation = weightedAvgPrice * remainingQty;
             Double currentPrice = currentPriceMap.get(market);
-            if (currentPrice == null) continue;  // 현재가 정보가 없으면 계산 제외
+            if (currentPrice == null) continue;
 
             double currentValuation = currentPrice * remainingQty;
             double profit = currentValuation - purchaseValuation;
@@ -84,5 +81,10 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
         double overallProfitRate = totalPurchaseValuation != 0 ? (totalProfit / totalPurchaseValuation) * 100 : 0;
 
         return new ProfitResultDto(coinDetails, totalPurchaseValuation, totalCurrentValuation, totalProfit, overallProfitRate);
+    }
+
+    @Override
+    public void saveCoinTransaction(CoinTransaction coinTransaction) {
+        coinTransactionRepository.save(coinTransaction);
     }
 }
