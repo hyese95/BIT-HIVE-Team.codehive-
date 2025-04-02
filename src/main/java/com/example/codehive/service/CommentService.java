@@ -1,8 +1,10 @@
 package com.example.codehive.service;
 
+import com.example.codehive.dto.CommentLikeCountDTO;
 import com.example.codehive.entity.Comment;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CommentService {
     List<Comment> readComment(int id);
@@ -12,8 +14,10 @@ public interface CommentService {
     int getChildCommentCountByPostNoAndParentNo(int postNo,int parentNo);
     List<Comment>  readCommentByPostNo(int postNo);
     List<Comment>  readCommentByPostNoAndParentNo(int postNo,Integer parentNo);
-    List<Comment> removeCommentByPostNo(int postNo);
+    void removeCommentByCommentNo(int commentNo);
     int getReplyCount(int parentNo);
     void writeComments(Comment comment);
     void modifyComment(Comment comment);
+    void writeChildComments(Comment comment);
+    public List<Comment> readAll();
 }

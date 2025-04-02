@@ -3,6 +3,7 @@ package com.example.codehive.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,12 +30,14 @@ public class Comment {
     @Column(name = "post_no")
     private int postNo;
 
+    // 🔹 게시글(Comment) - Post 관계 (N:1)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "post_no", insertable = false, updatable = false)
     @ToString.Exclude
-    @JsonBackReference
+    @JsonBackReference("post-comment")
     private Post post;
 
+    // 🔹 댓글(Comment) - User 관계 (N:1)
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "user_no", nullable = false)
     @ToString.Exclude
@@ -46,18 +49,19 @@ public class Comment {
     @JsonFormat(pattern = "yyyy-MM-dd a h시 M분", shape = JsonFormat.Shape.STRING)
     private Instant commentCreatedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "parent_no",insertable = false, updatable = false)
-    @JsonBackReference
+    // 🔹 부모 댓글 관계 (N:1)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "parent_no", insertable = false, updatable = false)
+    @JsonBackReference("parent-comment")
     @ToString.Exclude
     private Comment parent;
 
     @Column(name = "comment_cont", nullable = false)
     private String commentCont;
 
-    @OneToMany(mappedBy = "parent",fetch = FetchType.LAZY)
+    // 🔹 자식 댓글 관계 (1:N)
+    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
     @ToString.Exclude
-    @JsonBackReference
+    @JsonManagedReference("parent-comment")
     private Set<Comment> childComments;
-
 }

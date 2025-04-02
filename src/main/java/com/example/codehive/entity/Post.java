@@ -3,6 +3,7 @@ package com.example.codehive.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -52,6 +53,6 @@ public class Post {
 
     @OneToMany(mappedBy = "post",cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
-    @JsonBackReference
+    @JsonManagedReference("post-comment")
     private List<Comment> comment = new ArrayList<>();
 }

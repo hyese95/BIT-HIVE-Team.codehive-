@@ -9,23 +9,22 @@
     <div class="container">
       <div class="form-group" style="justify-content: space-between;" id="">
         <form action="community/modifyPostAction.do" onsubmit="modifyPostHandler(event)">
-        <h1>게시글 내용 수정<label>
-
-                <textarea class="form-control" rows="10" style="width: 1200px; height: 500px;position: relative;
-                user-select: none; align-items: center; resize: none;"
+        <h1 style="width: 80%" th:text="${postDto.userNickname}+'의 '+${postDto.id}+'번 게시물 수정중'"></h1>
+            <label style="display: flex; width: 100%;">
+                <textarea class="form-control mb-2" rows="10" style=" height: 500px;position: relative;
+                align-items: center; resize: none;"
                           placeholder="수정할 내용을 입력해 주세요!" name="postCont" th:value="${postDto.postCont}" th:utext="${postDto.postCont}"></textarea></label>
-            <input type="hidden" name="postNo" th:value="${postDto.id}"></h1>
-          <label>
+            <input type="hidden" name="id" th:value="${postDto.id}">
+          <label style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
 
-          <span>
-              <button type="submit" ><a href="#"><img src="/img/ImageIcon/ImageIcon.png" alt="이미지" style="width: 20px; height: 20px">이미지 첨부</a></button>
-          </span>
+          <span >
+              <button type="button" class="btn btn-info" onclick="attachImage()">
+                  <img src="/img/ImageIcon/ImageIcon.png" alt="이미지" style="width: 20px; height: 20px">이미지 첨부</button>
+              <button type="reset" class="btn btn-danger">초기화</button>
+            </span>
               <span class="d-flex justify-content-between">
           <span>
-              <button type="reset">초기화</button>
-          </span>
-          <span>
-              <button type="submit">수정하기</button>
+              <button type="submit" class="btn btn-info">수정하기</button>
           </span>
                   </span>
         </label>
@@ -34,32 +33,23 @@
       </div>
     </div>
 <script>
-
+    function attachImage() {
+        alert("이미지 업로드 기능은 아직 구현되지 않았습니다.");
+    }
     const url = "/community/modifyPostAction.do"
-    // console.log(request.getParameter("post"))
-    // const modifyPostHandler = async (e) => {
-    //     e.preventDefault()
-    //     const form=e.target;
-    //     const formData=new FormData(form);
-    //     const formDataObj=Object.fromEntries(formData);
-    //     console.log(formDataObj)
-    //     const response=await fetch(url,{
-    //         method:'PUT',
-    //         headers:{"Content-Type":"application/json"},
-    //         body: JSON.stringify(formDataObj)
-    //     });
     const modifyPostHandler = async (e) => {
+        const confirmation = confirm("수정하시겠습니까?")
+        if (!confirmation) return;
         e.preventDefault();
         const form = e.target;
         const formData = new FormData(form);
-        const postNo = formData.get("postNo"); // `postNo` 값을 가져옴
+        const postNo = formData.get("id"); // `postNo` 값을 가져옴
         const postCont = formData.get("postCont"); // `postCont` 값을 가져옴
-
         const requestData = {
-            postNo: postNo,
+            id : postNo,
             postCont: postCont
         };
-
+        console.log(requestData.id+requestData.postCont);
         try {
             const response = await fetch(url, {
                 method: 'PUT',
@@ -68,19 +58,23 @@
                 },
                 body: JSON.stringify(requestData)
             });
-
-            if (response.ok) {
-                // 서버에서 받은 리다이렉트 URL
-                alert("게시글 수정이 완료되었습니다!")
-                const redirectUrl = await response.text();
-                // 수정된 게시글로 이동
-                window.location.href = `/community/postDetail.do?postNo=${postNo}`;
-            } else {
-                alert("수정 실패");
+            if (response.status === 204) {
+                alert("게시글 내용이 변경되지 않았습니다.");
+                return;
             }
-        } catch (error) {
-            console.error("수정 중 오류 발생:", error);
-            alert("수정 중 오류 발생");
+            if (response.status === 404) {
+                alert("해당 게시글을 찾을 수 없습니다.");
+                return;
+            }
+            if(response.ok) {
+                alert("게시글이 수정되었습니다.")
+                window.location.href=`/community/postDetail.do?postNo=${postNo}`;
+            }else {
+                alert("게시글 수정 실패!")
+            }
+        }catch (error){
+            console.log(error);
+            alert("수정중 오류 발생!")
         }
     }
 </script>

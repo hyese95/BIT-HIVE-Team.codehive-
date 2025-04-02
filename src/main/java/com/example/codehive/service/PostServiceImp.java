@@ -7,6 +7,7 @@ import com.example.codehive.entity.PostLike;
 import com.example.codehive.entity.User;
 import com.example.codehive.repository.CommentRepository;
 import com.example.codehive.repository.PostRepository;
+import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,6 +29,7 @@ public class PostServiceImp implements PostService {
     @Autowired
     PostRepository postRepository;
     UserService userService;
+    EntityManager entityManager;
     CommentRepository commentRepository;
     @Override
     public Page<Post> readByCategoryWithKeyword(String category, String keyword, String sortType, Pageable pageable) {
@@ -74,12 +76,13 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
+    @Transactional
     public void modifyPost(int postNo, String content) {
         Optional<Post> optionalPost = postRepository.findById(postNo);
         if (optionalPost.isPresent()) {
             Post post = optionalPost.get();
             post.setPostCont(content);  // 새로운 내용으로 업데이트
-            postRepository.save(post);  // 변경 사항 저장
+            entityManager.merge(post); // 변경 사항 저장
         } else {
             throw new IllegalArgumentException("게시글을 찾을 수 없습니다.");
         }

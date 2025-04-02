@@ -26,5 +26,4 @@ public class CommentLike {
 
     @Column(name = "like_type")
     private Boolean likeType;
-
 }

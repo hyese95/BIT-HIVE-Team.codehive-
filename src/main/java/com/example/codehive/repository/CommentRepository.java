@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -17,26 +16,23 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
     @EntityGraph(attributePaths = {"childComments"})
 //    @Query("SELECT c1.commentCont from Comment c1 INNER JOIN Comment c2 WHERE c2.id=c1.parentNo")
     Comment findWithChildCommentById(int parentNo);
-
     @EntityGraph(attributePaths = {"childComments"})
     Comment findById(int id);
 //    @Query("select c.commentCont from Comment c where c.postNo=:postNo")
     List<Comment> findCommentContByPostNo(int postNo);
 //    @Query("select c.commentCont from Comment c where c.postNo=:postNo and c.parentNo=:parentNo")
     List<Comment>  findCommentContByPostNoAndParentNo(int postNo,Integer parentNo);
-
     @Query("SELECT c.commentCont from Comment c where c.parentNo is null")
     Comment findComments(int id);
-
     List<Comment> findByParent_ParentNo(int parentNo);
-
     int countByPostNo(int postNo);
     int countChildCommentByPostNoAndParentNo(int postNo, int parentNo);
-
-    @Transactional
     @Modifying
-    @Query("DELETE FROM Comment c WHERE c.postNo = :postNo")
-    List<Comment> deleteCommentByPostNo(@Param("postNo") int postNo);
+    @Query("DELETE FROM Comment c WHERE c.id = :commentNo")
+    void deleteCommentByPostNo(@Param("commentNo") int commentNo);
     int countByParentNo(int parentNo);
+//    @Modifying
+//    @Query("INSERT INTO Comment (postNo,userNo,commentCreatedAt,parentNo,commentCont) values (?,?,?,?,?)")
+//    List<Comment> createChildComments(int commentNo);
 }
 
