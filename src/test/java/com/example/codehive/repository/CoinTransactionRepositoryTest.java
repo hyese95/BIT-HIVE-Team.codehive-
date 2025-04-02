@@ -26,7 +26,9 @@ class CoinTransactionRepositoryTest {
     }
 
 
-
-
-
+    @Test
+    void findSumCoinTransactionsByConditions() {
+        List<CoinTransactionDto> list=coinTransactionRepository.findSumCoinTransactionsByConditions(1,"KRW-XRP","buy",null);
+        System.out.println(list);
+    }
 }
