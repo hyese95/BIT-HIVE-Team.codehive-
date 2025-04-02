@@ -49,13 +49,13 @@ public class CommunityController {
         return text.replace("\n", "<br>");
     }
 
-    @PostMapping("/api/comment-like/toggle")
+    @PostMapping("/api/commentLike/toggle")
     public ResponseEntity<CommentLikeCountDTO> toggleLike(
             @RequestParam("userNo") Integer userNo,
-            @RequestParam("commentNo") Integer commentNo,
+            @RequestParam("postNo") Integer postNo,
             @RequestParam("likeType") Boolean likeType
     ) {
-        CommentLikeCountDTO result = commentLikeService.toggleLike(userNo, commentNo, likeType);
+        CommentLikeCountDTO result = commentLikeService.toggleLike(userNo, postNo, likeType);
         return ResponseEntity.ok(result);
     }
 

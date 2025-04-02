@@ -117,4 +117,9 @@ public class PostServiceImp implements PostService {
         Post savedPost = postRepository.save(newPost);
         return new PostDto(savedPost);
     }
+
+    @Override
+    public Page<Post> readAll(PostDto postDto, Pageable pageable) {
+        return postRepository.findAll(pageable);
+    }
 }
