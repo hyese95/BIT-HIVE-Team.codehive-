@@ -193,6 +193,20 @@
                     alert("거래 처리 중 문제가 발생했습니다.");
                 }
             });
+            // 총 금액 → 수량 자동 계산
+
+            function updateSellAmount() {
+                const price = parseFloat(document.getElementById("sellPrice").value) || 0;
+                const total = parseFloat(document.getElementById("totalSellPrice").value.replace(/,/g, "")) || 0;
+                if (price === 0) {
+                    alert("먼저 가격을 입력하세요!");
+                    return;
+                }
+                const amount = price > 0 ? (total / price) : 0;
+                console.log("총금액:", total, "가격:", price, "수량계산결과:", amount);
+                document.getElementById("sellAmount").value = amount.toFixed(6); // 소수점 자릿수는 필요에 따라
+            }
+            document.getElementById("totalSellPrice").addEventListener("input", updateSellAmount);
         });
     </script>
 </div>
