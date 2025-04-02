@@ -39,7 +39,7 @@
         </div>
 
         <!-- 게시글 내용 -->
-        <h2 class="text-left" th:utext="${formattedContent}" style="flex-grow: 1; display: flex; align-items: flex-start; justify-content: left;">
+        <h2 class="text-left" th:utext="${formattedContent}" style="flex-grow: 1; display: flex; align-items: center; justify-content: left;">
             게시글 세부내용!
         </h2>
 
@@ -58,37 +58,37 @@
                       placeholder="비방성 댓글, 욕설은 삼가주세요. 불이익을 당할 수 있습니다."
                       style="user-select: none; resize: none; width: 100%; max-width: 100%; " ></textarea>
             </label>
-
             <button type="submit" style="align-self: flex-end; width: 100px;" class="mb-2 btn btn-primary">
                 댓글 달기
             </button>
         </form>
     </div>
-    <div th:each="comment : ${comments}" th:if="${comment.parentNo == null}" style="margin-bottom: 10px; justify-content: space-between; align-items: center">
+    <div th:each="comment : ${comments}" th:if="${comment.parentNo == null}" style="margin-bottom: 10px;
+     justify-content: space-between; align-items: center">
         <!-- 부모 댓글 -->
         <div id="comment" class="comment-container" style="width: 100%;  height: fit-content; min-height:120px;  border: 1px solid black; border-radius: 5px; padding: 5px; ">
             <div class="pe-3 text-end" style="right:100%" th:if="${comment.getUserNo().id}==${user.id}">
                 <button type="button" name="modifyComment" class="btn btn-info" onclick="modifyCommentForm(this)" th:data-comment-id="${comment.id}">수정</button>
                 <button type="button" name="deleteComment" class="btn btn-danger" onclick="deleteComments(this)" th:data-comment-id="${comment.id}">삭제</button>
             </div>
-            <div style="display: flex; flex-direction: row ;justify-content: space-between">
-            <div style="display: flex; flex-direction: row;justify-content: space-between">
+            <div style="display: flex; flex-direction: row ;justify-content: space-between; align-items: center">
+            <div style="display: flex; flex-direction: row;">
                 <div style="display: flex; flex-direction: column; align-items: center;">
                 <img th:src="${comment.getUserNo().profileImgUrl}" style="width: 30px; height: 30px" alt="없어">
                 <span th:text="${comment.getUserNo().nickname}"></span>
                 </div>
-                <span style="font-size: 20px; justify-content: center" th:text="'  '+${comment.commentCont}"></span>
+                <span style="font-size: 20px; justify-content: center; align-items: center;" th:text="'&nbsp;'+${comment.commentCont}"></span>
             </div>
-            <span style="display: flex; flex-direction: column; align-items: center;">
-                <span th:text="${#temporals.format(comment.commentCreatedAt,'yyyy-MM-dd a hh시 M분')}"></span>
+                <span style="display: flex; flex-direction: column; align-items: center;">
+                <span th:text="${#temporals.format(comment.commentCreatedAt,'yyyy-MM-dd a hh시 mm분')}"></span>
                 <span style="display: flex; flex-direction: row;" th:each="comment : ${comment}">
                 <span th:text="좋아요 +${cntCommentLike[comment.id]?.likeCount ?: 0}"></span>&nbsp;
                 <span th:text="싫어요 +${cntCommentLike[comment.id]?.dislikeCount ?: 0}"></span>
                 </span>
-                <button type="button" class="btn btn-info mb-1" onclick="toggleWriteChildComments(this)" th:data-comment-parent="${comment.id}">답글 달기</button>
-            <button th:if="${comment.parentNo==null && replyCounts[comment.id] > 0}" th:data-parent="${comment.id}"  class="seeComment"
+                <button type="button" name="writeChildComment" class="btn btn-primary mb-1" onclick="toggleWriteChildComments(this)" th:data-comment-parent="${comment.id}">답글 달기</button>
+            <button th:if="${comment.parentNo==null && replyCounts[comment.id] > 0}" th:data-parent="${comment.id}"  class="btn btn-primary mb-1"
                     onclick="toggleReplies(this)">
-                대댓글 <span th:text="${replyCounts[comment.id] ?: 0}+개"></span> 보기
+                답글 <span th:text="${replyCounts[comment.id] ?: 0}+개"></span> 보기
             </button>
                 </span>
             </div>
@@ -99,89 +99,215 @@
                         <input type="hidden" th:value="${comment.id}" name="id" class="id">
                         <input type="hidden" th:value="${comment.postNo}" name="postNo" class="postNo">
                         <input type="hidden" th:value="${comment.userNo.getNickname()}" name="userNo" class="userNo">
-                        <input type="hidden" th:value="${null}" name="parentNo" class="parentNo">
+                        <input type="hidden" th:value="${comment.parentNo}" name="parentNo" class="parentNo">
                         <textarea name="commentCont" rows="3" style="user-select: none; resize: none; width: 100%;"
                         th:text="${comment.commentCont}" placeholder="수정할 댓글을 입력해 주세요."></textarea>
                         <button class="mb-2 btn btn-primary" type="button" onclick="EditComments(this)" th:data-comment-id="${comment.id}">수정하기</button>
                     </label>
                 </div>
             </div>
-            <div class="writeChildComment" style="display: none;width:100%; height: 100px; flex-direction: column;">
-                <label>
-                    <input type="hidden" th:value="${comment.id}" name="parentNo" class="parentNo">
-                    <textarea name="postCont" rows="3" style="user-select: none; resize: none; width: 100%;"
+            <form action="/community/api/childCommentWrite" method="post"
+                  class="writeChildComment" style="display:none; width:100%; height: 100px; flex-direction: column;">
+            <input type="hidden" th:value="${comment.id}" name="parentNo">
+            <input type="hidden" th:value="${post.id}" name="postNo">
+            <input type="hidden" th:value="${user.id}" name="userNo">
+            <input type="hidden" th:value="${comment.commentCreatedAt}" name="createdAt">
+                <label style="user-select: none;">
+                    <textarea name="commentCont" rows="3" style="user-select: none; resize: none; width: 100%;"
                                placeholder="답글을 입력해 주세요."></textarea>
-                    <button class="mb-2 btn btn-primary" type="button" onclick="writeChildComment(this)" th:data-comment-id="${comment.id}">답글달기</button>
+                    <button class="mb-2 btn btn-primary" type="submit" th:data-comment-id="${comment.id}">답글 달기</button>
                 </label>
-            </div>
+            </form>
         </div>
 
             <!-- 대댓글 목록 (초기에 숨김) -->
 <!--        <i class="fa-solid fa-greater-than"></i>-->
         <div class="childComment" th:each="reply : ${comments}" th:if="${reply.parentNo == comment.id && reply.parentNo!=null}" th:data-parent="${reply.parentNo}"
                  style="display: none; margin: 10px; height: auto; border: 1px solid black;
-                  border-radius: 5px; padding: 5px; flex-direction: column; align-items: flex-start">
+                  border-radius: 5px; padding: 5px; flex-direction: column; justify-content: space-between">
 <!--                <span th:text="'부모 ID: ' + ${comment.id}"></span>-->
 <!--                <span th:text="'대댓글의 부모 ID: ' + ${reply.parentNo}"></span>-->
-                <div  style="display: flex; flex-direction: row; justify-content: space-between">
-                    <div style="display: flex; flex-direction: row; align-items: center;">
+                <div  style="display: flex; flex-direction: row; justify-content: space-between;align-items: center;">
+                    <div style="display: flex; flex-direction: row;">
                     <div style="display: flex; flex-direction: column; align-items: center;">
                         <img th:src="${comment.getUserNo().profileImgUrl}" style="width: 30px; height: 30px" alt="없어">
                         <span th:text="${reply.getUserNo().nickname}"></span>
                     </div>
-                    <span style="font-size: 18px" th:text="${reply.commentCont}"></span>
+                        <span style="font-size: 18px" th:text="${reply.commentCont}"></span>
                     </div>
                     <div>
-                        <span th:text="${#temporals.format(reply.commentCreatedAt,'yyyy-MM-dd a h시 M분')}"></span>
+                        <div class="pe-3 text-end" style="right:100%" th:if="${reply.getUserNo().id}==${user.id}">
+                        <button type="button" name="modifyChildComment" class="btn btn-info" onclick="modifyChildCommentForm(this)" th:data-comment-parent="${reply.id}">답글 수정</button>
+                        <button type="button" name="deleteChildComment" class="btn btn-danger" onclick="deleteChildComments(this)" th:data-comment-parent="${reply.id}">삭제</button>
+                        </div>
+                        <span th:text="${#temporals.format(reply.commentCreatedAt,'yyyy-MM-dd a h시 mm분')}"></span>
                         <div>
                             <span th:text="좋아요 +${cntCommentLike[comment.parentNo==comment.id]?.likeCount ?: 0}"></span>&nbsp;
                             <span th:text="싫어요 +${cntCommentLike[comment.parentNo==comment.id]?.dislikeCount ?: 0}"></span>
                         </div>
-
                     </div>
                     </div>
+            <div>
+                <div class="modifyChildComments" style="display:none; width:100%; height: 100px; flex-direction: column;">
+                    <label>
+                        <input type="hidden" th:value="${comment.commentCreatedAt}" name="commentCreatedAt" class="commentCreatedAt">
+                        <input type="hidden" th:value="${comment.id}" name="id" class="id">
+                        <input type="hidden" th:value="${comment.postNo}" name="postNo" class="postNo">
+                        <input type="hidden" th:value="${comment.userNo.getNickname()}" name="userNo" class="userNo">
+                        <input type="hidden" th:value="${comment.parentNo}" name="parentNo" class="parentNo">
+                        <textarea name="commentCont" rows="3" style="user-select: none; resize: none; width: 100%;"
+                                  th:text="${reply.commentCont}" placeholder="수정할 답글 내용을 입력해 주세요."></textarea>
+                        <button class="mb-2 btn btn-primary" type="button" onclick="EditChildComments(this)" th:data-comment-id="${reply.id}">수정하기</button>
+                    </label>
                 </div>
+            </div>
+        </div>
         </div>
     </div>
 <script>
-    // child = document.getElementsByClassName("childComment");
-    seecomment = document.getElementsByClassName("seeComment");
     modifyComment=document.getElementsByName("modifyComment");
     modifyComments=document.getElementsByClassName("modifyComments");
     deleteComment=document.getElementsByName("deleteComment");
     modifyCommentsBtn=document.getElementById("modifyCommentsBtn");
 
     const category='[[${post.category}]]';
+    // function toggleReplies(button) {
+    //     let parentId = button.getAttribute("data-parent");
+    //     let replies = document.querySelectorAll(`.childComment[data-comment-id='${parentId}']`);
+    //     let isVisible = Array.from(replies).some(reply => reply.style.display === "flex");
+    //     replies.forEach(reply => {
+    //         reply.style.display = isVisible ? "none" : "flex";
+    //     });
+    //     if(replies.style.display === "flex") {
+    //         button.innerText.value("답글 안보기")
+    //     }else if(replies.style.display === "none") {
+    //         button.innerText.value("답글 보기")
+    //     }
+    //     let replyCount = replies.length; // 답글 개수 가져오기
+    //     button.innerText = isVisible ? `답글 ${replyCount}개 보기` : "답글 안보기";
+    // }
+    // function toggleWriteChildComments(button){
+    //     let commentId = button.getAttribute("data-comment-parent");
+    //     let commentContainer = button.closest(".comment-container");
+    //     let modifyForm = document.querySelector(`.id[value='${commentId}']`).closest(".modifyComments");
+    //     let writeChildCommentForm = commentContainer.querySelector(".writeChildComment");
+    //     let writeChildCommentBtn = commentContainer.querySelector(`[data-comment-parent='${commentId}']`);
+    //     document.querySelectorAll(".modifyComments").forEach(el => el.style.display = "none");
+    //     document.querySelectorAll(".writeChildComment").forEach(el => el.style.display = "none");
+    //     if(writeChildCommentForm.style.display === "none"){
+    //         writeChildCommentForm.style.display = "flex";
+    //         modifyForm.style.display= "none";
+    //         button.innerText="답글 취소"
+    //     }else if(writeChildCommentForm.style.display === "flex"){
+    //         writeChildCommentForm.style.display = "none";
+    //     }
+    //     modifyForm.style.display = modifyForm.style.display === "flex" ? "none" : "flex";
+    // }
+    // function modifyCommentForm(button) {
+    //     let commentId = button.getAttribute("data-comment-id");
+    //     let commentContainer = button.closest(".comment-container");
+    //     let modifyForm = commentContainer.querySelector(".modifyComments");
+    //     let childCommentForm = document.querySelector(`.writeChildComment input[name='parentNo']
+    //        [value='${commentId}']`)
+    //         .closest(".writeChildComment");
+    //     let modifyBtn=document.getElementsByName("modifyChildComment");
+    //     document.querySelectorAll(".modifyComments").forEach(el => el.style.display = "none");
+    //     document.querySelectorAll(".writeChildComment").forEach(el => el.style.display = "none");
+    //     if(modifyForm.style.display === "none") {
+    //         modifyForm.style.display = "flex";
+    //         modifyBtn.innerText = "수정 취소";
+    //     }else if(modifyForm.style.display === "flex") {
+    //         modifyForm.style.display = "none";
+    //         modifyBtn.innerText="수정"
+    //     }
+    //     childCommentForm.style.display = childCommentForm.style.display === "flex" ? "none" : "flex";
+    // }
+    let currentOpenForm = null;
+    let currentOpenButton = null;
+
+    function modifyCommentForm(button) {
+        let commentId = button.getAttribute("data-comment-id");
+        let modifyForm = document.querySelector(`.modifyComments .id[value='${commentId}']`)?.closest(".modifyComments");
+
+        if (currentOpenForm && currentOpenForm !== modifyForm) {
+            closeAllForms();
+        }
+
+        if (modifyForm.style.display === "flex") {
+            modifyForm.style.display = "none";
+            button.innerText = "수정"; // 원래 텍스트로 복구
+            currentOpenForm = null;
+            currentOpenButton = null;
+        } else {
+            modifyForm.style.display = "flex";
+            button.innerText = "수정 취소"; // 버튼 텍스트 변경
+            currentOpenForm = modifyForm;
+            currentOpenButton = button;
+        }
+    }
+
+    function toggleWriteChildComments(button) {
+        let commentId = button.getAttribute("data-comment-parent");
+        let childCommentForm = document.querySelector(`.writeChildComment input[name='parentNo'][value='${commentId}']`)?.closest(".writeChildComment");
+
+        if (currentOpenForm && currentOpenForm !== childCommentForm) {
+            closeAllForms();
+        }
+
+        if (childCommentForm.style.display === "flex") {
+            childCommentForm.style.display = "none";
+            button.innerText = "답글 달기"; // 원래 텍스트로 복구
+            currentOpenForm = null;
+            currentOpenButton = null;
+        } else {
+            childCommentForm.style.display = "flex";
+            button.innerText = "답글 취소"; // 버튼 텍스트 변경
+            currentOpenForm = childCommentForm;
+            currentOpenButton = button;
+        }
+    }
+
+    function closeAllForms() {
+        document.querySelectorAll(".modifyComments, .writeChildComment").forEach(el => {
+            el.style.display = "none";
+        });
+
+        if (currentOpenButton) {
+            if (currentOpenButton.getAttribute("data-comment-id")) {
+                currentOpenButton.innerText = "수정";
+            } else if (currentOpenButton.getAttribute("data-comment-parent")) {
+                currentOpenButton.innerText = "답글 달기";
+            }
+        }
+
+        currentOpenForm = null;
+        currentOpenButton = null;
+    }
+
+
     function toggleReplies(button) {
         let parentId = button.getAttribute("data-parent");
         let replies = document.querySelectorAll(`.childComment[data-parent='${parentId}']`);
+        let isVisible = Array.from(replies).some(reply => reply.style.display === "flex");
+
         replies.forEach(reply => {
-            reply.style.display = (reply.style.display === "none" || reply.style.display === "") ? "flex" : "none"
+            reply.style.display = isVisible ? "none" : "flex";
         });
+
+        let replyCount = replies.length; // 답글 개수 가져오기
+        button.innerText = isVisible ? `답글 ${replyCount}개 보기` : "답글 안보기";
     }
-    function toggleWriteChildComments(button){
-        let commentId = button.getAttribute("data-comment-parent");
-        let commentContainer = button.closest(".comment-container");
-        let writeChildCommentForm = commentContainer.querySelector(".writeChildComment");
-        let writeChildCommentBtn = commentContainer.querySelector(`[data-comment-parent='${commentId}']`);
-        if(writeChildCommentForm.style.display === "none"){
-            writeChildCommentForm.style.display = "flex";
-            writeChildCommentBtn.innerText="답글 취소";
-        }else if(writeChildCommentForm.style.display === "flex"){
-            writeChildCommentForm.style.display = "none";
-            writeChildCommentBtn.innerText="답글 달기"
-        }
-    }
-    function modifyCommentForm(button) {
-        let commentContainer = button.closest(".comment-container");
-        let modifyForm = commentContainer.querySelector(".modifyComments");
+    function modifyChildCommentForm(button){
+        let childCommentContainer = button.closest(".childComment")
+        let childCommentModifyForm = childCommentContainer.querySelector(".modifyChildComments");
         let modifyBtn=document.getElementsByName("modifyComment");
-        if(modifyForm.style.display === "none") {
-            modifyForm.style.display = "flex";
-            modifyBtn.innerText = "수정취소";
-        }else if(modifyForm.style.display === "flex") {
-            modifyForm.style.display = "none";
-            modifyBtn.innerText="수정"
+        if(childCommentModifyForm.style.display === "none") {
+            childCommentModifyForm.style.display = "flex";
+            modifyBtn.innerText = "수정 취소"
+        }
+        else if(childCommentModifyForm.style.display === "flex") {
+            childCommentModifyForm.style.display = "none";
+            modifyBtn.innerText="답글 수정"
         }
     }
 
@@ -194,7 +320,6 @@
                 let commentContainer = button.closest(".comment-container");
                 let modifyForm = commentContainer.querySelector(".modifyComments");
                 let commentInput = modifyForm.querySelector("textarea").value;
-                let commentCreatedAt = new Date().toISOString().valueOf();
                 let postNo=modifyForm.querySelector(".postNo").value;
                 let userNo=modifyForm.querySelector(".userNo").value;
                 const requestBody = {
@@ -231,6 +356,51 @@
         let modifyForm = commentContainer.querySelector(".modifyComments");
         modifyForm.style.display = "none";
     }
+    async function EditChildComments(button){
+        const confirmation = confirm("바꾸시겠습니까?");
+        if(!confirmation) return;
+        if(confirmation){
+            try {
+                const commentId = button.getAttribute("data-comment-id");
+                let commentContainer = button.closest(".childComment");
+                let modifyForm = commentContainer.querySelector(".modifyChildComments");
+                let commentInput = modifyForm.querySelector("textarea").value;
+                let postNo=modifyForm.querySelector(".postNo").value;
+                let userNo=modifyForm.querySelector(".userNo").value;
+                const requestBody = {
+                    id:commentId,
+                    commentCont: commentInput,
+                };
+                const response = await fetch('/community/modifyComment', {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+                if (response.status === 204) {
+                    alert("답글 내용이 변경되지 않았습니다.");
+                    return;
+                }
+                if (response.status === 404) {
+                    alert("해당 답글을 찾을 수 없습니다.");
+                    return;
+                }
+                if(response.ok) {
+                    alert("답글이 수정되었습니다.")
+                    window.location.reload();
+                }else {
+                    alert("수정 실패!")
+                }
+            }catch (error){
+                console.log(error);
+                alert("수정중 오류 발생!")
+            }
+        }
+        let commentContainer = button.closest(".childComment");
+        let modifyForm = commentContainer.querySelector(".modifyChildComments");
+        modifyForm.style.display = "none";
+    }
     async function deleteComments(button){
         const confirmation=confirm("정말 댓글을 삭제하시겠습니까?")
         if(!confirmation) return;
@@ -254,9 +424,32 @@
             }
         }
     }
+    async function deleteChildComments(button){
+        const confirmation=confirm("정말 댓글을 삭제하시겠습니까?")
+        if(!confirmation) return;
+        if (confirmation) {
+            const commentId = button.getAttribute("data-comment-parent");
+            try {
+                const response = await fetch(`/community/deleteComment/${commentId}`, {  // 경로 확인
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }})
+                if(response.ok) {
+                    alert("답글이 삭제되었습니다.")
+                    window.location.reload();
+                }else {
+                    alert("삭제 실패!")
+                }
+            }catch (error){
+                console.log(error);
+                alert("삭제중 오류 발생!")
+            }
+        }
+    }
 
     async function deletePost(postNo) {
-        const confirmation = confirm("정말 삭제하시겠습니까?");
+        const confirmation = confirm("정말 게시글을 삭제하시겠습니까?");
         if (confirmation) {
             try {
                 const response = await fetch(`/community/post/${postNo}`, {  // 경로 확인

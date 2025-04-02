@@ -79,7 +79,6 @@ class CommentServiceImpTest {
         Comment comment = new Comment();
         User user = entityManager.find(User.class, 1);
         Hibernate.initialize(user);
-        System.out.println(user.getId());
         comment.setCommentCont("앙 기모띠 살려줘");
         comment.setCommentCreatedAt(Instant.now());
         comment.setPostNo(91);
@@ -103,5 +102,19 @@ class CommentServiceImpTest {
     @Test
     void removeCommentByCommentNo() {
         commentService.removeCommentByCommentNo(97);
+    }
+
+    @Test
+    @Transactional
+    void writeChildComments() {
+        Comment comment = new Comment();
+        User user = entityManager.find(User.class, 1);
+        Hibernate.initialize(user);
+        comment.setCommentCont("앙 기모띠 살려줘");
+        comment.setCommentCreatedAt(Instant.now());
+        comment.setParentNo(69);
+        comment.setPostNo(91);
+        comment.setUserNo(user);
+        commentService.writeChildComments(comment);
     }
 }

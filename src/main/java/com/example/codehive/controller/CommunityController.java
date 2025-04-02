@@ -49,6 +49,16 @@ public class CommunityController {
         return text.replace("\n", "<br>");
     }
 
+    @PostMapping("/api/comment-like/toggle")
+    public ResponseEntity<CommentLikeCountDTO> toggleLike(
+            @RequestParam("userNo") Integer userNo,
+            @RequestParam("commentNo") Integer commentNo,
+            @RequestParam("likeType") Boolean likeType
+    ) {
+        CommentLikeCountDTO result = commentLikeService.toggleLike(userNo, commentNo, likeType);
+        return ResponseEntity.ok(result);
+    }
+
     @GetMapping("/api/free_posts")
     @ResponseBody
     public Page<PostDto> loadMoreFreePosts(
@@ -86,6 +96,10 @@ public class CommunityController {
         model.addAttribute("user", user);
         Page<PostDto> postDto = freePostPage.map(PostDto::new);
         model.addAttribute("postDto", postDto);
+        List<Comment> comments = commentService.readAll();
+        model.addAttribute("comments", comments);
+        Map<Integer, CommentLikeCountDTO> cntCommentLike = commentLikeService.countCommentLikes();
+        model.addAttribute("cntCommentLike", cntCommentLike);
         return "community/free_post";
     }
 
@@ -218,7 +232,7 @@ public class CommunityController {
         List<Comment> comments=commentService.readCommentByPostNo(postNo);
         int cntComment=commentService.getCommentCountByPostNo(postNo);
         Map<Integer, CommentLikeCountDTO> cntCommentLike = new HashMap<>();
-        for (CommentLikeCountDTO dto : commentLikeService.getLikesAndDislikesCount()) {
+        for (CommentLikeCountDTO dto : commentLikeService.  getLikesAndDislikesCount()) {
             cntCommentLike.put(dto.getCommentNo(), dto);
         }
         Map<Integer, Integer> replyCounts = new HashMap<>();
@@ -238,9 +252,9 @@ public class CommunityController {
         return "community/postDetail";
     }
     @PostMapping("/api/commentWrite")
-    public ModelAndView commentWrite(@ModelAttribute Comment comment, RedirectAttributes redirectAttributes,
-    @RequestParam int postNo
+    public ModelAndView commentWrite(@ModelAttribute Comment comment, RedirectAttributes redirectAttributes
     ) {
+        int postNo=comment.getPostNo();
         User user = entityManager.find(User.class, 1);
         Hibernate.initialize(user);
         comment.setPostNo(comment.getPostNo());
@@ -249,10 +263,32 @@ public class CommunityController {
         comment.setCommentCont(comment.getCommentCont());
         Comment savedComment = commentRepository.save(comment);
         if(Objects.equals(savedComment.getCommentCont(), "")){
-            return null;
+            return new ModelAndView("redirect:/community/postDetail.do?postNo=" + postNo);
         }
         commentRepository.flush();
         redirectAttributes.addFlashAttribute("savedComment", savedComment);
+        return new ModelAndView("redirect:/community/postDetail.do?postNo=" + postNo);
+    }
+    @PostMapping("/api/childCommentWrite")
+    @ResponseBody
+    public ModelAndView childCommentWrite(@ModelAttribute Comment comment, RedirectAttributes redirectAttributes
+    ) {
+        int postNo=comment.getPostNo();
+        User user = entityManager.find(User.class, 1);
+        Hibernate.initialize(user);
+        comment.setPostNo(comment.getPostNo());
+        comment.setUserNo(user);
+        comment.setCommentCreatedAt(Instant.now());
+        comment.setParentNo(comment.getParentNo());
+        String content = comment.getCommentCont().trim();
+        if (content.isEmpty()) {
+            redirectAttributes.addFlashAttribute("errorMessage", "댓글을 입력해주세요.");
+            return new ModelAndView("redirect:/community/postDetail.do?postNo=" + postNo);
+        }
+        comment.setCommentCont(content);
+        Comment childComment = commentRepository.save(comment);
+        commentRepository.flush();
+        redirectAttributes.addFlashAttribute("childComment", childComment);
         return new ModelAndView("redirect:/community/postDetail.do?postNo=" + postNo);
     }
     @PutMapping("/modifyComment")
@@ -277,6 +313,7 @@ public class CommunityController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("댓글 수정 중 오류 발생");
         }
     }
+
     @DeleteMapping("/deleteComment/{commentNo}")
     public ResponseEntity<String> deleteComment(@PathVariable int commentNo) {
         try{

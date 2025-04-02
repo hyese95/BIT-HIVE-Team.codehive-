@@ -70,6 +70,7 @@ public class CommentServiceImp implements CommentService {
     }
 
     @Override
+    @Transactional
     public void writeComments(Comment comment) {
         comment.setPostNo(comment.getPostNo());
         comment.setCommentCreatedAt(Instant.now());
@@ -90,6 +91,20 @@ public class CommentServiceImp implements CommentService {
                 existingComment.setCommentCreatedAt(Instant.now());  // 클라이언트에서 전달하지 않으면 서버에서 현재 시간으로 처리
             }
         }
+    }
+
+    @Override
+    @Transactional
+    public void writeChildComments(Comment comment) {
+        comment.setPostNo(comment.getPostNo());
+        comment.setParentNo(comment.getParentNo());
+        comment.setCommentCreatedAt(Instant.now());
+        commentRepository.save(comment);
+    }
+
+    @Override
+    public List<Comment> readAll() {
+        return commentRepository.findAll();
     }
 
 }
