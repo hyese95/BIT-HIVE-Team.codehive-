@@ -38,15 +38,15 @@
                 <input type="hidden" name="category" >
                     <input type="hidden" name="id">
                     <input type="hidden" name="userNickname">
-                <textarea class="form-control" rows="10" style=" height: 500px;
+                <textarea class="form-control mb-1" rows="10" style=" height: 500px;
                 user-select: none;  resize: none;" th:if="${user.nickname}==null"
                 placeholder="로그인 후 이용해주세요!" name="postCont" id="postCont"></textarea>
-                    <textarea class="form-control" rows="10" style=" height: 500px;
+                    <textarea class="form-control mb-1" rows="10" style=" height: 500px;
                 user-select: none;  resize: none;" th:unless="${user.nickname}==null"
                 th:placeholder="${user.nickname}+'님 안녕하세요!'" name="postCont" id="postCont"></textarea>
                     <span class="d-flex justify-space-between" >
                     <span class="d-flex justify-content-between" style="display: flex; width: 100%;">
-                <span>
+                <span th:if="${user.nickname}!=null">
                     <button type="button" class="btn btn-info" onclick="attachImage()" style="text-decoration: none; color: black">
                         <img src="/img/ImageIcon/ImageIcon.png" alt="이미지" style="width: 20px; height: 20px"> 이미지 첨부
                     </button>
@@ -66,7 +66,7 @@
     <div th:if="${postDto.isEmpty()}">
         <p>게시글이 없습니다.</p>
     </div>
-    <div id="postContainer" >
+    <div id="postContainer" th:each="comment : ${comments}">
     <div class="list-group" th:each="post : ${postDto.content}" style="padding-bottom: 15px;">
         <a th:href="@{'/community/postDetail.do'(postNo=${post.id})}" style="text-decoration: none; color: black;">
         <div class="list-group-item" >
@@ -83,9 +83,13 @@
                 </div>
             </div>
             <p th:utext="${#strings.replace(post.postCont, '\n', '<br>')}">게시글 내용</p>
-            <div  style="padding-bottom: 5px;">
-            <span th:text="'좋아요'+${post.likeCount}+'개'">좋아요</span>
-            <span th:text="'싫어요'+${post.dislikeCount}+'개'">싫어요</span>
+            <div  style="padding-bottom: 5px;" >
+                <button class="like-btn" th:data-comment-id="${comment.id}" onclick="toggleLike(this, true)">
+                    👍 좋아요 <span th:text="${cntCommentLike[comment.id]?.likeCount ?: 0}"></span>
+                </button>
+                <button class="dislike-btn" th:data-comment-id="${comment.id}" onclick="toggleLike(this, false)">
+                    👎 싫어요 <span th:text="${cntCommentLike[comment.id]?.dislikeCount ?: 0}"></span>
+                </button>
             <span th:text="'댓글'+${post.commentCount}+'개'"></span>
             </div>
             <small class="text-muted" th:text="${#temporals.format(post.postCreatedAt, 'yyyy-MM-dd')}">작성일자</small>
@@ -104,8 +108,9 @@
 <br>
 <br>
 <script>
-    console.log('[[${user.nickname}]]');
     function submitPost() {
+        const confirmation=confirm("게시글을 등록하시겠습니까?")
+        if(confirmation!==true) return;
         let postContent = document.getElementById("postCont").value.trim()
         if (postContent === "") {
             alert("내용을 입력해주세요!");
@@ -135,6 +140,30 @@
     function attachImage() {
         alert("이미지 업로드 기능은 아직 구현되지 않았습니다.");
     }
+
+       async function toggleLike(button, isLike) {
+            let commentId = button.getAttribute("data-comment-id");
+            let userNo = 1; // 실제 로그인된 사용자 ID로 변경
+
+            await fetch("/api/comment-like/toggle", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    userNo: userNo,
+                    commentNo: commentId,
+                    likeType: isLike
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    let likeBtn = document.querySelector(`.like-btn[data-comment-id='${commentId}']`);
+                    let dislikeBtn = document.querySelector(`.dislike-btn[data-comment-id='${commentId}']`);
+
+                    likeBtn.innerText = `👍 좋아요 ${data.likeCount}`;
+                    dislikeBtn.innerText = `👎 싫어요 ${data.dislikeCount}`;
+                })
+                .catch(error => console.error("Error:", error));
+        }
 
     let page = 1;
     const pageSize = 10;

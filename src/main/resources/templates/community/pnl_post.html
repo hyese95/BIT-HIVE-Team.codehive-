@@ -139,6 +139,8 @@
 <br>
 <script>
     function submitPost() {
+        const confirmation=confirm("게시글을 등록하시겠습니까?")
+        if(confirmation!==true) return;
         let postContent = document.getElementById("postCont").value.trim();
         if (postContent === "") {
             alert("내용을 입력해주세요!");
