@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns=""
+      th:replace="~{fragments/default :: html(content=~{::body})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="container">
+    <form id="questionForm"><label for="questionType">문의유형</label>
+        <select name="questionType" id="questionType">
+            <option value="general">일반</option>
+            <option value="account">계정</option>
+            <option value="point">포인트</option>
+            <option value="authentication">인증</option>
+            <option value="trade">매매</option>
+            <option value="suggestion">건의사항</option>
+            <option value="report">제보</option>
+            <option value="user_report">회원신고</option>
+        </select>
+        <hr>
+        <p><label>제목<input type="text" id="questionTitle"></label></p>
+        <p><label>문의내용<input type="text" id="questionCont"></label></p>
+
+        <button id="cancelBtn">취소</button>
+        <button type="submit">문의보내기</button>
+    </form>
+</div>
+<script>
+
+    document.getElementById('questionForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const currentUserNo=1;
+        const formData = {
+            questionOption: document.getElementById('questionType').value,
+            questionTitle: document.getElementById('questionTitle').value,
+            questionCont: document.getElementById('questionCont').value,
+            questionStatus: 'PENDING',
+            userNo: currentUserNo
+        };
+
+        try {
+            const response = await fetch('/api/questions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+
+            if (response.ok) {
+                window.location.href = '/setting/support/qna/qna.do';
+            } else {
+                alert('문의 등록에 실패했습니다.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('서버 연결에 문제가 발생했습니다.');
+        }
+    });
+    const cancelBtn=document.getElementById('cancelBtn');
+    cancelBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.location.href = '/setting/support/support_main.do';
+    });
+
+
+</script>
+</body>
+</html>

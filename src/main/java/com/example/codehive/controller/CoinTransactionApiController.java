@@ -7,10 +7,7 @@ import com.example.codehive.repository.CoinTransactionRepository;
 import com.example.codehive.service.CoinTransactionService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,5 +72,19 @@ public class CoinTransactionApiController {
 
         CoinTransactionDto result = coinTransactionService.getAvailableQuantity(userNo, market);
         return ResponseEntity.ok(result);
+    }
+
+    @DeleteMapping("/api/transaction/me")
+    public ResponseEntity<Void> resetAsset(){
+        try {
+            coinTransactionService.removeAllByUserNo(1);
+            return ResponseEntity.ok().build();
+        }
+        catch(Exception e){
+            return ResponseEntity.badRequest().build();
+
+        }
+
+
     }
 }

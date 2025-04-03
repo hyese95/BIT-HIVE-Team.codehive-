@@ -21,21 +21,21 @@
             <p>
                 <strong>
                     평가손익:
-                    <span th:text="${#numbers.formatDecimal(profitResultDto.totalProfit,0,'COMMA',0,'POINT')}"
+                    <span th:text="${#numbers.formatDecimal(profitResultDto.totalProfit,1,'COMMA',0,'POINT')}"
                           th:attr="data-profit=${profitResultDto.totalProfit}"
-                    ></span>
+                     id="profit"></span>
                 </strong>
             </p>
             <p>
                 <strong>
                     수익률:
                     <span th:text="${profitResultDto.overallProfitRate > 0 ? '+' : ''} +
-            ${#numbers.formatDecimal(profitResultDto.overallProfitRate,0,'COMMA',2,'POINT')}+'%'"
+            ${#numbers.formatDecimal(profitResultDto.overallProfitRate,1,'COMMA',2,'POINT')}+'%'"
                           th:attr="data-profit=${profitResultDto.overallProfitRate}"
                     ></span>
                 </strong>
             </p>
-            <button>보유자산 초기화하기</button>
+            <button id="assetResetBtn">보유자산 초기화하기</button>
         </div>
         <hr/>
 
@@ -44,32 +44,32 @@
             <h2 th:text="${coin.market.replace('KRW-','')}"></h2>
             <p><strong>
                 평가손익 :
-                <span th:text="${#numbers.formatDecimal(coin.profit, 0, 'COMMA', 0, 'POINT')} + ' KRW'"
+                <span th:text="${#numbers.formatDecimal(coin.profit, 1, 'COMMA', 0, 'POINT')} + ' KRW'"
                       th:attr="data-profit=${coin.profit}"
                 ></span></strong>
             </p>
             <p>
                 <strong>수익률:
                     <span th:text="${coin.profitRate > 0 ? '+' : ''} +
-                   ${#numbers.formatDecimal(coin.profitRate, 0, 'COMMA', 2, 'POINT')} + '%'"
+                   ${#numbers.formatDecimal(coin.profitRate, 1, 'COMMA', 2, 'POINT')} + '%'"
                           th:attr="data-profit=${coin.profitRate}"
                     ></span></strong>
             </p>
             <p>
                 보유 수량:
-                <span th:text="${#numbers.formatDecimal(coin.holdingQty, 0, 'COMMA', 2, 'POINT')} + ${coin.market.replace('KRW-','')}"></span>
+                <span th:text="${#numbers.formatDecimal(coin.holdingQty, 1, 'COMMA', 2, 'POINT')} + ${coin.market.replace('KRW-','')}"></span>
             </p>
             <p>
                 매수 평균가:
-                <span th:text="${#numbers.formatDecimal(coin.buyAvgPrice, 0, 'COMMA', 0, 'POINT')}"></span> KRW
+                <span th:text="${#numbers.formatDecimal(coin.buyAvgPrice, 1, 'COMMA', 0, 'POINT')}"></span> KRW
             </p>
             <p>
                 평가금액:
-                <span th:text="${#numbers.formatDecimal(coin.currentValuation, 0, 'COMMA', 0, 'POINT')}"></span> KRW
+                <span th:text="${#numbers.formatDecimal(coin.currentValuation, 1, 'COMMA', 0, 'POINT')}"></span> KRW
             </p>
             <p>
                 매수금액:
-                <span th:text="${#numbers.formatDecimal(coin.purchaseValuation, 0, 'COMMA', 0, 'POINT')}"></span> KRW
+                <span th:text="${#numbers.formatDecimal(coin.purchaseValuation, 1, 'COMMA', 0, 'POINT')}"></span> KRW
             </p>
             <hr/>
         </div>
@@ -77,5 +77,98 @@
 
     </div>
 </div>
+<script>
+    const assetReset = document.getElementById('assetResetBtn');
+    assetReset.addEventListener('click', showResetModal);
+    function showResetModal(followingUserNo, element,followingUserImgUrl,followingUserNickname) {
+
+        const existingModal = document.getElementById('confirmModal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+
+
+        const modalHTML = `
+    <div id="confirmModal" class="position-fixed bottom-0 start-0 w-100" style="z-index: 1050;">
+      <div class="modal-backdrop position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50" style="z-index: -1;"></div>
+      <div class="bg-white p-3 rounded-top shadow-lg border-top" style="animation: slideUp 0.3s ease;">
+        <p class="mb-3 text-center fw-bold">정말로 보유자산을 초기화하시겠습니까?</p>
+        <hr>
+        <button id="confirmReset" class="btn btn-danger w-100" data-user-no="${followingUserNo}">삭제</button>
+      </div>
+    </div>`;
+
+        //스타일
+        if (!document.getElementById('modalStyles')) {
+            const styleElement = document.createElement('style');
+            styleElement.id = 'modalStyles';
+            styleElement.textContent = `
+            @keyframes slideUp {
+                from { transform: translateY(100%); }
+                to { transform: translateY(0); }
+            }
+
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+
+            .modal-backdrop {
+                animation: fadeIn 0.3s ease;
+            }
+
+            body.modal-open {
+                overflow: hidden;
+            }
+        `;
+            document.head.appendChild(styleElement);
+        }
+
+
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        document.body.classList.add('modal-open');
+
+        const modal = document.getElementById('confirmModal');
+        const confirmBtn = document.getElementById('confirmReset');
+        const backdrop = modal.querySelector('.modal-backdrop');
+
+        backdrop.addEventListener('click', hideModal);
+
+        confirmBtn.addEventListener('click', async () => {
+            try {
+
+                const response = await fetch(`/api/transaction/me`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    window.location.reload(true);
+                }
+            } catch (error) {
+                alert('초기화에실패했습니다.')
+                console.error('자산초기화 오류:', error);
+            } finally {
+                hideModal();
+            }
+        });
+
+        // 모달표시
+        setTimeout(() => {
+            modal.style.display = 'block';
+        }, 10);
+    }
+    function hideModal() {
+        const modal = document.getElementById('confirmModal');
+        if (modal) {
+            document.body.classList.remove('modal-open');
+            modal.remove();
+        }
+    }
+
+
+
+
+
+</script>
 </body>
 </html>

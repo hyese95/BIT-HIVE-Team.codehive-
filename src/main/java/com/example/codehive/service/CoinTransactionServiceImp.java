@@ -7,6 +7,7 @@ import com.example.codehive.entity.CoinTransaction;
 import com.example.codehive.repository.CoinTransactionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -138,4 +139,10 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
         return new CoinTransactionDto(market, available);
     }
 
+    @Override
+    @Transactional
+    public void removeAllByUserNo(int userNo) {
+        coinTransactionRepository.deleteAllByUserNo(userNo);
+
+    }
 }
