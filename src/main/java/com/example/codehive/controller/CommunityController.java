@@ -2,21 +2,18 @@ package com.example.codehive.controller;
 
 import com.example.codehive.dto.CommentLikeCountDTO;
 import com.example.codehive.dto.PostDto;
+import com.example.codehive.dto.PostLikeDto;
 import com.example.codehive.entity.*;
-import com.example.codehive.repository.CommentLikeRepository;
-import com.example.codehive.repository.CommentRepository;
-import com.example.codehive.repository.PostLikeRepository;
-import com.example.codehive.repository.UserRepository;
-import com.example.codehive.service.CommentLikeService;
-import com.example.codehive.service.CommentService;
-import com.example.codehive.service.PostService;
+import com.example.codehive.repository.*;
+import com.example.codehive.service.*;
 import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import com.example.codehive.service.UserService;
 import lombok.AllArgsConstructor;
 import org.hibernate.Hibernate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -41,21 +38,24 @@ public class CommunityController {
     private final UserService userService;
     private final CommentService commentService;
     private final CommentLikeService commentLikeService;
-    private final CommentLikeRepository commentLikeRepository;
-    private final UserRepository userRepository;
+    private final PostLikeService postLikeService;
     private final CommentRepository commentRepository;
+    private final Logger logger = LoggerFactory.getLogger(CommunityController.class);
+    private final PostLikeRepository postLikeRepository;
 
     public String convertNewlineToBr(String text) {
         return text.replace("\n", "<br>");
     }
-
-    @PostMapping("/api/commentLike/toggle")
-    public ResponseEntity<CommentLikeCountDTO> toggleLike(
-            @RequestParam("userNo") Integer userNo,
-            @RequestParam("postNo") Integer postNo,
-            @RequestParam("likeType") Boolean likeType
-    ) {
-        CommentLikeCountDTO result = commentLikeService.toggleLike(userNo, postNo, likeType);
+    @PostMapping("/api/postLike/toggle")
+    @ResponseBody
+    public ResponseEntity<PostLikeDto> toggleLike(@RequestBody PostLikeDto postLikeDto)
+    {
+        logger.info("Received postLikeDto: {}", postLikeDto);
+        int userNo=postLikeDto.getUserNo();
+        if(userNo==0){
+            userNo=1;
+        }
+        PostLikeDto result = postLikeService.toggleLike(userNo,postLikeDto.getPostNo(),postLikeDto.isLikeType());
         return ResponseEntity.ok(result);
     }
 
@@ -97,6 +97,7 @@ public class CommunityController {
         Page<PostDto> postDto = freePostPage.map(PostDto::new);
         model.addAttribute("postDto", postDto);
         List<Comment> comments = commentService.readAll();
+        List<PostLikeDto> postLikeDto =postLikeRepository.getPostLikeAndDislike();
         model.addAttribute("comments", comments);
         Map<Integer, CommentLikeCountDTO> cntCommentLike = commentLikeService.countCommentLikes();
         model.addAttribute("cntCommentLike", cntCommentLike);

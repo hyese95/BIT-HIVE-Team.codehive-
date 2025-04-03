@@ -20,7 +20,6 @@ public class PostLike {
     @Column(name = "post_no", nullable = false)
     private Integer postNo;
 
-
     @MapsId("userNo")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_no", nullable = false)
