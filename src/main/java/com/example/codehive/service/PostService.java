@@ -20,4 +20,5 @@ public interface PostService {
     void deletePost(int postNo);
     PostDto createPost(PostDto postDto);
     Page<Post> readAll(PostDto postDto, Pageable pageable);
+    Page<Post>readByUserNo(Pageable pageable, int userNo);
 }
