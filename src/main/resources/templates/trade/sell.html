@@ -16,7 +16,6 @@
 <body>
 <div class="container">
     <h1 id="coinTitle">매도 페이지</h1>
-
     <p>
         <a id="buyLink" href="#">매수</a>
         <a id="sellLink" href="#">매도</a>
@@ -32,30 +31,46 @@
         </div>
 
         <div id="formContainer">
-            <button>지정</button>
-            <button>시장</button>
-            <form id="sellForm">
-                <p>주문가능: <span id="deposit"></span> 원</p>
-                <p>
-                    <label>
-                        수량 <input type="number" placeholder="수량" id="sellAmount" name="sellAmount">
-                    </label>
-                </p>
-                <p>
-                    <label>
-                        가격 <input type="number" placeholder="가격" id="sellPrice" name="sellPrice">
-                    </label>
-                </p>
-                <hr>
-                <p>
-                    <label>
-                        총 금액 <input type="text" placeholder="총 주문금액" id="totalSellPrice" name="totalSellPrice">
-                    </label>
-                </p>
-                <div class="d-grid">
-                    <button type="submit" class="btn" style="background-color: #1375ec; color: white;">매도</button>
+            <button id="limitBtn">지정</button>
+            <button id="marketBtn">시장</button>
+            <!-- 지정가 폼 -->
+            <div id="limitOrderForm">
+                <form id="sellForm">
+                    <p>주문가능: <span id="deposit"></span> 원</p>
+                    <p>
+                        <label>
+                            수량 <input type="number" placeholder="수량" id="sellAmount" name="sellAmount">
+                        </label>
+                    </p>
+                    <p>
+                        <label>
+                            가격 <input type="number" placeholder="가격" id="sellPrice" name="sellPrice">
+                        </label>
+                    </p>
+                    <hr>
+                    <p>
+                        <label>
+                            총 금액 <input type="text" placeholder="총 주문금액" id="totalSellPrice" name="totalSellPrice">
+                        </label>
+                    </p>
+                    <div class="d-grid">
+                        <button type="submit" class="btn" style="background-color: #1375ec; color: white;">매도</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 시장가 폼 -->
+            <div id="marketOrderForm" style="display: none;">
+                <p>주문가능: <span id="marketAvailable"></span></p>
+                <p>수량 <input type="number" id="marketAmount"></p>
+                <div class="d-grid mb-2">
+                    <button id="marketAllSell" class="btn"
+                            style="background-color: white; color: #1375ec; border: 1px solid #1375ec;">시장가 전액 매도</button>
                 </div>
-            </form>
+                <div class="d-grid">
+                    <button id="marketSellBtn" class="btn" style="background-color: #1375ec; color: white;">매도</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -157,17 +172,20 @@
 
                     coinBalance = buySum - sellSum;
                     document.getElementById("deposit").innerText=`${coinBalance.toFixed(6)} ${market.split('-')[1]}`;
+                    document.getElementById("marketAvailable").innerText=`${coinBalance.toFixed(6)} ${market.split('-')[1]}`;
                 } catch (e) {
                     console.error("주문가능 잔고 불러오기 오류:", e);
                     document.getElementById("deposit").innerText = `0 ${market.split('-')[1]}`;
+                    document.getElementById("marketAvailable").innerText = `0 ${market.split('-')[1]}`;
                 }
 
             }
-            updateCoinBalance(1, 'KRW-XRP');
+            updateCoinBalance(1,'KRW-'+coinTicker);
 
             // 매도 처리 API 요청
             const sellForm = document.getElementById("sellForm");
             sellForm.addEventListener("submit", async function (event) {
+                const coinBalance=document.getElementById("deposit").innerText
                 event.preventDefault();
 
                 const amount = parseFloat(document.getElementById("sellAmount").value);
@@ -176,6 +194,10 @@
                 const userNo = 1;
 
                 try {
+                    if (parseFloat(coinBalance)<amount){
+                        alert('매도가능수량초과!!')
+                        return
+                    }
                     const response = await fetch('/trade/api/transaction', {
                         method: 'POST',
                         headers: {
@@ -227,10 +249,72 @@
                     return;
                 }
                 const amount = price > 0 ? (total / price) : 0;
-                console.log("총금액:", total, "가격:", price, "수량계산결과:", amount);
                 document.getElementById("sellAmount").value = amount.toFixed(6); // 소수점 자릿수는 필요에 따라
             }
             document.getElementById("totalSellPrice").addEventListener("input", updateSellAmount);
+
+            // 지정, 시장 폼 조절
+            document.getElementById("limitBtn").addEventListener('click', () => {
+                document.getElementById("limitOrderForm").style.display = "block";
+                document.getElementById("marketOrderForm").style.display = "none";
+            });
+            document.getElementById("marketBtn").addEventListener('click', () => {
+                document.getElementById("limitOrderForm").style.display = "none";
+                document.getElementById("marketOrderForm").style.display = "block";
+            });
+
+            // 시장가 전액매도 가능 수량표시
+            const marketAvailable=document.getElementById("marketAvailable");
+            const marketAmount=document.getElementById("marketAmount");
+            const marketAllSell=document.getElementById("marketAllSell");
+
+            marketAllSell.addEventListener('click', () => {
+                const availableText = marketAvailable.innerText;
+                const quantityOnly = availableText.split(" ")[0];
+                marketAmount.value = quantityOnly;
+            });
+
+            // 시장가 매도처리 요청
+            const marketSellBtn=document.getElementById("marketSellBtn");
+            marketSellBtn.addEventListener('click', async () => {
+                const coinBalance2=document.getElementById("marketAvailable").innerText
+                const amount2 = parseFloat(document.getElementById("marketAmount").value);
+                const availableText = marketAvailable.innerText;
+                const pureAmount = availableText.split(" ")[0];
+                marketAmount.value = pureAmount;
+                const userNo=1;
+                const market='KRW-'+coinTicker;
+                const price = 1;
+                try {
+                    if (parseFloat(coinBalance2)<amount2){
+                        alert('매도가능수량초과!!')
+                        return
+                    }
+                    const res=await fetch('/trade/api/transaction', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            userNo: userNo,
+                            market: market,
+                            transactionType: "SELL",
+                            price: price,
+                            transactionCnt: parseFloat(pureAmount),
+                            transactionState: "COMPLETED"
+                        }),
+                    });
+                    if (res.ok) {
+                        alert("시장가 매도 완료!");
+                        window.location.reload();
+                    } else {
+                        alert("시장가 매도 실패!");
+                    }
+                } catch (err) {
+                    console.error("시장가 매도 중 오류:", err);
+                    alert("오류 발생!");
+                }
+            });
         });
     </script>
 </div>
