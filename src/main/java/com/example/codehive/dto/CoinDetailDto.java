@@ -10,7 +10,7 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 public class CoinDetailDto {
-    // 코인명 (예: ADA, BTC, SAND)
+    // 코인명
     private String market;
     // 가중평균 매수 단가 (구매 수량*가격 총합 / 총 구매 수량)
     private double buyAvgPrice;

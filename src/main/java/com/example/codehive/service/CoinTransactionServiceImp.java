@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class CoinTransactionServiceImp implements CoinTransactionService {
-
+    private final CoinKoreanNameService coinKoreanNameService;
     private final CoinTransactionRepository coinTransactionRepository;
 
     @Override
@@ -22,7 +22,7 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
         // 1. 해당 유저의 전체 거래 내역 조회
         List<CoinTransaction> allTransactions = coinTransactionRepository.findByUserNo(userNo);
 
-        // 2. 매수 / 매도 거래만 각각 필터링 (거래 상태는 COMPLETED만)
+        // 2. 매수 / 매도 거래만 각각 필터링
         List<CoinTransaction> buyTransactions = allTransactions.stream()
                 .filter(tx -> "BUY".equalsIgnoreCase(tx.getTransactionType()) &&
                         "COMPLETED".equalsIgnoreCase(tx.getTransactionState()))
@@ -39,6 +39,8 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
         Map<String, List<CoinTransaction>> sellMap = sellTransactions.stream()
                 .collect(Collectors.groupingBy(CoinTransaction::getMarket));
 
+
+
         List<CoinDetailDto> coinDetails = new ArrayList<>();
         double totalPurchaseValuation = 0.0; // 전체 매입 금액
         double totalCurrentValuation = 0.0;  // 전체 현재 평가 금액
@@ -46,8 +48,8 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
         for (String market : buyMap.keySet()) {
             // 예외 처리: KRW 자체 마켓은 계산 제외
             if ("KRW-KRW".equalsIgnoreCase(market)) continue;
-
             List<CoinTransaction> coinBuys = buyMap.get(market);
+
 
             // 4. 총 매수 수량 계산
             double totalBuyQty = 0.0;

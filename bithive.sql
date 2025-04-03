@@ -86,21 +86,14 @@ CREATE TABLE coin_transactions(
     FOREIGN KEY(user_no) REFERENCES users(user_no)
 );
 
-CREATE TABLE favorite_markets_folders(
-    list_no	INT AUTO_INCREMENT PRIMARY KEY,
-    user_no	INT NOT NULL,
-    list_name VARCHAR(255),
-    FOREIGN KEY(user_no) REFERENCES users(user_no)
-);
+
 
 CREATE TABLE favorite_markets(
-    favorite_coin_no INT AUTO_INCREMENT PRIMARY KEY,
+
     user_no INT NOT NULL,
     market VARCHAR(255) NOT NULL,
-    list_no INT NOT NULL,
-    sort_order VARCHAR(10),
-    FOREIGN KEY(user_no) REFERENCES users(user_no) ON DELETE CASCADE,
-    FOREIGN KEY(list_no) REFERENCES favorite_markets_folders(list_no)
+    PRIMARY KEY (user_no,market),
+    FOREIGN KEY(user_no) REFERENCES users(user_no) ON DELETE CASCADE
 );
 
 CREATE TABLE follows(
