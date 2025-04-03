@@ -1,25 +1,32 @@
 package com.example.codehive.controller;
 
 import com.example.codehive.dto.FollowDto;
+import com.example.codehive.dto.PostDto;
 import com.example.codehive.dto.UserDto;
 import com.example.codehive.dto.UserUpdateDto;
 import com.example.codehive.entity.Follow;
+import com.example.codehive.entity.Post;
 import com.example.codehive.entity.User;
+import com.example.codehive.service.PostService;
 import com.example.codehive.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/users")
 public class UserApiController {
+    private final PostService postService;
     private UserService userService;
 
     @GetMapping("/me")
@@ -78,13 +85,12 @@ public class UserApiController {
     @PostMapping("/follow/{followingUserNo}")
     public ResponseEntity<Void> follow(@PathVariable int followingUserNo) {
         try {
-            userService.follow(1,followingUserNo);
+            userService.follow(1, followingUserNo);
             return ResponseEntity.ok().build();
-        }catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().build();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
 
@@ -122,8 +128,17 @@ public class UserApiController {
     public boolean isFollowing(@PathVariable Integer userNo) {
 
         //일단은 내 유저넘버를 1로 가정
-        boolean isFollowing = userService.isFollowing(1,userNo);
+        boolean isFollowing = userService.isFollowing(1, userNo);
         return isFollowing;
+
+    }
+
+    @GetMapping("/{userNo}/boards")
+    public List<PostDto> getUserBoards(@PathVariable Integer userNo, @RequestParam (defaultValue = "0") int page) {
+        Pageable pageable = PageRequest.of(page, 2);
+        Page<Post> posts= postService.readByUserNo(pageable, userNo);
+
+        return posts.getContent().stream().map(PostDto::new).collect(Collectors.toList());
 
     }
 }

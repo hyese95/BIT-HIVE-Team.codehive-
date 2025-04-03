@@ -29,8 +29,10 @@
 
         <div class="d-flex justify-content-between">
             <div class="card text-center flex-grow-1 mx-1">
-                <p th:text="${userDto.postCount}" class="mb-0 fw-bold"></p>
-                <span>게시물</span>
+                <a th:href="@{/users/{userNo}/boards(userNo=${userDto.id})}">
+                    <p th:text="${userDto.postCount}" class="mb-0 fw-bold"></p>
+                    <span>게시물</span>
+                </a>
             </div>
             <div class="card text-center flex-grow-1 mx-1">
                 <a th:href="@{/users/{userNo}/follow_list(userNo=${userDto.id}, tab='followers')}">
@@ -159,7 +161,6 @@
                 await updateFollowing(userNo);
 
 
-
             } catch (error) {
                 alert('언팔로우에 실패했습니다.')
                 console.error('언팔로우 오류:', error);
@@ -195,9 +196,10 @@
 
     followingBtn.addEventListener('click', handleUnfollowClick);
     followBtn.addEventListener('click', handleFollow);
+
     async function handleFollow(event) {
-        const URL=`/api/users/follow/${event.target.value}`
-        const currentUserNo=1;
+        const URL = `/api/users/follow/${event.target.value}`
+        const currentUserNo = 1;
         const response = await fetch(URL, {
             method: 'POST',
             body: JSON.stringify({
@@ -209,7 +211,7 @@
             alert('follow성공')
             await updateFollowing(targetUserNo)
         }
-        if(!response.ok){
+        if (!response.ok) {
             alert(response.status)
         }
 
