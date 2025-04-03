@@ -120,4 +120,20 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
     public List<CoinTransactionDto> getSumCoinTransactionsByConditions(int userNo, String market, String transactionType, String transactionState) {
         return coinTransactionRepository.findSumCoinTransactionsByConditions(userNo, market, transactionType, transactionState) ;
     }
+
+    @Override
+    public CoinTransactionDto getAvailableQuantity(int userNo, String market) {
+        List<CoinTransactionDto> buyList = coinTransactionRepository.findSumCoinTransactionsByConditions(
+                userNo, market, "BUY", "COMPLETED");
+
+        List<CoinTransactionDto> sellList = coinTransactionRepository.findSumCoinTransactionsByConditions(
+                userNo, market, "SELL", "COMPLETED");
+
+        double buySum = (buyList.isEmpty() || buyList.get(0).getQuantity() == null) ? 0.0 : buyList.get(0).getQuantity();
+        double sellSum = (sellList.isEmpty() || sellList.get(0).getQuantity() == null) ? 0.0 : sellList.get(0).getQuantity();
+        double available = buySum - sellSum;
+
+        return new CoinTransactionDto(market, available);
+    }
+
 }

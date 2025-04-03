@@ -141,21 +141,26 @@
                 document.getElementById("totalSellPrice").value = total.toLocaleString();
             }
 
-            // 주문가능 자동불러오기
+            // 주문가능 자동 불러오기
             async function updateCoinBalance(userNo, market) {
                 let coinBalance = 0;
-                const buyURL = `/api/transaction/${userNo}/${market}/buy?transactionState=COMPLETED`;
-                const response = await fetch(buyURL);
-                const data = await response.json();
-                const buySum = data.quantity;
+                try {
+                    const buyURL = `/api/transaction/${userNo}/${market}/buy?transactionState=COMPLETED`;
+                    const response = await fetch(buyURL);
+                    const data = await response.json();
+                    const buySum = data.quantity || 0;
 
-                const sellURL = `/api/transaction/${userNo}/${market}/sell`
-                const response2 = await fetch(sellURL);
-                const data2 = await response2.json();
-                const sellSum = data2.quantity;
+                    const sellURL = `/api/transaction/${userNo}/${market}/sell`
+                    const response2 = await fetch(sellURL);
+                    const data2 = await response2.json();
+                    const sellSum = data2.quantity || 0;
 
-                coinBalance = buySum - sellSum;
-                document.getElementById("deposit").innerText=coinBalance
+                    coinBalance = buySum - sellSum;
+                    document.getElementById("deposit").innerText=`${coinBalance.toFixed(6)} ${market.split('-')[1]}`;
+                } catch (e) {
+                    console.error("주문가능 잔고 불러오기 오류:", e);
+                    document.getElementById("deposit").innerText = `0 ${market.split('-')[1]}`;
+                }
 
             }
             updateCoinBalance(1, 'KRW-XRP');

@@ -6,6 +6,7 @@ import com.example.codehive.entity.CoinTransaction;
 import com.example.codehive.repository.CoinTransactionRepository;
 import com.example.codehive.service.CoinTransactionService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -65,5 +66,14 @@ public class CoinTransactionApiController {
             return sellList.get(0);
         }
 
+    }
+
+    @GetMapping("/api/transaction/{userNo}/{market}/available")
+    public ResponseEntity<CoinTransactionDto> getAvailableQuantity(
+            @PathVariable int userNo,
+            @PathVariable String market) {
+
+        CoinTransactionDto result = coinTransactionService.getAvailableQuantity(userNo, market);
+        return ResponseEntity.ok(result);
     }
 }
