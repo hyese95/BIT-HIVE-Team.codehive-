@@ -1,6 +1,7 @@
 package com.example.codehive.service;
 
 import com.example.codehive.dto.CoinDetailDto;
+import com.example.codehive.dto.CoinTransactionDto;
 import com.example.codehive.dto.ProfitResultDto;
 import com.example.codehive.entity.CoinTransaction;
 import com.example.codehive.repository.CoinTransactionRepository;
@@ -113,5 +114,10 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
     @Override
     public void saveCoinTransaction(CoinTransaction coinTransaction) {
         coinTransactionRepository.save(coinTransaction);
+    }
+
+    @Override
+    public List<CoinTransactionDto> getSumCoinTransactionsByConditions(int userNo, String market, String transactionType, String transactionState) {
+        return coinTransactionRepository.findSumCoinTransactionsByConditions(userNo, market, transactionType, transactionState) ;
     }
 }

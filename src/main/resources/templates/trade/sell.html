@@ -141,6 +141,25 @@
                 document.getElementById("totalSellPrice").value = total.toLocaleString();
             }
 
+            // 주문가능 자동불러오기
+            async function updateCoinBalance(userNo, market) {
+                let coinBalance = 0;
+                const buyURL = `/api/transaction/${userNo}/${market}/buy?transactionState=COMPLETED`;
+                const response = await fetch(buyURL);
+                const data = await response.json();
+                const buySum = data.quantity;
+
+                const sellURL = `/api/transaction/${userNo}/${market}/sell`
+                const response2 = await fetch(sellURL);
+                const data2 = await response2.json();
+                const sellSum = data2.quantity;
+
+                coinBalance = buySum - sellSum;
+                document.getElementById("deposit").innerText=coinBalance
+
+            }
+            updateCoinBalance(1, 'KRW-XRP');
+
             // 매도 처리 API 요청
             const sellForm = document.getElementById("sellForm");
             sellForm.addEventListener("submit", async function (event) {
