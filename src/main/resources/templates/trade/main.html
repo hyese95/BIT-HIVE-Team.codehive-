@@ -39,6 +39,7 @@
             <th>현재가</th>
             <th>전일대비</th>
             <th>거래대금</th>
+            <th>관심목록</th>
         </tr>
         </thead>
         <tbody>
@@ -91,10 +92,14 @@
                         <td>${priceFormatted}</td>
                         <td style="color: ${changeColor}">${item.signed_change_rate > 0 ? '+' : ''}${changeRateFormatted}%</td>
                         <td>${(item.acc_trade_price_24h / 1000000).toLocaleString('en-US', {maximumFractionDigits: 0})}백만</td>
+                        <td>
+                        <button class="favoriteBtn" data-ticker="${ticker}">+</button>
+                        </td>
                     `;
                     tbody.appendChild(tr);
                 }
             });
+
         } catch (error) {
             console.error('Error updating ticker table:', error);
             document.querySelector('#tickerTable tbody').innerHTML =
@@ -111,6 +116,14 @@
     document.addEventListener("DOMContentLoaded", async () => {
         await fetchCoinNameMapping();
         await updateTickerTable();
+    });
+
+    // 즐겨찾기 추가
+    document.querySelector('#tickerTable tbody').addEventListener('click', function (e) {
+        if (e.target.matches('.favoriteBtn')) {
+            const ticker = e.target.dataset.ticker;
+            console.log(`즐겨찾기 추가 버튼 클릭됨 - 코인: ${ticker}`);
+        }
     });
 </script>
 </body>

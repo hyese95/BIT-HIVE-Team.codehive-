@@ -4,35 +4,27 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.util.List;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Getter
 @Setter
 @ToString
 @Entity
-@Table(name = "favorite_markets", schema = "bithive")
+@Table(name = "favorite_markets")
+@IdClass(FavoriteMarketId.class)
 public class FavoriteMarket {
     @Id
-    @Column(name = "favorite_coin_no", nullable = false)
-    private Integer id;
-
     @Column(name = "user_no", nullable = false)
-    private int userNo;
+    private Integer userNo;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_no", nullable = false, insertable = false, updatable = false)
-    private User user;
-
+    @Id
     @Column(name = "market", nullable = false)
     private String market;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "list_no", nullable = false)
-    private FavoriteMarketsFolder listNo;
-
-    @Column(name = "sort_order", length = 10)
-    private String sortOrder;
-
+    @MapsId("userNo")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_no", nullable = false, insertable = false, updatable = false)
+    private User user;
 
 }
