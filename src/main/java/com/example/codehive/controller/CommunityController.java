@@ -52,8 +52,15 @@ public class CommunityController {
     {
         logger.info("Received postLikeDto: {}", postLikeDto);
         int userNo=postLikeDto.getUserNo();
-        if(userNo==0){
-            userNo=1;
+        Post post=new Post();
+        Optional<User> userOpt = userService.readByUserNo(1);
+        if (userOpt.isPresent()) {
+            PostLike postLike = new PostLike();
+            postLike.setUser(userOpt.get());
+            postLike.setPost(post);
+            postLikeRepository.save(postLike);
+        } else {
+            throw new RuntimeException("User not found");
         }
         PostLikeDto result = postLikeService.toggleLike(userNo,postLikeDto.getPostNo(),postLikeDto.isLikeType());
         return ResponseEntity.ok(result);

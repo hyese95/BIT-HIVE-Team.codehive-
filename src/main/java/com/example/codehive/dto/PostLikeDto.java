@@ -12,11 +12,18 @@ import java.util.List;
 @AllArgsConstructor
 public class PostLikeDto {
     private Integer postNo;// 댓글 번호
+    private int likeCount;       // 좋아요 갯수
+    private int dislikeCount;
     private Integer userNo;
-    private Integer likeCount;       // 좋아요 갯수
-    private Integer dislikeCount;
     private boolean likeType;
 
+    public PostLikeDto(Integer postNo, Long likeCount, Long dislikeCount, Integer userNo, Boolean likeType) {
+        this.postNo = postNo;
+        this.likeCount = likeCount != null ? likeCount.intValue() : 0;
+        this.dislikeCount = dislikeCount != null ? dislikeCount.intValue() : 0;
+        this.userNo = userNo;
+        this.likeType = likeType != null && likeType;
+    }
 
     public PostLikeDto(PostLike postLike) {
         this.postNo = postLike.getPostNo();
@@ -26,9 +33,6 @@ public class PostLikeDto {
         for(PostLike pl:postLikes){
             if(pl.getLikeType().equals(true)){
                 this.likeCount++;
-            }
-            else if(pl.getLikeType().equals(false)){
-                this.dislikeCount++;
             }
         }
         this.dislikeCount = postLike.getPost().getPostLikes().size()-this.likeCount;
