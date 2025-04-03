@@ -51,7 +51,7 @@
 
     async function fetchCoinNameMapping() {
         try {
-            const response = await fetch('https://api.upbit.com/v1/market/all?is_details=true');
+            const response = await fetch('/api/proxy/upbit/market/all?is_details=true');
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const marketData = await response.json();
             marketData.forEach(item => {
@@ -67,11 +67,12 @@
 
     async function updateTickerTable() {
         try {
-            const response = await fetch('https://api.upbit.com/v1/ticker/all?quote_currencies=KRW,BTC');
+            const response = await fetch('/api/proxy/upbit/ticker/all?quote_currencies=KRW');
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const tickerData = await response.json();
             const tbody = document.querySelector('#tickerTable tbody');
             tbody.innerHTML = "";
+            console.log(tickerData.length)
 
             tickerData.forEach(item => {
                 if (item.market.startsWith('KRW')) {
@@ -109,7 +110,7 @@
     // 초기 실행
     document.addEventListener("DOMContentLoaded", async () => {
         await fetchCoinNameMapping();
-        updateTickerTable();
+        await updateTickerTable();
     });
 </script>
 </body>

@@ -27,7 +27,7 @@ async function fetchAssetPricesAndUpdateMyAsset() {
 
     const realMarkets = markets.filter(m => m !== "KRW-KRW");
     if (realMarkets.length > 0) {
-        const url = `https://api.upbit.com/v1/ticker?markets=${realMarkets.join(",")}`;
+        const url = `/api/proxy/upbit/ticker?markets=${realMarkets.join(",")}`;
         try {
             const response = await fetch(url);
             if (!response.ok) throw new Error("실시간 가격을 불러오는 데 실패했습니다.");
