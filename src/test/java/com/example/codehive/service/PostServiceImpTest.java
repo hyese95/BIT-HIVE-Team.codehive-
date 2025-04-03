@@ -61,4 +61,13 @@ class PostServiceImpTest {
         postService.modifyPost(post.getId(), post.getPostCont());
         System.out.println(post);
     }
+
+    @Test
+    @Transactional
+    void readByUserNo() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Post> posts=postService.readByUserNo(pageable,1);
+        System.out.println(posts.getContent());
+
+    }
 }

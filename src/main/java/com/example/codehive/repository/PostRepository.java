@@ -38,7 +38,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     Page<Post> findAllByCategory(Pageable pageable, String category);
 
     @Query("SELECT p FROM Post p JOIN FETCH p.user WHERE p.user.id = :Id")
-    List<Post> findByUserNo(@Param("Id") int Id);
+    Page<Post> findByUserNo(@Param("Id") int Id, Pageable pageable);
 
     @Query("SELECT p from Post p where p.id = :postNo")
     Post findPostById(int postNo);
@@ -50,5 +50,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Transactional
     @Query("DELETE from Post p where p.id= :postNo")
     int deletePostByPostNo(int postNo);
+
+
 
 }

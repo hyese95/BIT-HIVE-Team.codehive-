@@ -1,6 +1,5 @@
 package com.example.codehive.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,7 +21,6 @@ public class CoinTransaction {
     @Column(name = "user_no",nullable = false)
     private int userNo;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_no", nullable = false, insertable = false, updatable = false)
     private User user;

@@ -32,5 +32,9 @@ class PostRepositoryTest {
     }
 
 
+    @Test
+    @Transactional
+    void findByUserNo() {
 
+    }
 }

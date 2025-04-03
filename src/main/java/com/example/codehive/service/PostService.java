@@ -19,4 +19,5 @@ public interface PostService {
     void modifyPost(int postNo, String content);
     void deletePost(int postNo);
     PostDto createPost(PostDto postDto);
+    Page<Post>readByUserNo(Pageable pageable, int userNo);
 }

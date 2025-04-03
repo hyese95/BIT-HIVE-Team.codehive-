@@ -107,6 +107,11 @@
             try {
                 // API 호출
                 const [response, response2] = await Promise.all([fetch(url), fetch(url2)]);
+
+                if(!response.ok){
+
+                 throw error(response.statusText,response,url);
+                }
                 const responseJson = await response.json();
                 const responseJson2 = await response2.json();
 
@@ -163,16 +168,17 @@ style="border:none; background: rgba(221, 60, 68, .08); height: 45px;  width: 10
                     });
                 }
 
-            } catch (error) {
-                console.error("호가 데이터를 불러오는 중 오류 발생:", error);
-                alert("호가 데이터를 불러올 수 없습니다.");
+            }catch (Error) {
+                console.log(response);
+                console.log(url);
+                alert(Error);
             }
         }
 
         // 페이지 로딩 시 데이터 불러오기
         loadCoin();
 
-        // setInterval(loadCoin, 2000);
+        // setInterval(loadCoin, 500);
 
 
         const deposit = document.getElementById("deposit");
@@ -207,8 +213,8 @@ style="border:none; background: rgba(221, 60, 68, .08); height: 45px;  width: 10
 
             try {
                 let deposit = document.getElementById("deposit").innerText;
+                if (parseInt(deposit) < parseInt(totalPrice.value)) {
 
-                if (deposit < totalPrice.value) {
                     alert("주문금액 초과!!")
                     return;
                 }
@@ -269,6 +275,8 @@ style="border:none; background: rgba(221, 60, 68, .08); height: 45px;  width: 10
             buyAmount.value = total / price;
 
         }
+
+
     </script>
 </div>
 </body>
