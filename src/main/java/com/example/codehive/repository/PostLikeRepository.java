@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface PostLikeRepository extends JpaRepository<PostLike, PostLikeId> {
-    Optional<PostLike> findById(PostLikeId id);
+public interface PostLikeRepository extends JpaRepository<PostLike, Integer> {
+    Optional<PostLike> findByPostAndUser(Post post, User user);
 
     @Transactional
     @Modifying

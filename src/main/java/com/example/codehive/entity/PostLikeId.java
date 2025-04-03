@@ -2,15 +2,18 @@ package com.example.codehive.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.Hibernate;
 
 import java.util.Objects;
 
 @Getter
 @Setter
-@Embeddable
+@ToString
+@Table(name = "post_likes", schema = "bithive")
 public class PostLikeId implements java.io.Serializable {
     private static final long serialVersionUID = -5028137642472229452L;
     @Column(name = "user_no", nullable = false)
