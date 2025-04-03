@@ -20,6 +20,9 @@
         <p><span>자기소개</span>
             <button th:text="${user.selfIntroduction}" id="selfIntroductionModifyBtn"></button>
         </p>
+        <p>
+            <a href="/setting/my_info/withdrawal/withdrawal.do" style="color: black; font-weight: bold;">회원 탈퇴하기</a>
+        </p>
     </div>
 
     <div id="nicknameModifyModal" style="display: none">
@@ -46,6 +49,8 @@
                                                  placeholder="자신에 대한 간단한 소개">
                 <button>X</button>
             </p>
+
+
         </form>
     </div>
 

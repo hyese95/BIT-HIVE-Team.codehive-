@@ -109,6 +109,15 @@ public class SettingController {
         return "setting/my_info/my_info_main";
     }
 
+    @GetMapping("/my_info/withdrawal/withdrawal.do")
+    public String withdrawalPage() {
+        return "setting/my_info/withdrawal/withdrawal";
+    }
+
+
+
+
+
     @GetMapping("/support/privacy_policy.do")
     public String privacyPolicy() {
         return "setting/support/privacy_policy";
@@ -132,6 +141,9 @@ public class SettingController {
     public String termsNft() {
         return "setting/support/terms/nft";
     }
+
+
+
 
 
 }
