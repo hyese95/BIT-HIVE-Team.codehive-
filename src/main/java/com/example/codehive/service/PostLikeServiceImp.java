@@ -1,9 +1,11 @@
 package com.example.codehive.service;
 
+import com.example.codehive.dto.PostDto;
 import com.example.codehive.dto.PostLikeDto;
 import com.example.codehive.entity.Post;
 import com.example.codehive.entity.PostLike;
 import com.example.codehive.entity.PostLikeId;
+import com.example.codehive.entity.User;
 import com.example.codehive.repository.PostLikeRepository;
 import com.example.codehive.repository.PostRepository;
 import com.example.codehive.repository.UserRepository;
@@ -33,24 +35,38 @@ public class PostLikeServiceImp implements PostLikeService{
 
     @Override
     @Transactional
-    public PostLikeDto toggleLike(Integer userNo, Integer postNo, Boolean likeType) {
-        PostLikeId id = new PostLikeId();
-        id.setUserNo(userNo);
-        id.setPostNo(postNo);
+    public PostDto toggleLike(Integer userNo, Integer postNo, Boolean likeType) {
         Post post = postRepository.findById(postNo)
-                .orElseThrow(() -> new IllegalArgumentException("Post not found with ID: " + postNo));
-        Optional<PostLike> existingLike = postLikeRepository.findById(id);
+                .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없음"));
+        User user = userRepository.findById(userNo)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없음"));
+        Optional<PostLike> existingLike = postLikeRepository.findByPostAndUser(post, user);
         if (existingLike.isPresent()) {
-            postLikeRepository.delete(existingLike.get());
+            PostLike postLike = existingLike.get();
+            if (postLike.getLikeType()==likeType) {
+                // 같은 값이면 삭제
+                postLikeRepository.delete(postLike);
+            } else {
+                // 다른 값이면 변경
+                postLike.setLikeType(likeType);
+                postLikeRepository.save(postLike);
+            }
         } else {
+            // 새로 추가
             PostLike newLike = new PostLike();
-            newLike.setUserNo(userNo);
-            newLike.setPostNo(postNo);
+            newLike.setPost(post);
+            newLike.setUser(user);
             newLike.setLikeType(likeType);
             postLikeRepository.save(newLike);
         }
         int likeCount = postLikeRepository.countByPostAndLikeType(post, true);
         int dislikeCount = postLikeRepository.countByPostAndLikeType(post, false);
+
+        return new PostDto(post.getId(), likeCount, dislikeCount);
+    }
+
+    @Override
+    public PostLikeDto getPostLikeById(Integer postNo) {
         return postLikeRepository.getPostLikeAndDislikeCount(postNo);
     }
 }

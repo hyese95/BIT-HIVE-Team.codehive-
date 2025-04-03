@@ -85,7 +85,7 @@
                 </div>
             </div>
             <p th:utext="${#strings.replace(post.postCont, '\n', '<br>')}">게시글 내용</p>
-            <div  style="padding-bottom: 5px;" >
+            <div  style="padding-bottom: 5px;">
                 <button class="like-btn" th:data-post-id="${post.id}" onclick="toggleLike(event, true)"
                         th:value="${post.likeCount}">
                     👍 좋아요 <span th:text="${cntCommentLike[post.id]?.likeCount ?: 0}"></span>
@@ -154,26 +154,35 @@
             return;
         }
         let userNo = 1; // 실제 로그인된 사용자 ID로 변경
+        let requestData=JSON.stringify({
+            userNo: userNo,
+            id : postNo,
+            likeType: likeType
+        })
         try {
             let response = await fetch("/community/api/postLike/toggle", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    userNo: userNo,
-                    postNo: postNo,
-                    likeType: likeType
-                })
+                body:requestData
             });
+            console.log(requestData)
             if (!response.ok) {
                 throw new Error("서버 응답 오류");
             }
-            let data = response.json();
+            let data = await response.json();
+            console.log("좋아요 응답 데이터:", data); // 디버깅 로그
+            // ✅ 버튼 및 숫자 업데이트
             let likeBtn = document.querySelector(`.like-btn[data-post-id='${postNo}']`);
             let dislikeBtn = document.querySelector(`.dislike-btn[data-post-id='${postNo}']`);
-            likeBtn.innerHTML = `👍 좋아요 ${data.likeCount}`;
-            dislikeBtn.innerHTML = `👎 싫어요 ${data.dislikeCount}`;
+
+            if (likeBtn && dislikeBtn) {
+                likeBtn.innerHTML = `👍 좋아요 ${data.likeCount}`;
+                dislikeBtn.innerHTML = `👎 싫어요 ${data.dislikeCount}`;
+            } else {
+                console.error("Error: 버튼을 찾을 수 없음.");
+            }
         } catch (error) {
-            console.error(error);
+            console.error("좋아요 처리 중 오류 발생:", error);
         }
     }
 

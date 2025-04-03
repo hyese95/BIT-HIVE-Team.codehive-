@@ -1,6 +1,7 @@
 package com.example.codehive.dto;
 
 import com.example.codehive.entity.PostLike;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.util.List;
@@ -11,16 +12,19 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostLikeDto {
+
+    @JsonProperty("postNo")
     private Integer postNo;// 댓글 번호
+
     private int likeCount;       // 좋아요 갯수
     private int dislikeCount;
     private Integer userNo;
     private boolean likeType;
 
-    public PostLikeDto(Integer postNo, Long likeCount, Long dislikeCount, Integer userNo, Boolean likeType) {
+    public PostLikeDto(Integer postNo, Integer likeCount, Integer dislikeCount, Integer userNo, Boolean likeType) {
         this.postNo = postNo;
-        this.likeCount = likeCount != null ? likeCount.intValue() : 0;
-        this.dislikeCount = dislikeCount != null ? dislikeCount.intValue() : 0;
+        this.likeCount = likeCount != null ? likeCount : 0;
+        this.dislikeCount = dislikeCount != null ? dislikeCount : 0;
         this.userNo = userNo;
         this.likeType = likeType != null && likeType;
     }

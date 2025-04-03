@@ -40,6 +40,7 @@ public class CommunityController {
     private final CommentLikeService commentLikeService;
     private final PostLikeService postLikeService;
     private final CommentRepository commentRepository;
+    private final PostRepository postRepository;
     private final Logger logger = LoggerFactory.getLogger(CommunityController.class);
     private final PostLikeRepository postLikeRepository;
 
@@ -48,22 +49,21 @@ public class CommunityController {
     }
     @PostMapping("/api/postLike/toggle")
     @ResponseBody
-    public ResponseEntity<PostLikeDto> toggleLike(@RequestBody PostLikeDto postLikeDto)
-    {
-        logger.info("Received postLikeDto: {}", postLikeDto);
-        int userNo=postLikeDto.getUserNo();
-        Post post=new Post();
-        Optional<User> userOpt = userService.readByUserNo(1);
-        if (userOpt.isPresent()) {
-            PostLike postLike = new PostLike();
-            postLike.setUser(userOpt.get());
-            postLike.setPost(post);
-            postLikeRepository.save(postLike);
-        } else {
-            throw new RuntimeException("User not found");
+    public ResponseEntity<Map<String, Integer>> togglePostLike(@RequestBody PostLikeDto postLikeDto) {
+        Integer postNo = postLikeDto.getPostNo();
+        Integer userNo = postLikeDto.getUserNo();
+        Boolean likeType = postLikeDto.isLikeType();
+        if (postNo == null || userNo == null || likeType == null) {
+            System.out.println("❌ Bad Request: Missing required fields!");
+            System.out.println(postLikeDto);
+            return ResponseEntity.badRequest().build();
         }
-        PostLikeDto result = postLikeService.toggleLike(userNo,postLikeDto.getPostNo(),postLikeDto.isLikeType());
-        return ResponseEntity.ok(result);
+        postLikeService.toggleLike(userNo, postNo, likeType);
+        PostLikeDto updatedCounts = postLikeService.getPostLikeById(postNo);
+        Map<String, Integer> response = new HashMap<>();
+        response.put("likeCount", updatedCounts.getLikeCount());
+        response.put("dislikeCount", updatedCounts.getDislikeCount());
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/api/free_posts")
@@ -105,6 +105,7 @@ public class CommunityController {
         model.addAttribute("postDto", postDto);
         List<Comment> comments = commentService.readAll();
         List<PostLikeDto> postLikeDto =postLikeRepository.getPostLikeAndDislike();
+        model.addAttribute("postLikeDto",postLikeDto);
         model.addAttribute("comments", comments);
         Map<Integer, CommentLikeCountDTO> cntCommentLike = commentLikeService.countCommentLikes();
         model.addAttribute("cntCommentLike", cntCommentLike);
