@@ -98,6 +98,10 @@ public class SettingController {
 
         return "setting/support/qna/qna_detail";
     }
+    @GetMapping("/support/qna/question.do")
+    public String question(){
+        return "setting/support/qna/question";
+    }
 
     @GetMapping("/my_info/my_info_main.do")
     public String myInfo(Model model) {

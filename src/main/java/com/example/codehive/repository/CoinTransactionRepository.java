@@ -3,6 +3,7 @@ package com.example.codehive.repository;
 import com.example.codehive.dto.CoinTransactionDto;
 import com.example.codehive.entity.CoinTransaction;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -48,4 +49,8 @@ public interface CoinTransactionRepository extends JpaRepository<CoinTransaction
             @Param("transactionType") String transactionType,
             @Param("transactionState") String transactionState
     );
+
+    @Query("DELETE FROM CoinTransaction c where c.userNo=:userNo")
+    @Modifying
+    void deleteAllByUserNo(int userNo);
 }

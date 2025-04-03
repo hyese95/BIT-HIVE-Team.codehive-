@@ -56,6 +56,7 @@ function updateMyAssetUI(totalValue) {
 // 4. 실행 트리거 (다른 스크립트에서 수동 실행 가능)
 document.addEventListener("DOMContentLoaded", () => {
     if (document.getElementById("myAsset")) {
+        // setInterval(fetchAssetsAndUpdateMyAsset, 500);
         fetchAssetsAndUpdateMyAsset();
     }
 });

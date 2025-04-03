@@ -895,23 +895,23 @@ VALUES ('비트코인 시작하기', '비트코인 투자 입문자를 위한 �
 INSERT INTO questions (user_no, question_title, question_cont, question_status, question_option)
 VALUES
 -- 답변 완료된 문의
-(1, '모의투자 초기 자금 문의', '시드머니를 추가로 받을 수 있나요?', 'COMPLETED', 'NORMAL'),
-(2, '거래 체결 오류', '매수 주문했는데 계속 대기 상태입니다', 'COMPLETED', 'URGENT'),
-(3, '로그인 안됨', '비밀번호 입력해도 로그인이 안돼요', 'COMPLETED', 'URGENT'),
-(4, '차트 데이터 오류', '1분봉 차트가 제대로 안보여요', 'COMPLETED', 'TECHNICAL'),
-(5, '회원정보 수정', '닉네임을 변경하고 싶습니다', 'COMPLETED', 'NORMAL'),
-(1, '자동매매 설정 문의', '자동매매 설정 방법 알려주세요', 'COMPLETED', 'NORMAL'),
-(2, '수익률 계산 문의', '총 수익률이 이상하게 나와요', 'COMPLETED', 'TECHNICAL'),
-(3, '모바일 알림 설정', '가격 알림을 받고 싶어요', 'COMPLETED', 'NORMAL'),
+(1, '모의투자 초기 자금 문의', '시드머니를 추가로 받을 수 있나요?', 'COMPLETED', 'trade'),
+(2, '거래 체결 오류', '매수 주문했는데 계속 대기 상태입니다', 'COMPLETED', 'trade'),
+(3, '로그인 안됨', '비밀번호 입력해도 로그인이 안돼요', 'COMPLETED', 'account'),
+(4, '차트 데이터 오류', '1분봉 차트가 제대로 안보여요', 'COMPLETED', 'report'),
+(5, '회원정보 수정', '닉네임을 변경하고 싶습니다', 'COMPLETED', 'account'),
+(1, '자동매매 설정 문의', '자동매매 설정 방법 알려주세요', 'COMPLETED', 'general'),
+(2, '수익률 계산 문의', '총 수익률이 이상하게 나와요', 'COMPLETED', 'report'),
+(3, '모바일 알림 설정', '가격 알림을 받고 싶어요', 'COMPLETED', 'general'),
 
 -- 답변 대기중인 문의
-(4, '거래내역 조회 오류', '어제 거래한 내역이 안보입니다', 'PENDING', 'URGENT'),
-(5, '차트 분석 도구 문의', '피보나치 되돌림 사용법 알려주세요', 'PENDING', 'NORMAL'),
-(1, '모의투자 규칙 문의', '레버리지 설정이 가능한가요?', 'PENDING', 'NORMAL'),
-(2, '거래 취소 문의', '잘못 주문한 거래 취소하고 싶어요', 'PENDING', 'URGENT'),
-(3, '수수료 문의', '거래 수수료는 얼마인가요?', 'PENDING', 'NORMAL'),
-(4, '차트 저장 문의', '제가 그린 차트 저장이 안돼요', 'PENDING', 'TECHNICAL'),
-(5, '입출금 한도 문의', '하루 최대 거래 한도가 궁금합니다', 'PENDING', 'NORMAL');
+(4, '거래내역 조회 오류', '어제 거래한 내역이 안보입니다', 'PENDING', 'report'),
+(5, '차트 분석 도구 문의', '피보나치 되돌림 사용법 알려주세요', 'PENDING', 'general'),
+(1, '모의투자 규칙 문의', '레버리지 설정이 가능한가요?', 'PENDING', 'general'),
+(2, '거래 취소 문의', '잘못 주문한 거래 취소하고 싶어요', 'PENDING', 'trade'),
+(3, '수수료 문의', '거래 수수료는 얼마인가요?', 'PENDING', 'trade'),
+(4, '차트 저장 문의', '제가 그린 차트 저장이 안돼요', 'PENDING', 'report'),
+(5, '입출금 한도 문의', '하루 최대 거래 한도가 궁금합니다', 'PENDING', 'general');
 
 -- answers 테이블
 INSERT INTO answers (question_no, answer_cont)

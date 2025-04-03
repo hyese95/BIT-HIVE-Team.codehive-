@@ -14,6 +14,7 @@ import java.time.Instant;
 public class Question {
     @Id
     @Column(name = "question_no", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -27,6 +28,13 @@ public class Question {
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "question_created_at", nullable = false)
     private Instant questionCreatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        if (questionCreatedAt == null) {
+            questionCreatedAt = Instant.now();
+        }
+    }
 
     @Column(name = "question_title")
     private String questionTitle;

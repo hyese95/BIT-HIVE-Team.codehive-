@@ -7,4 +7,5 @@ import java.util.List;
 public interface QuestionService {
     List<Question> readByUser_IdAndQuestionStatus(Integer userNo, String questionStatus);
     Question readById(int questionNo);
+    void registerQuestion(Question question);
 }

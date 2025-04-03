@@ -4,6 +4,7 @@ import com.example.codehive.entity.Question;
 import com.example.codehive.repository.QuestionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,5 +21,12 @@ public class QuestionServiceImp implements QuestionService {
     @Override
     public Question readById(int questionNo) {
         return questionRepository.findById(questionNo);
+    }
+
+    @Override
+    @Transactional
+    public void registerQuestion(Question question) {
+        questionRepository.save(question);
+
     }
 }
