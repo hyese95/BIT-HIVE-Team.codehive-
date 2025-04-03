@@ -119,7 +119,7 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
-    public Page<Post> readByUserNo(Pageable pageable, int userNo) {
-        return postRepository.findByUserNo(userNo, pageable);
+    public Page<Post> readAll(PostDto postDto, Pageable pageable) {
+        return postRepository.findAll(pageable);
     }
 }

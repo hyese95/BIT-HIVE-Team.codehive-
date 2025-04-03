@@ -47,7 +47,6 @@ public class PostDto {
 
             // 좋아요/싫어요 카운트
             this.likeCount = 0;
-
             List<PostLike> postLikes=post.getPostLikes();
             for(PostLike pl:postLikes){
                 if(pl.getLikeType().equals(true)){
@@ -55,7 +54,5 @@ public class PostDto {
                 }
             }
             this.dislikeCount = post.getPostLikes().size()-this.likeCount;
-
-
     }
 }

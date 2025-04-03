@@ -66,9 +66,11 @@
     <div th:if="${postDto.isEmpty()}">
         <p>게시글이 없습니다.</p>
     </div>
-    <div id="postContainer" th:each="comment : ${comments}">
+    <div id="postContainer">
     <div class="list-group" th:each="post : ${postDto.content}" style="padding-bottom: 15px;">
         <a th:href="@{'/community/postDetail.do'(postNo=${post.id})}" style="text-decoration: none; color: black;">
+            <input type="hidden" th:value="${post.id}" name="postNo">
+            <input type="hidden" th:value="${user.id}" name="userNo">
         <div class="list-group-item" >
             <div class="d-flex align-items-center mb-2">
                 <img src="/img/user_icon/user_icon_default.png" alt="프로필 이미지" class="rounded-circle" width="50" height="50">
@@ -84,11 +86,13 @@
             </div>
             <p th:utext="${#strings.replace(post.postCont, '\n', '<br>')}">게시글 내용</p>
             <div  style="padding-bottom: 5px;" >
-                <button class="like-btn" th:data-comment-id="${comment.id}" onclick="toggleLike(this, true)">
-                    👍 좋아요 <span th:text="${cntCommentLike[comment.id]?.likeCount ?: 0}"></span>
+                <button class="like-btn" th:data-post-id="${post.id}" onclick="toggleLike(event, true)"
+                        th:value="${post.likeCount}">
+                    👍 좋아요 <span th:text="${cntCommentLike[post.id]?.likeCount ?: 0}"></span>
                 </button>
-                <button class="dislike-btn" th:data-comment-id="${comment.id}" onclick="toggleLike(this, false)">
-                    👎 싫어요 <span th:text="${cntCommentLike[comment.id]?.dislikeCount ?: 0}"></span>
+                <button class="dislike-btn" th:data-post-id="${post.id}" onclick="toggleLike(event, false)"
+                th:value="${post.dislikeCount}">
+                    👎 싫어요 <span th:text="${cntCommentLike[post.id]?.dislikeCount ?: 0}"></span>
                 </button>
             <span th:text="'댓글'+${post.commentCount}+'개'"></span>
             </div>
@@ -140,30 +144,39 @@
     function attachImage() {
         alert("이미지 업로드 기능은 아직 구현되지 않았습니다.");
     }
-
-       async function toggleLike(button, isLike) {
-            let commentId = button.getAttribute("data-comment-id");
-            let userNo = 1; // 실제 로그인된 사용자 ID로 변경
-
-            await fetch("/api/comment-like/toggle", {
+    async function toggleLike(event, likeType) {
+        event.preventDefault(); // 기본 이벤트(페이지 이동) 방지
+        let button = event.target; // 클릭한 버튼
+        let postNo = button.getAttribute("data-post-id");
+        console.log(postNo)
+        if (!postNo) {
+            console.error("Error: postNo is undefined.");
+            return;
+        }
+        let userNo = 1; // 실제 로그인된 사용자 ID로 변경
+        try {
+            let response = await fetch("/community/api/postLike/toggle", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     userNo: userNo,
-                    commentNo: commentId,
-                    likeType: isLike
+                    postNo: postNo,
+                    likeType: likeType
                 })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    let likeBtn = document.querySelector(`.like-btn[data-comment-id='${commentId}']`);
-                    let dislikeBtn = document.querySelector(`.dislike-btn[data-comment-id='${commentId}']`);
-
-                    likeBtn.innerText = `👍 좋아요 ${data.likeCount}`;
-                    dislikeBtn.innerText = `👎 싫어요 ${data.dislikeCount}`;
-                })
-                .catch(error => console.error("Error:", error));
+            });
+            if (!response.ok) {
+                throw new Error("서버 응답 오류");
+            }
+            let data = response.json();
+            let likeBtn = document.querySelector(`.like-btn[data-post-id='${postNo}']`);
+            let dislikeBtn = document.querySelector(`.dislike-btn[data-post-id='${postNo}']`);
+            likeBtn.innerHTML = `👍 좋아요 ${data.likeCount}`;
+            dislikeBtn.innerHTML = `👎 싫어요 ${data.dislikeCount}`;
+        } catch (error) {
+            console.error(error);
         }
+    }
+
 
     let page = 1;
     const pageSize = 10;
