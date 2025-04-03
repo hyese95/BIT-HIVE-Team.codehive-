@@ -80,7 +80,7 @@
 <script>
     const assetReset = document.getElementById('assetResetBtn');
     assetReset.addEventListener('click', showResetModal);
-    function showResetModal(followingUserNo, element,followingUserImgUrl,followingUserNickname) {
+    function showResetModal() {
 
         const existingModal = document.getElementById('confirmModal');
         if (existingModal) {
@@ -94,7 +94,7 @@
       <div class="bg-white p-3 rounded-top shadow-lg border-top" style="animation: slideUp 0.3s ease;">
         <p class="mb-3 text-center fw-bold">정말로 보유자산을 초기화하시겠습니까?</p>
         <hr>
-        <button id="confirmReset" class="btn btn-danger w-100" data-user-no="${followingUserNo}">삭제</button>
+        <button id="confirmReset" class="btn btn-danger w-100">삭제</button>
       </div>
     </div>`;
 
