@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns=""
+      th:replace="~{fragments/default :: html(content=~{::body})}">
+<head>
+    <meta charset="UTF-8">
+    <title>회원 탈퇴</title>
+
+</head>
+<body>
+<div class="container">
+    <h2>회원 탈퇴</h2>
+    <p>본인 확인을 위해 휴대폰 인증을 진행해주세요.</p>
+    <button class="btn-auth" onclick="handleAuth()">휴대폰 인증하기</button>
+</div>
+
+<script>
+    function handleAuth() {
+        alert('휴대폰 인증 서비스를 아직 지원하지 않습니다.');
+
+    }
+</script>
+</body>
+</html>
