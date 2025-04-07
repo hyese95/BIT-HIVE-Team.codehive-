@@ -2,11 +2,13 @@ package com.example.codehive.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+@NoArgsConstructor
 @Getter
 @Setter
 @ToString
@@ -22,7 +24,6 @@ public class FavoriteMarket {
     @Column(name = "market", nullable = false)
     private String market;
 
-    @MapsId("userNo")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_no", nullable = false, insertable = false, updatable = false)
     private User user;

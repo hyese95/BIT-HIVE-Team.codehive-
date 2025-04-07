@@ -3,11 +3,15 @@ package com.example.codehive.controller;
 import com.example.codehive.dto.CoinDetailDto;
 import com.example.codehive.dto.ProfitResultDto;
 import com.example.codehive.entity.CoinTransaction;
+import com.example.codehive.entity.FavoriteMarket;
+import com.example.codehive.entity.FavoriteMarketId;
 import com.example.codehive.service.CoinTransactionService;
 import com.example.codehive.service.FavoriteCoinMarketService;
 import com.example.codehive.service.MyAssetService;
 import com.example.codehive.service.PriceService;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -30,8 +34,8 @@ public class TradeController {
     private final MyAssetService myAssetService;
     private final CoinTransactionService coinTransactionService;
     private final PriceService priceService;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    // user 1이 로그인한 상태를 가정
     @GetMapping("main.do")
     public String main(Model model) {
         Map<String, Double> myAssetMap = myAssetService.readAssetByUserNo(1);
@@ -42,7 +46,6 @@ public class TradeController {
             if ("KRW-KRW".equalsIgnoreCase(market)) {
                 continue;
             }
-            // 만약 key가 이미 "KRW-"로 시작하면 그대로 사용, 그렇지 않으면 접두어 추가
             String upbitMarket = market;
             double currentPrice = priceService.getCoinPrice(upbitMarket);
             currentPriceMap.put(market, currentPrice);
@@ -60,9 +63,44 @@ public class TradeController {
     }
 
     @GetMapping("/favorite_coin.do")
-    public String favoriteMarket() {
-
+    public String favoriteMarket(Model model) {
+    List<String> favList = favoriteCoinMarketService.readByUserNo(1);
+    model.addAttribute("favList", favList);
     return "trade/favorite_coin";
+    }
+
+    // 즐겨찾기 추가
+    @PostMapping("/favorite_action.do")
+    public ResponseEntity<Void> createAction(
+            @RequestBody FavoriteMarket favoriteMarket
+    ){
+        try{
+            favoriteCoinMarketService.regiseter(favoriteMarket);
+        }catch (IllegalArgumentException e){
+            logger.error(e.getMessage());
+            return ResponseEntity.status(409).build();
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+        return ResponseEntity.status(201).build();
+    }
+
+    //즐겨찾기 제거
+    @DeleteMapping("/favorite_action.do")
+    public ResponseEntity<Void> deleteAction(
+            @RequestBody FavoriteMarketId favoriteMarketId
+    ){
+        try{
+            favoriteCoinMarketService.remove(favoriteMarketId);
+        }catch (IllegalArgumentException e){
+            logger.error(e.getMessage());
+            return ResponseEntity.notFound().build();
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+        return ResponseEntity.status(202).build();
     }
 
     @GetMapping("/holding_coin.do")

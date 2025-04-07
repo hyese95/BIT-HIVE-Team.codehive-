@@ -3,11 +3,13 @@ package com.example.codehive.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.Hibernate;
 
 import java.util.Objects;
 
+@NoArgsConstructor
 @Getter
 @Setter
 @Embeddable

@@ -39,6 +39,70 @@
         </div>
         <hr/>
 
+        <div style="max-width: 400px; margin: 0 auto;">
+            <canvas id="myChart" width="300" height="300"></canvas>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <script defer th:inline="javascript">
+            const coinDetails = /*[[${profitResultDto.coinDetails}]]*/ [];
+
+            let coinNameMapping = {};
+
+            async function fetchCoinNameMapping() {
+                try {
+                    const response = await fetch('/api/proxy/upbit/market/all?is_details=true');
+                    if (!response.ok) throw new Error("코인 이름 매핑 실패");
+                    const marketData = await response.json();
+                    marketData.forEach(item => {
+                        if (item.market.startsWith('KRW-')) {
+                            const ticker = item.market.replace('KRW-', '');
+                            coinNameMapping[item.market] = `${item.korean_name} (${ticker}/KRW)`;
+                        }
+                    });
+                } catch (e) {
+                    console.error("이름 매핑 실패", e);
+                }
+            }
+
+            async function renderAssetChart() {
+                await fetchCoinNameMapping();
+
+                const labels = [];
+                const data = [];
+
+                coinDetails.forEach(coin => {
+                    const name = coinNameMapping[coin.market] || coin.market;
+                    labels.push(name);
+                    data.push(coin.currentValuation); // 또는 coin.currentValuation / total * 100 로 퍼센트
+                });
+
+                const ctx = document.getElementById('myChart');
+
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '보유 비중',
+                            data: data,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                            }
+                        }
+                    }
+                });
+            }
+
+
+            document.addEventListener("DOMContentLoaded", renderAssetChart);
+        </script>
         <hr/>
         <div th:each="coin : ${profitResultDto.coinDetails}" class="coin-box">
             <h2 th:text="${coin.market.replace('KRW-','')}"></h2>

@@ -28,6 +28,7 @@ public class MyAssetServiceImp implements MyAssetService {
             myAsset.put(sell.getMarket(), myAsset.getOrDefault(sell.getMarket(), 0.0) - sell.getQuantity());
         }
         return myAsset;
-
     }
+
+
 }
