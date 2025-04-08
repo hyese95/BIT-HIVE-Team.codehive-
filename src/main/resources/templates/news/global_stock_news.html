@@ -1,12 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/default :: html(content=~{::body})}">
 <head>
     <meta charset="UTF-8">
     <title>해외증시</title>
 </head>
 <body>
-<div>
+<nav th:replace="fragments/nav_bars :: newsSubNav"></nav>
+<div class="container">
     <h1>해외증시</h1>
+    <hr/>
+    <div class="btn-group">
+        <a href="/news/main.do" class="btn btn-primary">최신뉴스</a>
+        <a href="/news/crypto_news.do" class="btn btn-primary">암호화폐</a>
+        <a href="/news/global_stock_news.do" class="btn btn-primary active" aria-current="page">해외증시</a>
+        <a href="/news/forex_rates_news.do" class="btn btn-primary">환율/금리</a>
+    </div>
 </div>
 </body>
 </html>

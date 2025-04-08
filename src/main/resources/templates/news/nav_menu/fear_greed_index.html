@@ -1,10 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/default :: html(content=~{::body})}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>공포탐욕지수</title>
 </head>
 <body>
+<nav th:replace="fragments/nav_bars :: newsSubNav"></nav>
+<div class="container">
 
+
+</div>
 </body>
 </html>
