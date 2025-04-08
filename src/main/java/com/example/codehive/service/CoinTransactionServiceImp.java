@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class CoinTransactionServiceImp implements CoinTransactionService {
-    private final CoinKoreanNameService coinKoreanNameService;
+
     private final CoinTransactionRepository coinTransactionRepository;
 
     @Override
