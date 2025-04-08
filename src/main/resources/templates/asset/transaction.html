@@ -49,7 +49,7 @@
         </tr>
         </thead>
         <tbody th:each="tr : ${coinTransactions}">
-        <tr th:attr="data-type=${tr.transactionType}">
+        <tr th:attr="data-type=${tr.transactionType}, data-market=${tr.market}">
             <td th:text="${#temporals.format(tr.transactionDate, 'yyyy-MM-dd HH:mm')}"></td>
             <td th:text="${tr.market}"></td>
             <td th:class="${tr.transactionType == 'BUY' ? 'text-danger' : 'text-primary'}"
@@ -66,7 +66,7 @@
 </div>
 <script>
     document.addEventListener("DOMContentLoaded", async () => {
-        await loadCoinList(); // 코인 이름 로딩
+        await loadCoinList();
     });
 
     async function loadCoinList() {
@@ -78,7 +78,6 @@
 
             const assetList = document.getElementById("assetList");
 
-            // 기존 li 정리 (검색 input 제외)
             const existing = assetList.querySelectorAll("li");
             existing.forEach((li, index) => {
                 if (index > 0) li.remove();
@@ -89,8 +88,15 @@
                 .filter(item => item.market.startsWith("KRW-"))
                 .forEach(item => {
                     const li = document.createElement("li");
+                    const ticker = item.market.replace("KRW-","")
+                    li.textContent = `${item.korean_name} (${ticker})`
                     li.textContent = `${item.korean_name} (${item.market.replace("KRW-", "")})`;
                     li.classList.add("dropdown-item");
+
+                    li.addEventListener("click",()=>{
+                        filterByMarket(item.market);
+                        console.log(li)
+                    });
                     assetList.appendChild(li);
                 });
 
@@ -129,6 +135,14 @@
         items.forEach(item => {
             const visible = item.textContent.toLowerCase().includes(keyword.toLowerCase());
             item.style.display = visible ? "" : "none";
+        });
+    }
+
+    function filterByMarket(market) {
+        const rows = document.querySelectorAll("tbody tr");
+        rows.forEach(row => {
+            const rowMarket = row.getAttribute("data-market");
+            row.style.display = (rowMarket === market) ? "" : "none";
         });
     }
 </script>
