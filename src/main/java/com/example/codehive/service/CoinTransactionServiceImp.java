@@ -19,6 +19,11 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
     private final CoinTransactionRepository coinTransactionRepository;
 
     @Override
+    public List<CoinTransaction> findByUserNo(int userNo) {
+        return coinTransactionRepository.findByUserNo(userNo);
+    }
+
+    @Override
     public ProfitResultDto calculateProfit(int userNo, Map<String, Double> currentPriceMap) {
         // 1. 해당 유저의 전체 거래 내역 조회
         List<CoinTransaction> allTransactions = coinTransactionRepository.findByUserNo(userNo);

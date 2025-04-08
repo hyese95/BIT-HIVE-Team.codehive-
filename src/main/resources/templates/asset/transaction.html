@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/default :: html(content=~{::body})}">
+<head>
+    <meta charset="UTF-8">
+    <title>거래내역</title>
+</head>
+<body>
+<nav th:replace="fragments/nav_bars :: assetSubNav"></nav>
+<div class="container">
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+        <tr>
+            <th>거래일시</th>
+            <th>자산</th>
+            <th>거래구분</th>
+            <th>거래수량</th>
+            <th>체결가격</th>
+            <th>거래금액</th>
+            <th>상태</th>
+        </tr>
+        </thead>
+        <tbody th:each="tr : ${coinTransactions}">
+        <tr>
+            <td th:text="${#temporals.format(tr.transactionDate, 'yyyy-MM-dd HH:mm')}"></td>
+            <td th:text="${tr.market}"></td>
+            <td th:class="${tr.transactionType == 'BUY' ? 'text-danger' : 'text-primary'}"
+                th:text="${tr.transactionType == 'BUY' ? '매수' : '매도'}">
+            </td>
+            <td th:text="${#numbers.formatDecimal(tr.transactionCnt,1,'COMMA',1,'POINT')}"></td>
+            <td th:text="${#numbers.formatDecimal(tr.price,1,'COMMA',0,'POINT')}"></td>
+            <td th:text="${#numbers.formatDecimal(tr.transactionCnt * tr.price,1,'COMMA',0,'POINT')}"></td>
+            <td th:text="${tr.transactionState}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+<script>
+
+
+
+</script>
+</body>
+</html>

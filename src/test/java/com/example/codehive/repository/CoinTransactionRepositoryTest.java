@@ -26,7 +26,8 @@ class CoinTransactionRepositoryTest {
     }
 
 
-
-
-
+    @Test
+    void findByUserNo() {
+        System.out.println(coinTransactionRepository.findByUserNo(1));
+    }
 }
