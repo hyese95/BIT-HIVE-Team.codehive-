@@ -28,7 +28,7 @@ public class CoinKoreanNameService {
             if (data != null) {
                 for (Map<String, Object> item : data){
                     String market = (String) item.get("market");
-                    String koreanName = (String) item.get("koreanName");
+                    String koreanName = (String) item.get("korean_name");
                     if (market.startsWith("KRW-")){
                         map.put(market, koreanName);
                     }

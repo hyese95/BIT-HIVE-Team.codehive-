@@ -7,7 +7,28 @@
 </head>
 <body>
 <nav th:replace="fragments/nav_bars :: assetSubNav"></nav>
+<nav id="navbar-example2" class="navbar bg-body-tertiary px-3 mb-3"></nav>
 <div class="container">
+        <ul class="nav nav-pills">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">기간 설정</a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#scrollspyHeading3">7일</a></li>
+                    <li><a class="dropdown-item" href="#scrollspyHeading4">30일</a></li>
+                    <li><a class="dropdown-item" href="#scrollspyHeading5">90일</a></li>
+                    <li><a class="dropdown-item" href="#scrollspyHeading5">180일</a></li>
+                    <li><input type="date" class="dropdown-item"/></li>
+                </ul>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">거래 전체</a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#" onclick="buyOnly()">매수</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="sellOnly()">매도</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="showAll()">전체 거래</a></li>
+                </ul>
+            </li>
+        </ul>
     <table class="table table-bordered table-hover">
         <thead class="table-dark">
         <tr>
@@ -21,7 +42,7 @@
         </tr>
         </thead>
         <tbody th:each="tr : ${coinTransactions}">
-        <tr>
+        <tr th:attr="data-type=${tr.transactionType}">
             <td th:text="${#temporals.format(tr.transactionDate, 'yyyy-MM-dd HH:mm')}"></td>
             <td th:text="${tr.market}"></td>
             <td th:class="${tr.transactionType == 'BUY' ? 'text-danger' : 'text-primary'}"
@@ -37,9 +58,28 @@
 
 </div>
 <script>
+    function buyOnly() {
+        filterByType("BUY");
+    }
 
+    function sellOnly() {
+        filterByType("SELL");
+    }
 
+    function showAll() {
+        const rows = document.querySelectorAll("tbody tr");
+        rows.forEach(row => {
+            row.style.display = ""; // 모두 보이게
+        });
+    }
 
+    function filterByType(type) {
+        const rows = document.querySelectorAll("tbody tr");
+        rows.forEach(row => {
+            const rowType = row.getAttribute("data-type");
+            row.style.display = (rowType === type) ? "" : "none";
+        });
+    }
 </script>
 </body>
 </html>
