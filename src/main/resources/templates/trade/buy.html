@@ -6,6 +6,7 @@
         color: black;
         text-decoration: none;
     }
+
 </style>
 <head>
     <meta charset="UTF-8">
@@ -14,11 +15,7 @@
 <body>
 <div class="container">
     <h1 id="coinTitle">주문 페이지</h1>
-    <p>
-        <a id="buyLink" href="#">매수</a>
-        <a id="sellLink" href="#">매도</a>
-        <a id="historyLink" href="#">내역</a>
-    </p>
+
     <div style="display: flex; justify-content: space-between">
         <div>
             <p id="tradeprice" style="font-weight: bold; font-size: 24px;"></p>
@@ -28,10 +25,17 @@
             </div>
         </div>
 
-        <div id="formContainer">
-            <button>지정</button>
-            <button>시장</button>
-            <form id="buyForm">
+
+
+        <div id="formContainer" style="border: 1px solid #ddd; border-radius: 5px; padding: 0;">
+            <p style="display: flex; justify-content: space-between; width: 100%; background:#bdbdbd">
+                <a id="buyLink" href="#" style="text-decoration: none; text-align: center; font-size: 20px; color: red; background: white; padding: 5px; width: 80px;">매수</a>
+                <a id="sellLink" href="#" style="text-decoration: none; text-align: center; font-size: 20px; color: black; background: #bdbdbd; padding: 5px; width: 80px;">매도</a>
+                <a id="historyLink" href="#" style="text-decoration: none; text-align: center; font-size: 20px; color: black; background: #bdbdbd; padding: 5px; width: 80px;">내역</a>
+            </p>
+            <button id="limitBtn" class="btn btn-dark">지정</button>
+            <button id="marketBtn" class="btn btn-outline-secondary">시장</button>
+            <form id="buyForm" style="padding: 10px;">
                 <p>주문가능: <span id="deposit"></span> 원</p>
                 <p>
                     <label>

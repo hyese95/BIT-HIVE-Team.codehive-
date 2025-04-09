@@ -23,7 +23,11 @@
             </div>
 
             <div class="offcanvas-body">
-                <p id="nicknameAtSummary">닉네임</p>
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 1rem;">
+                    <img src="" alt="아이콘" id="profileImg">
+                    <p id="nicknameAtSummary" style="margin: 0; font-size: 20px; font-weight: bold;">닉네임</p>
+                </div>
+
                 <div class="card text-center">
                     <p>가입일 <span id="createdAt"></span></p>
                 </div>
@@ -31,12 +35,12 @@
 
                 <div class="d-flex justify-content-between">
 
-                        <div class="card text-center flex-grow-1 mx-1">
-                            <a href="/users/1/boards">
+                    <div class="card text-center flex-grow-1 mx-1">
+                        <a href="/users/1/boards">
                             <p id="postCount" class="mb-0 fw-bold"></p>
                             <span>게시물</span>
-                            </a>
-                        </div>
+                        </a>
+                    </div>
 
 
                     <div class="card text-center flex-grow-1 mx-1">
@@ -53,18 +57,21 @@
                     </div>
                 </div>
 
-                <div class="card">
-                    <p>보유자산</p>
-                    <p>456456 <span>원</span></p>
-                    <p><span>평가손익</span><span>+123123</span></p>
-                    <p><span>수익률</span><span>+12.34%</span></p>
-                </div>
 
                 <div class="card">
-                    <p id="name"></p>
-                    <p id="birthDate"></p>
-                    <p id="national"></p>
-                    <p id="theme"></p>
+                    <p>보유자산</p>
+                    <p>원</p>
+                    <p><span>평가손익</span><span></span></p>
+                    <p><span>수익률</span><span></span></p>
+                    <a href="/asset/my_asset.do">내자산 자세히보기 >> </a>
+                </div>
+
+
+                <div class="card">
+                    <p>이름: <span id="name"></span></p>
+                    <p>생년월일: <span id="birthDate"></span></p>
+                    <p>국가: <span id="national"></span></p>
+                    <p>설정테마: <span id="theme"></span></p>
                 </div>
 
                 <div class="card">
@@ -90,6 +97,7 @@
     const national = document.getElementById("national");
     const theme = document.getElementById("theme");
     const selfIntroduction = document.getElementById("selfIntroductionAtSummary");
+    const profileImg = document.getElementById("profileImg");
 
 
     async function loadSummary() {
@@ -100,7 +108,20 @@
         nickname.innerText = data.nickname;
         followingCount.innerText = data.followingCount;
         followerCount.innerText = data.followerCount;
-        createdAt.innerText = data.createdAt;
+        name.innerText = data.name;
+        profileImg.src=data.profileImgUrl;
+
+
+        if (data.createdAt) {
+            const date = new Date(data.createdAt);
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            createdAt.innerText = `${year}년 ${month}월 ${day}일`;
+        } else {
+            createdAt.innerText = '정보 없음';
+        }
+
         birthDate.innerText = data.birthDate;
         national.innerText = data.nationality;
         theme.innerText = data.theme;
