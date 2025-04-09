@@ -2,6 +2,7 @@ package com.example.codehive.controller;
 
 import com.example.codehive.dto.ProfitResultDto;
 import com.example.codehive.entity.CoinTransaction;
+import com.example.codehive.service.CoinNameService;
 import com.example.codehive.service.CoinTransactionService;
 import com.example.codehive.service.MyAssetService;
 import com.example.codehive.service.PriceService;
@@ -23,11 +24,16 @@ public class AssetController {
     private final CoinTransactionService coinTransactionService;
     private final MyAssetService myAssetService;
     private final PriceService priceService;
+    private final CoinNameService coinNameService;
 
     @GetMapping("my_asset.do")
     public String myAsset(Model model) {
         Map<String, Double> myAssetMap = myAssetService.readAssetByUserNo(1);
         model.addAttribute("myAssetMap", myAssetMap);
+
+        // 한글명 매핑
+        Map<String, String> coinNameMap = coinNameService.getMarketToKoreanNameMap();
+        model.addAttribute("coinNameMap", coinNameMap);
 
         Map<String, Double> currentPriceMap = new HashMap<>();
         for (String market : myAssetMap.keySet()) {
@@ -48,6 +54,9 @@ public class AssetController {
     public String transaction(Model model) {
         List<CoinTransaction> coinTransactions = coinTransactionService.findByUserNo(1);
         model.addAttribute("coinTransactions", coinTransactions);
+
+        Map<String, String> coinNameMap = coinNameService.getMarketToKoreanNameMap();
+        model.addAttribute("coinNameMap", coinNameMap);
         return "asset/transaction";
     }
 

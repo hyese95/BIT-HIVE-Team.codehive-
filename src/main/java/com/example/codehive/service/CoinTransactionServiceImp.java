@@ -20,8 +20,13 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
 
     @Override
     public List<CoinTransaction> findByUserNo(int userNo) {
-        return coinTransactionRepository.findByUserNo(userNo);
+        return coinTransactionRepository
+                .findByUserNo(userNo)
+                .stream()
+                .filter(tr -> !"KRW-KRW".equals(tr.getMarket()))
+                .collect(Collectors.toList());
     }
+
 
     @Override
     public ProfitResultDto calculateProfit(int userNo, Map<String, Double> currentPriceMap) {

@@ -51,7 +51,7 @@
         <tbody th:each="tr : ${coinTransactions}">
         <tr th:attr="data-type=${tr.transactionType}, data-market=${tr.market}">
             <td th:text="${#temporals.format(tr.transactionDate, 'yyyy-MM-dd HH:mm')}"></td>
-            <td th:text="${tr.market}"></td>
+            <td th:utext="${coinNameMap[tr.market]} + '<br/>' + ${tr.market.replace('KRW-','')+'/KRW'}"></td>
             <td th:class="${tr.transactionType == 'BUY' ? 'text-danger' : 'text-primary'}"
                 th:text="${tr.transactionType == 'BUY' ? '매수' : '매도'}">
             </td>
@@ -88,11 +88,8 @@
                 .filter(item => item.market.startsWith("KRW-"))
                 .forEach(item => {
                     const li = document.createElement("li");
-                    const ticker = item.market.replace("KRW-","")
-                    li.textContent = `${item.korean_name} (${ticker})`
-                    li.textContent = `${item.korean_name} (${item.market.replace("KRW-", "")})`;
                     li.classList.add("dropdown-item");
-
+                    li.textContent = `${item.korean_name} (${item.market.replace("KRW-", "")}/KRW)`;
                     li.addEventListener("click",()=>{
                         filterByMarket(item.market);
                         console.log(li)

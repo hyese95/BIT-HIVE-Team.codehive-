@@ -28,7 +28,7 @@
         <td
                 style="cursor: pointer"
                 onclick="goToChart(this)"
-                th:text="${coin.market.replace('KRW-','')}"
+                th:utext="${coinNameMap[coin.market]} + '<br/>' + ${coin.market.replace('KRW-','')+ '/KRW' }"
                 th:attr="data-symbol=${coin.market.replace('KRW-','')}"
         >
 
