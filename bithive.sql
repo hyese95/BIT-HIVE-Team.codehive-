@@ -229,3 +229,4 @@ CREATE TABLE faq(
     faq_title VARCHAR(255)
 );
 
+
