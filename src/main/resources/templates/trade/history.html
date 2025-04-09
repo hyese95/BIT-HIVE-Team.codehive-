@@ -2,130 +2,131 @@
 <html xmlns:th="http://www.thymeleaf.org/"
       th:replace="~{fragments/default :: html(content=~{::body})}">
 <head>
-  <meta charset="UTF-8">
-  <title>거래 내역</title>
-  <style>
-    button > a {
-      color: black;
-      text-decoration: none;
-    }
+    <meta charset="UTF-8">
+    <title>거래 내역</title>
+    <style>
+        button > a {
+            color: black;
+            text-decoration: none;
+        }
 
-    .card {
-      border-bottom: 1px solid #eee;
-      padding: 10px 0;
-    }
+        .card {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
 
-    .card:last-child {
-      border-bottom: none;
-    }
-  </style>
+        .card:last-child {
+            border-bottom: none;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
-  <h1 id="coinTitle">거래 내역 페이지</h1>
+    <h1 id="coinTitle">거래 내역 페이지</h1>
 
-  <!-- 상단 탭 링크 -->
-  <p>
-    <a id="buyLink" href="#">매수</a>
-    <a id="sellLink" href="#">매도</a>
-    <a id="historyLink" href="#">내역</a>
-  </p>
 
-  <div style="display: flex; justify-content: space-between">
-    <!-- 호가창 -->
-    <div>
-      <p id="tradeprice" style="font-weight: bold; font-size: 24px;"></p>
-      <div id="coindiv"
-           style="height: 400px; overflow-y: auto; border: 1px solid #ddd; border-radius: 5px; padding: 10px; width: 250px;">
-      </div>
+    <div style="display: flex; justify-content: space-between">
+        <!-- 호가창 -->
+        <div>
+            <p id="tradeprice" style="font-weight: bold; font-size: 24px;"></p>
+            <div id="coindiv"
+                 style="height: 400px; overflow-y: auto; border: 1px solid #ddd; border-radius: 5px; padding: 10px; width: 250px;">
+            </div>
+        </div>
+
+        <!-- 거래 내역 -->
+        <div style="width: 250px; border: 1px solid #ddd;">
+            <p style="display: flex; justify-content: space-between; width: 100%; background:#bdbdbd">
+                <a id="buyLink" href="#"
+                   style="text-decoration: none; text-align: center; font-size: 20px; color: black; background: #bdbdbd; padding: 5px; width: 80px;">매수</a>
+                <a id="sellLink" href="#"
+                   style="text-decoration: none; text-align: center; font-size: 20px; color: black; background: #bdbdbd; padding: 5px; width: 80px;">매도</a>
+                <a id="historyLink" href="#"
+                   style="text-decoration: none; text-align: center; font-size: 20px; color: black; background: white; padding: 5px; width: 80px;">내역</a>
+            </p>
+            <div id="history-list"
+                 style="height: 400px; overflow-y: auto; padding: 10px; width: 230px; margin-left: 20px;">
+            </div>
+        </div>
     </div>
-
-    <!-- 거래 내역 -->
-    <div>
-      <h2>거래 내역</h2>
-      <div id="history-list"
-           style="height: 400px; overflow-y: auto; border: 1px solid #ddd; border-radius: 5px; padding: 10px; width: 650px; margin-left: 20px;">
-      </div>
-    </div>
-  </div>
 </div>
 
 <script>
-  document.addEventListener("DOMContentLoaded", async function () {
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const coinTicker = urlParams.get("coin");
+    document.addEventListener("DOMContentLoaded", async function () {
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const coinTicker = urlParams.get("coin");
 
-    if (!coinTicker) {
-      alert("코인 정보가 없습니다. URL을 확인하세요.");
-      return;
-    }
+        if (!coinTicker) {
+            alert("코인 정보가 없습니다. URL을 확인하세요.");
+            return;
+        }
 
-    const market = `KRW-${coinTicker}`;
-    const userNo = 1;
+        const market = `KRW-${coinTicker}`;
+        const userNo = 1;
 
-    // 링크 경로 세팅
-    document.getElementById("buyLink").href = `buy.do?coin=${coinTicker}`;
-    document.getElementById("sellLink").href = `sell.do?coin=${coinTicker}`;
-    document.getElementById("historyLink").href = `history.do?coin=${coinTicker}`;
-    document.getElementById("coinTitle").innerText = `${coinTicker}/KRW 거래 내역`;
+        // 링크 경로 세팅
+        document.getElementById("buyLink").href = `buy.do?coin=${coinTicker}`;
+        document.getElementById("sellLink").href = `sell.do?coin=${coinTicker}`;
+        document.getElementById("historyLink").href = `history.do?coin=${coinTicker}`;
+        document.getElementById("coinTitle").innerText = `${coinTicker}/KRW 거래 내역`;
 
-    // 현재가 불러오기
-    try {
-      const res = await fetch(`https://api.upbit.com/v1/ticker?markets=${market}`);
-      const data = await res.json();
-      const price = data[0].trade_price;
-      document.getElementById("tradeprice").innerText = `${coinTicker}/KRW 현재가: ${price.toLocaleString()} KRW`;
-    } catch (e) {
-      console.error("현재가 불러오기 실패", e);
-    }
+        // 현재가 불러오기
+        try {
+            const res = await fetch(`https://api.upbit.com/v1/ticker?markets=${market}`);
+            const data = await res.json();
+            const price = data[0].trade_price;
+            document.getElementById("tradeprice").innerText = `${coinTicker}/KRW 현재가: ${price.toLocaleString()} KRW`;
+        } catch (e) {
+            console.error("현재가 불러오기 실패", e);
+        }
 
-    // 호가 데이터 출력
-    try {
-      const res = await fetch(`https://api.upbit.com/v1/orderbook?markets=${market}`);
-      const data = await res.json();
-      const orderbook = data[0].orderbook_units;
-      let html = "";
+        // 호가 데이터 출력
+        try {
+            const res = await fetch(`https://api.upbit.com/v1/orderbook?markets=${market}`);
+            const data = await res.json();
+            const orderbook = data[0].orderbook_units;
+            let html = "";
 
-      for (const o of [...orderbook].reverse()) {
-        html += `<p style="margin: 0;padding: 1px 0;">
+            for (const o of [...orderbook].reverse()) {
+                html += `<p style="margin: 0;padding: 1px 0;">
                   <button style="border:none; background: rgba(19, 117, 236, .08); height: 45px; width: 100%; color:#0062df; text-align: left;">
                     매도 ${o.ask_price.toLocaleString()} 잔량: ${o.ask_size.toFixed(3)}
                   </button>
                 </p>`;
-      }
+            }
 
-      for (const o of orderbook) {
-        html += `<p style="margin: 0;padding: 1px 0;">
+            for (const o of orderbook) {
+                html += `<p style="margin: 0;padding: 1px 0;">
                   <button style="border:none; background: rgba(221, 60, 68, .08); height: 45px; width: 100%; color:#dd3c44; text-align: left;">
                     매수 ${o.bid_price.toLocaleString()} 잔량: ${o.bid_size.toFixed(3)}
                   </button>
                 </p>`;
-      }
+            }
 
-      document.getElementById("coindiv").innerHTML = html;
-    } catch (e) {
-      console.error("호가 데이터 실패", e);
-    }
+            document.getElementById("coindiv").innerHTML = html;
+        } catch (e) {
+            console.error("호가 데이터 실패", e);
+        }
 
-    // 거래 내역 불러오기 (market 필터 적용)
-    fetch(`/api/history/${userNo}`)
+        // 거래 내역 불러오기 (market 필터 적용)
+        fetch(`/api/history/${userNo}`)
             .then(res => res.json())
             .then(data => {
-              const filtered = data.filter(tx => tx.market === market);
-              renderHistory(filtered);
+                const filtered = data.filter(tx => tx.market === market);
+                renderHistory(filtered);
             })
             .catch(err => console.error("내역 에러:", err));
-  });
+    });
 
-  function renderHistory(transactions) {
-    const container = document.getElementById("history-list");
-    if (!transactions || transactions.length === 0) {
-      container.innerHTML = '<p>거래 내역이 없습니다.</p>';
-      return;
-    }
+    function renderHistory(transactions) {
+        const container = document.getElementById("history-list");
+        if (!transactions || transactions.length === 0) {
+            container.innerHTML = '<p>거래 내역이 없습니다.</p>';
+            return;
+        }
 
-    const html = transactions.map(tx => `
+        const html = transactions.map(tx => `
       <div class="card">
         <div><strong>종류:</strong> ${tx.transactionType}</div>
         <div><strong>수량:</strong> ${tx.transactionCnt}</div>
@@ -135,8 +136,8 @@
       </div>
     `).join('');
 
-    container.innerHTML = html;
-  }
+        container.innerHTML = html;
+    }
 </script>
 </body>
 </html>
