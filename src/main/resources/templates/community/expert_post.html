@@ -62,10 +62,12 @@
                 <img src="/img/user_icon/user_icon_default.png" alt="프로필 이미지" class="rounded-circle" width="50" height="50">
                 <div class="ms-3">
                     <h5 class="mb-0">
-                        <span th:text="${post.userNickname}">유저 닉네임</span>
-                        <!-- 이미지가 있으면 아이콘 표시 -->
-                        <img th:if="${post.imgUrl != null}" src="/img/ImageIcon/ImageIcon.png"
-                             alt="이미지 있음" width="20" height="20" style="margin-left: 5px;">
+                        <a th:href="@{/users/{userNo}(userNo=${post.userId})}" style="text-decoration: none; color: black">
+                            <span th:text="${post.userNickname}">유저 닉네임</span>
+                            <!-- 이미지가 있으면 아이콘 표시 -->
+                            <img th:if="${post.imgUrl != null}" src="/img/ImageIcon/ImageIcon.png"
+                                 alt="이미지 있음" width="20" height="20" style="margin-left: 5px;">
+                        </a>
                     </h5>
                     <small class="text-muted" th:text="'Lv ' + ${post.userId}"></small>
                 </div>
