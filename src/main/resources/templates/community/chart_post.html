@@ -54,34 +54,46 @@
     <div th:if="${postDto.isEmpty()}">
         <p>게시글이 없습니다.</p>
     </div>
-    <div id="postContainer" >
-    <div class="list-group" th:each="post : ${postDto.content}" style="padding-bottom: 15px;">
-        <a th:href="@{'/community/postDetail.do'(postNo=${post.id})}" style="text-decoration: none; color: black;">
-        <div class="list-group-item" >
-            <div class="d-flex align-items-center mb-2">
-                <img src="/img/user_icon/user_icon_default.png" alt="프로필 이미지" class="rounded-circle" width="50" height="50">
-                <div class="ms-3">
-                    <h5 class="mb-0">
-                        <a th:href="@{/users/{userNo}(userNo=${post.userId})}" style="text-decoration: none; color: black">
-                            <span th:text="${post.userNickname}">유저 닉네임</span>
-                            <!-- 이미지가 있으면 아이콘 표시 -->
-                            <img th:if="${post.imgUrl != null}" src="/img/ImageIcon/ImageIcon.png"
-                                 alt="이미지 있음" width="20" height="20" style="margin-left: 5px;">
-                        </a>
-                    </h5>
-                    <small class="text-muted" th:text="'Lv ' + ${post.userId}"></small>
+    <div id="postContainer">
+        <div class="list-group" th:each="post : ${postDto.content}" style="padding-bottom: 15px;">
+            <div class="ms-3">
+                <h5 class="mb-0">
+                    <a th:href="@{/users/{userNo}(userNo=${post.userId})}" style="text-decoration: none; color: black; display: flex; flex-direction: column;">
+                        <!-- 이미지가 있으면 아이콘 표시 -->
+                        <img src="/img/user_icon/user_icon_default.png" alt="프로필 이미지" class="rounded-circle" width="50" height="50">
+                        <span th:text="${post.userNickname}">유저 닉네임</span>
+                    </a>
+                </h5>
+                <small class="text-muted" th:text="'Lv ' + ${post.userId}"></small>
+            </div>
+            <img th:if="${post.imgUrl != null}" src="/img/ImageIcon/ImageIcon.png"
+                 alt="이미지 있음" width="20" height="20" style="margin-left: 5px;">
+            <a th:href="@{'/community/postDetail.do'(postNo=${post.id})}" style="text-decoration: none; color: black;">
+                <input type="hidden" th:value="${post.id}" name="postNo">
+                <input type="hidden" th:value="${user.id}" name="userNo">
+                <div class="list-group-item" >
+                    <div class="d-flex align-items-center mb-2">
+
+                    </div>
+                    <p th:utext="${#strings.replace(post.postCont, '\n', '<br>')}">게시글 내용</p>
+                    <div  style="padding-bottom: 5px;">
+                        <!--                <button class="like-btn" th:data-post-id="${post.id}" onclick="toggleLike(event, true)"-->
+                        <!--                        th:value="${post.likeCount}">-->
+                        <!--                    👍 좋아요 <span th:text="${cntCommentLike[post.id]?.likeCount ?: 0}"></span>-->
+                        <!--                </button>-->
+                        <!--                <button class="dislike-btn" th:data-post-id="${post.id}" onclick="toggleLike(event, false)"-->
+                        <!--                th:value="${post.dislikeCount}">-->
+                        <!--                    👎 싫어요 <span th:text="${cntCommentLike[post.id]?.dislikeCount ?: 0}"></span>-->
+                        <!--                </button>-->
+                        <span th:text="'좋아요'+${post.likeCount}+'개'"></span>
+                        <span th:text="'싫어요'+${post.dislikeCount}+'개'"></span>
+                        <span th:text="'댓글'+${post.commentCount}+'개'"></span>
+                    </div>
+                    <small class="text-muted" th:text="${#temporals.format(post.postCreatedAt, 'yyyy-MM-dd')}">작성일자</small>
                 </div>
-            </div>
-            <p th:text="${post.postCont}">게시글 내용</p>
-            <div  style="padding-bottom: 5px;">
-                <span th:text="'좋아요'+${post.likeCount}+'개'">좋아요</span>
-                <span th:text="'싫어요'+${post.dislikeCount}+'개'">싫어요</span>
-                <span th:text="'댓글'+${post.commentCount}+'개'"></span>
-            </div>
-            <small class="text-muted" th:text="${#temporals.format(post.postCreatedAt, 'yyyy-MM-dd')}">작성일자</small>
+
+            </a>
         </div>
-        </a>
-    </div>
     </div>
 
 <!--    <div class="pagination" style="justify-content: center;">-->
