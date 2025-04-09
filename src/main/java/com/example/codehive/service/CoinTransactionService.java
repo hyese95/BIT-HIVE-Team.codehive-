@@ -14,5 +14,7 @@ public interface CoinTransactionService {
     List<CoinTransactionDto> getSumCoinTransactionsByConditions(int userNo, String market, String transactionType, String transactionState);
     CoinTransactionDto getAvailableQuantity(int userNo, String market);
     void removeAllByUserNo(int userNo);
+
+    List<CoinTransactionDto> getUserCoinHistory(int userNo);
 }
 

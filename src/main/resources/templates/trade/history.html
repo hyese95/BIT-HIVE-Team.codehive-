@@ -3,96 +3,110 @@
       th:replace="~{fragments/default :: html(content=~{::body})}">
 <head>
   <meta charset="UTF-8">
-  <title>코인 주문 내역 페이지</title>
+  <title>거래 내역</title>
+  <style>
+
+  </style>
 </head>
 <body>
 <div class="container">
-  <!-- 상단 영역: 제목, 호가/현재가 표시 -->
-  <h1 id="coinTitle" th:text="${coin} + '/KRW 주문 내역'">주문 내역</h1>
-  <p id="tradeprice"></p>
-  <div id="coindiv"></div>
-
-  <!-- 페이지 이동 링크: buy, sell, history -->
-  <p>
-    <a id="buyLink" th:href="@{'buy.do'(coin=${coin})}">매수</a>
-    <a id="sellLink" th:href="@{'sell.do'(coin=${coin})}">매도</a>
-    <a id="historyLink" th:href="@{'history.do'(coin=${coin})}">내역</a>
-  </p>
-
-  <!-- 체결/미체결 버튼 (클릭 시 페이지를 재요청) -->
-  <p>
-    <a id="executedBtn" th:href="@{'history.do'(coin=${coin}, status='COMPLETED', user='user1')}">체결</a>
-    <a id="pendingBtn" th:href="@{'history.do'(coin=${coin}, status='PENDING', user='user1')}">미체결</a>
-  </p>
-
-  <!-- 주문 내역 표시 영역 -->
-  <div id="orderHistory">
-    <table border="1" style="width:100%; text-align:center;">
-      <thead>
-      <tr>
-        <th>주문ID</th>
-        <th>종류</th>
-        <th>가격</th>
-        <th>수량</th>
-        <th>상태</th>
-        <th>시간</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr th:each="order : ${orders}">
-        <td th:text="${order.id}">ID</td>
-        <td th:text="${order.type}">Type</td>
-        <td th:text="${order.price}">Price</td>
-        <td th:text="${order.volume}">Volume</td>
-        <td th:text="${order.transactionState}">Status</td>
-        <td th:text="${order.orderTime}">Time</td>
-      </tr>
-      </tbody>
-    </table>
+  <div style="display: flex; justify-content: space-between">
+    <div>
+      <p id="tradeprice" style="font-weight: bold; font-size: 24px;"></p>
+      <div id="coindiv"
+           style="height: 400px; overflow-y: auto; border: 1px solid #ddd; border-radius: 5px; padding: 10px;">
+      </div>
+    </div>
+  <div>
+    <h2>거래 내역</h2>
+    <div id="history-list">
+      <!-- 거래 내역 항목 출력 -->
+    </div>
   </div>
+</div>
 
-  <!-- JS 스크립트: 호가/현재가 불러오기 -->
-  <script th:inline="javascript">
-    /*<![CDATA[*/
-    document.addEventListener("DOMContentLoaded", function() {
-      // coin 값은 모델 attribute로 전달됨
-      var coinTicker = /*[[${coin}]]*/ "BTC";
+<script>
+  document.addEventListener("DOMContentLoaded", async function () {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const coinTicker = urlParams.get("coin");
 
-      async function loadCoin() {
-        var tradeprice = document.getElementById("tradeprice");
-        var coindiv = document.getElementById("coindiv");
-        var urlOrderbook = "https://api.upbit.com/v1/orderbook?markets=KRW-" + coinTicker;
-        var urlTicker = "https://api.upbit.com/v1/ticker?markets=KRW-" + coinTicker;
-        try {
-          const [respOrderbook, respTicker] = await Promise.all([
-            fetch(urlOrderbook),
-            fetch(urlTicker)
-          ]);
-          const orderbookJson = await respOrderbook.json();
-          const tickerJson = await respTicker.json();
-          var orderbook = orderbookJson[0].orderbook_units;
-          var price = tickerJson[0].trade_price;
-          tradeprice.innerText = coinTicker + "/KRW 현재가: " + price.toLocaleString() + " KRW";
-          var html = "<h3>호가</h3>";
-          // 매수 잔량 표시 (reverse 배열)
-          orderbook.slice().reverse().forEach(function(o) {
-            html += "<p>매수 " + o.ask_price.toLocaleString() + " 잔량: " + o.ask_size.toFixed(3) + "</p>";
-          });
-          html += "<hr>";
-          // 매도 잔량 표시
-          orderbook.forEach(function(o) {
-            html += "<p>매도 " + o.bid_price.toLocaleString() + " 잔량: " + o.bid_size.toFixed(3) + "</p>";
-          });
-          coindiv.innerHTML = html;
-        } catch (error) {
-          console.error("호가 데이터를 불러오는 중 오류 발생:", error);
-          alert("호가 데이터를 불러올 수 없습니다.");
-        }
+    if (!coinTicker) {
+      alert("코인 정보가 없습니다. URL을 확인하세요.");
+      return;
+    }
+
+    const market = `KRW-${coinTicker}`;
+    const userNo = 1;
+
+    // 현재가 불러오기
+    try {
+      const res = await fetch(`https://api.upbit.com/v1/ticker?markets=${market}`);
+      const data = await res.json();
+      const price = data[0].trade_price;
+      document.getElementById("tradeprice").innerText = `${coinTicker}/KRW 현재가: ${price.toLocaleString()} KRW`;
+    } catch (e) {
+      console.error("현재가 불러오기 실패", e);
+    }
+
+    // 호가 데이터 출력
+    try {
+      const res = await fetch(`https://api.upbit.com/v1/orderbook?markets=${market}`);
+      const data = await res.json();
+      const orderbook = data[0].orderbook_units;
+      let html = "";
+
+      for (const o of [...orderbook].reverse()) {
+        html += `<p style="margin: 0;padding: 1px 0;">
+                  <button style="border:none; background: rgba(19, 117, 236, .08); height: 45px; width: 100%; color:#0062df; text-align: left;">
+                    매도 ${o.ask_price.toLocaleString()} 잔량: ${o.ask_size.toFixed(3)}
+                  </button>
+                </p>`;
       }
-      loadCoin();
-    });
-    /*]]>*/
-  </script>
+
+      for (const o of orderbook) {
+        html += `<p style="margin: 0;padding: 1px 0;">
+                  <button style="border:none; background: rgba(221, 60, 68, .08); height: 45px; width: 100%; color:#dd3c44; text-align: left;">
+                    매수 ${o.bid_price.toLocaleString()} 잔량: ${o.bid_size.toFixed(3)}
+                  </button>
+                </p>`;
+      }
+
+      document.getElementById("coindiv").innerHTML = html;
+    } catch (e) {
+      console.error("호가 데이터 실패", e);
+    }
+
+    // 거래 내역 불러오기 (market 필터 적용)
+    fetch(`/api/history/${userNo}`)
+            .then(res => res.json())
+            .then(data => {
+              const filtered = data.filter(tx => tx.market === market);
+              renderHistory(filtered);
+            })
+            .catch(err => console.error("내역 에러:", err));
+  });
+
+  function renderHistory(transactions) {
+    const container = document.getElementById("history-list");
+    if (!transactions || transactions.length === 0) {
+      container.innerHTML = '<p>거래 내역이 없습니다.</p>';
+      return;
+    }
+
+    const html = transactions.map(tx => `
+      <div class="card">
+        <div><strong>종류:</strong> ${tx.transactionType}</div>
+        <div><strong>수량:</strong> ${tx.transactionCnt}</div>
+        <div><strong>가격:</strong> ${tx.price.toLocaleString()} 원</div>
+        <div><strong>상태:</strong> ${tx.transactionState}</div>
+        <div><strong>일시:</strong> ${new Date(tx.transactionDate).toLocaleString()}</div>
+      </div>
+    `).join('');
+
+    container.innerHTML = html;
+  }
+</script>
 </div>
 </body>
 </html>

@@ -53,4 +53,6 @@ public interface CoinTransactionRepository extends JpaRepository<CoinTransaction
     @Query("DELETE FROM CoinTransaction c where c.userNo=:userNo")
     @Modifying
     void deleteAllByUserNo(int userNo);
+
+    List<CoinTransaction> findByUserNoAndMarketNotOrderByTransactionDateDesc(int userNo, String market);
 }

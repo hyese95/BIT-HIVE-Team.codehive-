@@ -150,4 +150,12 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
         coinTransactionRepository.deleteAllByUserNo(userNo);
 
     }
+
+    @Override
+    public List<CoinTransactionDto> getUserCoinHistory(int userNo) {
+        List<CoinTransaction> list = coinTransactionRepository.findByUserNoAndMarketNotOrderByTransactionDateDesc(userNo, "KRW-KRW");
+        return list.stream()
+                .map(CoinTransactionDto::fromEntity)
+                .collect(Collectors.toList());
+    }
 }

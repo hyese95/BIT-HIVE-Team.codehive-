@@ -87,4 +87,10 @@ public class CoinTransactionApiController {
 
 
     }
+
+    @GetMapping("/api/history/{userNo}")
+    public ResponseEntity<List<CoinTransactionDto>> getHistory(@PathVariable int userNo) {
+        List<CoinTransactionDto> history = coinTransactionService.getUserCoinHistory(userNo);
+        return ResponseEntity.ok(history);
+    }
 }
