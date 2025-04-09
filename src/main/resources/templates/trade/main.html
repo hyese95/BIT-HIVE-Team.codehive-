@@ -3,7 +3,10 @@
 <body>
 <script defer src="/js/util/profit.js"></script>
 <script defer src="/js/util/myAsset.js"></script>
+<script defer src="/js/util/toast.js"></script>
 <div class="container">
+    <div id="toastContainer"
+         style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
     <h1>거래소 홈</h1>
     <div>
         <p>보유자산</p>
@@ -27,10 +30,11 @@
             </p>
         </div>
     </div>
-
-    <a href="#">원화</a>
-    <a href="/trade/favorite_coin.do">관심</a>
-    <a href="/trade/holding_coin.do">보유</a>
+<div class="btn-group">
+    <a href="#" class="btn btn-primary active" aria-current="page">원화</a>
+    <a href="/trade/favorite_coin.do" class="btn btn-primary">관심</a>
+    <a href="/trade/holding_coin.do" class="btn btn-primary">보유</a>
+</div>
 
     <table id="tickerTable" class="table table-hover">
         <thead class="table-dark">
@@ -53,7 +57,7 @@
     async function fetchCoinNameMapping() {
         try {
             const response = await fetch('/api/proxy/upbit/market/all?is_details=true');
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            if (!response.ok) throw new Error(`잘못된 요청입니다. : ${response.status}`);
             const marketData = await response.json();
             marketData.forEach(item => {
                 if (item.market.startsWith('KRW-')) {
@@ -62,14 +66,14 @@
                 }
             });
         } catch (error) {
-            console.error("Error fetching coin name mapping:", error);
+            console.error("API 요청에 실패했습니다.", error);
         }
     }
 
     async function updateTickerTable() {
         try {
             const response = await fetch('/api/proxy/upbit/ticker/all?quote_currencies=KRW');
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            if (!response.ok) throw new Error(`잘못된 요청입니다. : ${response.status}`);
             const tickerData = await response.json();
             const tbody = document.querySelector('#tickerTable tbody');
             tbody.innerHTML = "";
@@ -93,7 +97,7 @@
                         <td style="color: ${changeColor}">${item.signed_change_rate > 0 ? '+' : ''}${changeRateFormatted}%</td>
                         <td>${(item.acc_trade_price_24h / 1000000).toLocaleString('en-US', {maximumFractionDigits: 0})}백만</td>
                         <td>
-                        <button class="favoriteBtn" data-ticker="${ticker}">+</button>
+                        <button type="button" class="btn btn-dark favoriteBtn" id="favoriteBtn" data-ticker="${ticker}">⭐</button>
                         </td>
                     `;
                     tbody.appendChild(tr);
@@ -112,19 +116,38 @@
         window.location.href = url;
     }
 
-    // 초기 실행
     document.addEventListener("DOMContentLoaded", async () => {
         await fetchCoinNameMapping();
         await updateTickerTable();
     });
 
     // 즐겨찾기 추가
-    document.querySelector('#tickerTable tbody').addEventListener('click', function (e) {
-        if (e.target.matches('.favoriteBtn')) {
+    document.querySelector('#tickerTable tbody').addEventListener('click',async function (e) {
+        if (!e.target.matches('.favoriteBtn')) return;
+
             const ticker = e.target.dataset.ticker;
-            console.log(`즐겨찾기 추가 버튼 클릭됨 - 코인: ${ticker}`);
+            const fullMarket = "KRW-" + ticker;
+            const data = {
+                userNo : 1,
+                market: fullMarket
+            };
+
+        const URL = "/trade/favorite_action.do";
+        const resp = await fetch(URL,{
+            method: 'POST',
+            headers:{'Content-type' : 'application/json'},
+            body:JSON.stringify(data)
+        });
+        if (resp.status===201){
+            showToast(" ⭐️  관심목록에 추가되었습니다.")
+        } else if(resp.status===409){
+            showToast("❗️ 이미 관심목록에 있습니다.")
+        }else{
+            showToast("🚫 관심목록 추가에 실패하였습니다.")
         }
-    });
+        console.log(`코인 : ${fullMarket}` )
+    })
+
 </script>
 </body>
 </html>

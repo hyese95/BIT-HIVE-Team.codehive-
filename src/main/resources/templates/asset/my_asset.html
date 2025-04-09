@@ -39,6 +39,7 @@
         </div>
         <hr/>
 
+
         <hr/>
         <div th:each="coin : ${profitResultDto.coinDetails}" class="coin-box">
             <h2 th:text="${coin.market.replace('KRW-','')}"></h2>

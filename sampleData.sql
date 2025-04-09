@@ -233,16 +233,16 @@ VALUES
 
 -- favorite_markets 테이블
 INSERT INTO favorite_markets (user_no, market)
-VALUES (1, 'BTC-KRW'),
-       (2, 'ETH-KRW'),
-       (3, 'XRP-KRW'),
-       (4, 'ADA-KRW'),
-       (5, 'DOGE-KRW'),
-       (1, 'SOL-KRW'),
-       (2, 'DOT-KRW'),
-       (3, 'MATIC-KRW'),
-       (4, 'LINK-KRW'),
-       (5, 'UNI-KRW');
+VALUES (1, 'KRW-BTC'),
+       (2, 'KRW-ETH'),
+       (3, 'KRW-XRP'),
+       (4, 'KRW-ADA'),
+       (5, 'KRW-DOGE'),
+       (1, 'KRW-SOL'),
+       (2, 'KRW-DOT'),
+       (3, 'KRW-MATIC'),
+       (4, 'KRW-LINK'),
+       (5, 'KRW-UNI');
 
 -- follows 테이블 데이터 (유저 1~40 사이의 팔로우 관계)
 INSERT INTO follows (follower_user_no, following_user_no, following_date)

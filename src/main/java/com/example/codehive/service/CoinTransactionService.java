@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface CoinTransactionService {
+    List<CoinTransaction> findByUserNo(int userNo);
     ProfitResultDto calculateProfit(int userNo, Map<String, Double> currentPriceMap);
     void saveCoinTransaction(CoinTransaction coinTransaction);
     List<CoinTransactionDto> getSumCoinTransactionsByConditions(int userNo, String market, String transactionType, String transactionState);

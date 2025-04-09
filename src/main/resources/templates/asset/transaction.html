@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/default :: html(content=~{::body})}">
+<head>
+    <meta charset="UTF-8">
+    <title>거래내역</title>
+</head>
+<body>
+<nav th:replace="fragments/nav_bars :: assetSubNav"></nav>
+<nav id="navbar-example2" class="navbar bg-body-tertiary px-3 mb-3"></nav>
+<div class="container">
+        <ul class="nav nav-pills">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">기간 설정</a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#scrollspyHeading3">7일</a></li>
+                    <li><a class="dropdown-item" href="#scrollspyHeading4">30일</a></li>
+                    <li><a class="dropdown-item" href="#scrollspyHeading5">90일</a></li>
+                    <li><a class="dropdown-item" href="#scrollspyHeading5">180일</a></li>
+                    <li><input type="date" class="dropdown-item"/></li>
+                </ul>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">거래 전체</a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#" onclick="buyOnly()">매수</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="sellOnly()">매도</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="showAll()">전체 거래</a></li>
+                </ul>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">자산 전체</a>
+                <ul class="dropdown-menu" id="assetList" style="max-height: 200px; overflow-y: auto;">
+                    <li><input type="text" class="form-control" placeholder="자산 조회" oninput="filterAssets(this.value)"/></li>
+                    <li><strong>자산 전체</strong></li>
+                </ul>
+            </li>
+        </ul>
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+        <tr>
+            <th>거래일시</th>
+            <th>자산</th>
+            <th>거래구분</th>
+            <th>거래수량</th>
+            <th>체결가격</th>
+            <th>거래금액</th>
+            <th>상태</th>
+        </tr>
+        </thead>
+        <tbody th:each="tr : ${coinTransactions}">
+        <tr th:attr="data-type=${tr.transactionType}, data-market=${tr.market}">
+            <td th:text="${#temporals.format(tr.transactionDate, 'yyyy-MM-dd HH:mm')}"></td>
+            <td th:text="${tr.market}"></td>
+            <td th:class="${tr.transactionType == 'BUY' ? 'text-danger' : 'text-primary'}"
+                th:text="${tr.transactionType == 'BUY' ? '매수' : '매도'}">
+            </td>
+            <td th:text="${#numbers.formatDecimal(tr.transactionCnt,1,'COMMA',1,'POINT')}"></td>
+            <td th:text="${#numbers.formatDecimal(tr.price,1,'COMMA',0,'POINT')}"></td>
+            <td th:text="${#numbers.formatDecimal(tr.transactionCnt * tr.price,1,'COMMA',0,'POINT')}"></td>
+            <td th:text="${tr.transactionState}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        await loadCoinList();
+    });
+
+    async function loadCoinList() {
+        try {
+            const response = await fetch("/api/proxy/upbit/market/all?is_details=true");
+            if (!response.ok) throw new Error("코인 목록 요청 실패");
+
+            const data = await response.json();
+
+            const assetList = document.getElementById("assetList");
+
+            const existing = assetList.querySelectorAll("li");
+            existing.forEach((li, index) => {
+                if (index > 0) li.remove();
+            });
+
+            // 모든 KRW-마켓 코인 추가
+            data
+                .filter(item => item.market.startsWith("KRW-"))
+                .forEach(item => {
+                    const li = document.createElement("li");
+                    const ticker = item.market.replace("KRW-","")
+                    li.textContent = `${item.korean_name} (${ticker})`
+                    li.textContent = `${item.korean_name} (${item.market.replace("KRW-", "")})`;
+                    li.classList.add("dropdown-item");
+
+                    li.addEventListener("click",()=>{
+                        filterByMarket(item.market);
+                        console.log(li)
+                    });
+                    assetList.appendChild(li);
+                });
+
+        } catch (error) {
+            console.error("자산 목록 로딩 실패:", error);
+        }
+    }
+
+
+    function buyOnly() {
+        filterByType("BUY");
+    }
+
+    function sellOnly() {
+        filterByType("SELL");
+    }
+
+    function showAll() {
+        const rows = document.querySelectorAll("tbody tr");
+        rows.forEach(row => {
+            row.style.display = ""; // 모두 보이게
+        });
+    }
+
+    function filterByType(type) {
+        const rows = document.querySelectorAll("tbody tr");
+        rows.forEach(row => {
+            const rowType = row.getAttribute("data-type");
+            row.style.display = (rowType === type) ? "" : "none";
+        });
+    }
+
+    // 검색
+    function filterAssets(keyword) {
+        const items = document.querySelectorAll("#assetList li.dropdown-item");
+        items.forEach(item => {
+            const visible = item.textContent.toLowerCase().includes(keyword.toLowerCase());
+            item.style.display = visible ? "" : "none";
+        });
+    }
+
+    function filterByMarket(market) {
+        const rows = document.querySelectorAll("tbody tr");
+        rows.forEach(row => {
+            const rowMarket = row.getAttribute("data-market");
+            row.style.display = (rowMarket === market) ? "" : "none";
+        });
+    }
+</script>
+</body>
+</html>

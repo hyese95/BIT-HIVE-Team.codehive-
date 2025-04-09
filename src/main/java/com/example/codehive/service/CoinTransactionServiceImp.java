@@ -15,8 +15,13 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class CoinTransactionServiceImp implements CoinTransactionService {
-    private final CoinKoreanNameService coinKoreanNameService;
+
     private final CoinTransactionRepository coinTransactionRepository;
+
+    @Override
+    public List<CoinTransaction> findByUserNo(int userNo) {
+        return coinTransactionRepository.findByUserNo(userNo);
+    }
 
     @Override
     public ProfitResultDto calculateProfit(int userNo, Map<String, Double> currentPriceMap) {

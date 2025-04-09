@@ -2,15 +2,143 @@
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{fragments/default :: html(content=~{::body})}">
 <head>
-  <meta charset="UTF-8">
-  <title>Title</title>
+    <meta charset="UTF-8">
+    <title>Title</title>
 </head>
 <body>
+<script defer src="/js/util/toast.js"></script>
 <div class="container">
-  <h1>관심 목록</h1>
-    <a href="/trade/main.do">원화</a>
-    <a href="/trade/favorite_coin.do">관심</a>
-    <a href="/trade/holding_coin.do">보유</a>
-  </div>
+    <div id="toastContainer"
+         style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
+    <h1>관심 목록</h1>
+
+    <div class="btn-group">
+        <a href="/trade/main.do" class="btn btn-primary">원화</a>
+        <a href="/trade/favorite_coin.do" class="btn btn-primary active" aria-current="page">관심</a>
+        <a href="/trade/holding_coin.do" class="btn btn-primary">보유</a>
+    </div>
+
+
+    <table id="tickerTable" class="table table-hover">
+        <thead class="table-dark">
+        <tr>
+            <th>코인명</th>
+            <th>현재가</th>
+            <th>전일대비</th>
+            <th>거래대금</th>
+            <th>관심목록</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+<script th:inline="javascript">
+    const favList = /*[[${favList}]]*/ [];
+</script>
+<script>
+
+    let coinNameMapping = {}
+
+    async function fetchCoinNameMapping() {
+        try {
+            const response = await fetch('/api/proxy/upbit/market/all?is_details=true');
+            if (!response.ok) throw new Error(`잘못된 요청입니다. : ${response.status}`);
+            const marketData = await response.json();
+            marketData.forEach(item => {
+                if (item.market.startsWith('KRW-') && favList.includes(item.market)) {
+                    const ticker = item.market.replace('KRW-', '');
+                    coinNameMapping[ticker] = item.korean_name;
+                }
+            });
+        } catch (error) {
+            console.error("API 요청에 실패했습니다.", error);
+        }
+    }
+
+    async function updateTickerTable() {
+        try {
+            const response = await fetch('/api/proxy/upbit/ticker/all?quote_currencies=KRW');
+            if (!response.ok) throw new Error(`잘못된 요청입니다. : ${response.status}`);
+            const tickerData = await response.json();
+            const tbody = document.querySelector('#tickerTable tbody');
+            tbody.innerHTML = "";
+            console.log(tickerData.length)
+
+            tickerData.forEach(item => {
+                if (item.market.startsWith('KRW') && favList.includes(item.market)) {
+                    const ticker = item.market.replace("KRW-", "");
+                    const coinName = coinNameMapping[ticker] || ticker;
+                    const priceFormatted = item.trade_price.toLocaleString('en-US', {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 2
+                    });
+                    const changeRateFormatted = (item.signed_change_rate * 100).toFixed(2);
+                    const changeColor = item.signed_change_rate > 0 ? 'red' : (item.signed_change_rate < 0 ? 'blue' : 'black');
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td onclick="goToChart('${ticker}')" style="cursor: pointer;">${coinName}<br>${ticker}/KRW</td>
+                        <td>${priceFormatted}</td>
+                        <td style="color: ${changeColor}">${item.signed_change_rate > 0 ? '+' : ''}${changeRateFormatted}%</td>
+                        <td>${(item.acc_trade_price_24h / 1000000).toLocaleString('en-US', {maximumFractionDigits: 0})}백만</td>
+                        <td>
+                        <button onclick="removeFavMarket(1,'${item.market}')" class="btn btn-dark" >❌️</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+            });
+
+        } catch (error) {
+            console.error('Error updating ticker table:', error);
+            document.querySelector('#tickerTable tbody').innerHTML =
+                '<tr><td colspan="4">데이터를 불러오는 중 오류가 발생했습니다.</td></tr>';
+        }
+    }
+
+    function goToChart(coinTicker) {
+        const url = `/trade/buy.do?coin=${coinTicker}`;
+        window.location.href = url;
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+        await fetchCoinNameMapping();
+        await updateTickerTable();
+    });
+
+    // 즐겨찾기 제거
+    const removeFavMarket = async (userNo, market) => {
+        const URL = "/trade/favorite_action.do";
+
+        const data = {
+            userNo: userNo,
+            market: market
+        };
+
+        try {
+            const resp = await fetch(URL, {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+
+            if (resp.status === 202) {
+                showToast("✅ 관심목록에서 제거되었습니다.");
+                await fetchCoinNameMapping();
+                await updateTickerTable();
+            } else if (resp.status === 404) {
+                showToast("❌ 이미 제거된 항목입니다.");
+            } else {
+                showToast("❗️ 제거에 실패했습니다.");
+            }
+        } catch (err) {
+            console.error("삭제 중 오류 발생:", err);
+            showToast("삭제 중 오류가 발생했습니다.");
+        }
+    };
+
+
+</script>
 </body>
 </html>

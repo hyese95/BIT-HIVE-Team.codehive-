@@ -1,13 +1,13 @@
 package com.example.codehive.service;
 
 import com.example.codehive.entity.FavoriteMarket;
+import com.example.codehive.entity.FavoriteMarketId;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface FavoriteCoinMarketService {
-    List<FavoriteMarket> readByUserNo(int userNo);
+    List<String> readByUserNo(int userNo);
 
     void regiseter(FavoriteMarket favoriteMarket);
-    void remove(FavoriteMarket favoriteMarket);
+    void remove(FavoriteMarketId favoriteMarketid);
 }
