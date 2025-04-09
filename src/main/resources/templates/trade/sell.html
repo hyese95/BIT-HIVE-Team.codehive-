@@ -16,11 +16,6 @@
 <body>
 <div class="container">
     <h1 id="coinTitle">매도 페이지</h1>
-    <p>
-        <a id="buyLink" href="#">매수</a>
-        <a id="sellLink" href="#">매도</a>
-        <a id="historyLink" href="#">내역</a>
-    </p>
 
     <div style="display: flex; justify-content: space-between">
         <div>
@@ -30,12 +25,17 @@
             </div>
         </div>
 
-        <div id="formContainer">
-            <button id="limitBtn">지정</button>
-            <button id="marketBtn">시장</button>
+        <div id="formContainer" style="border: 1px solid #ddd; border-radius: 5px; padding: 0;">
+            <p style="display: flex; justify-content: space-between; width: 100%; background:#bdbdbd">
+                <a id="buyLink" href="#" style="text-decoration: none; text-align: center; font-size: 20px; color: black; background: #bdbdbd; padding: 5px; width: 80px;">매수</a>
+                <a id="sellLink" href="#" style="text-decoration: none; text-align: center; font-size: 20px; color: #1375ec; background: white; padding: 5px; width: 80px;">매도</a>
+                <a id="historyLink" href="#" style="text-decoration: none; text-align: center; font-size: 20px; color: black; background: #bdbdbd; padding: 5px; width: 80px;">내역</a>
+            </p>
+            <button id="limitBtn" class="btn btn-dark">지정</button>
+            <button id="marketBtn" class="btn btn-outline-secondary">시장</button>
             <!-- 지정가 폼 -->
             <div id="limitOrderForm">
-                <form id="sellForm">
+                <form id="sellForm" style="padding: 10px;">
                     <p>주문가능: <span id="deposit"></span> 원</p>
                     <p>
                         <label>
@@ -60,7 +60,7 @@
             </div>
 
             <!-- 시장가 폼 -->
-            <div id="marketOrderForm" style="display: none;">
+            <div id="marketOrderForm" style="display: none; padding: 10px;">
                 <p>주문가능: <span id="marketAvailable"></span></p>
                 <p>수량 <input type="number" id="marketAmount"></p>
                 <div class="d-grid mb-2">
@@ -257,10 +257,18 @@
             document.getElementById("limitBtn").addEventListener('click', () => {
                 document.getElementById("limitOrderForm").style.display = "block";
                 document.getElementById("marketOrderForm").style.display = "none";
+                document.getElementById("limitBtn").classList.remove("btn-outline-secondary");
+                document.getElementById("limitBtn").classList.add("btn-dark");
+                document.getElementById("marketBtn").classList.add("btn-outline-secondary");
+                document.getElementById("marketBtn").classList.remove("btn-dark");
             });
             document.getElementById("marketBtn").addEventListener('click', () => {
                 document.getElementById("limitOrderForm").style.display = "none";
                 document.getElementById("marketOrderForm").style.display = "block";
+                document.getElementById("marketBtn").classList.remove("btn-outline-secondary");
+                document.getElementById("marketBtn").classList.add("btn-dark");
+                document.getElementById("limitBtn").classList.add("btn-outline-secondary");
+                document.getElementById("limitBtn").classList.remove("btn-dark");
             });
 
             // 시장가 전액매도 가능 수량표시

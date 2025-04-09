@@ -9,21 +9,47 @@
 <div class="container">
     <h1>검색 홈</h1>
 
-    <div>
-        <ul>
-            <li><a th:href="@{search.do(category=all)}">통합검색</a></li>
-            <li><a th:href="@{search.do(category=free)}">자유게시판</a></li>
-            <li><a th:href="@{search.do(category=pnl)}">손익인증</a></li>
-            <li><a th:href="@{search.do(category=chart)}">차트분석</a></li>
-            <li><a th:href="@{search.do(category=expert)}">전문가 게시판</a></li>
-        </ul>
-        <form onsubmit="search(event)">
-            <label for="keyword">검색</label>
-            <input type="text" name="keyword" id="keyword">
-            <button type="submit">검색</button>
+    <div style="display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 0.1rem;">
+        <div class="dropdown" style="width: 140px;">
+            <button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="dropdownBtn">
+                검색 카테고리
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" th:href="@{search.do(category=all)}" id="allCategory">통합검색</a></li>
+                <li><a class="dropdown-item" th:href="@{search.do(category=free)}" id="freeCategory">자유게시판</a></li>
+                <li><a class="dropdown-item" th:href="@{search.do(category=pnl)}" id="pnlCategory">손익인증</a></li>
+                <li><a class="dropdown-item" th:href="@{search.do(category=chart)}" id="chartCategory">차트분석</a></li>
+                <li><a class="dropdown-item" th:href="@{search.do(category=expert)}" id="expertCategory">전문가 게시판</a></li>
+            </ul>
+        </div>
+        <form onsubmit="search(event)" style="width: 70%;" >
+            <label for="keyword" style="display: none">검색</label>
+            <input type="text" name="keyword" id="keyword" style="width: 80%; height: 100%;">
+            <button type="submit" class="btn btn-secondary">검색</button>
         </form>
     </div>
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const dropdownBtn = document.getElementById('dropdownBtn');
+            const categoryParam = new URLSearchParams(window.location.search).get('category');
+            const allCategory = document.getElementById('allCategory');
+            const freeCategory = document.getElementById('freeCategory');
+            const expertCategory = document.getElementById('expertCategory');
+            const pnlCategory = document.getElementById('pnlCategory');
+            const chartCategory = document.getElementById('chartCategory');
+            if (categoryParam) {
+                let categoryName="";
+                switch (categoryParam) {
+                    case 'all': categoryName='통합검색'; allCategory.classList.add('active'); break;
+                    case 'free': categoryName='자유게시판'; freeCategory.classList.add('active'); break;
+                    case 'pnl' : categoryName='손익인증게시판'; pnlCategory.classList.add('active'); break;
+                    case 'chart' :  categoryName='차트분석게시판' ; chartCategory.classList.add('active'); break;
+                    case 'expert' : categoryName='전문가게시판' ; expertCategory.classList.add('active'); break;
+                }
+                dropdownBtn.innerText=categoryName;
+            }
+
+        })
         function search(event) {
 
             event.preventDefault();
@@ -37,14 +63,16 @@
     <hr>
     <div>
         <h2>최근검색어</h2>
-        <div th:if="${keywordSet}!=null" th:each="c : ${keywordSet}" class="recentKeywordDiv">
-            <a th:href="@{http://localhost:8801/community/search_result.do(keyword=${c})}" th:text="${c}"></a>
-            <button th:attr="data-keyword=${c}" onclick="deleteKeyword(this.getAttribute('data-keyword'))">삭제</button>
+        <div th:if="${keywordSet}!=null" th:each="c : ${keywordSet}" class="recentKeywordDiv"
+             style="border: 1px solid black; width: fit-content; height: fit-content; border-radius: 5px; padding: 2px; margin-bottom: 10px;">
+            <a style="color:black; text-decoration: none; text-align: center;font-size: 18px;" th:href="@{http://localhost:8801/community/search_result.do(keyword=${c})}" th:text="${c}"></a>
+            <button  style="background-size: 14px 14px;" class="btn-close" aria-label="Close" th:attr="data-keyword=${c}" onclick="deleteKeyword(this.getAttribute('data-keyword'))"></button>
         </div>
-        <button th:if="${keywordSet}!=null" id="deleteAllBtn" onclick="deleteAllKeywords(event)">전체삭제</button>
+        <br>
+        <button class="btn btn-outline-secondary" th:if="${keywordSet}!=null" id="deleteAllBtn" onclick="deleteAllKeywords(event)">전체삭제</button>
     </div>
     <hr>
-    <h2>인기검색어</h2>
+
 
 </div>
 <script>
