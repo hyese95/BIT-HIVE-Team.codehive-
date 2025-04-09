@@ -9,9 +9,20 @@
 <nav th:replace="fragments/nav_bars :: assetSubNav"></nav>
 <div class="container">
 
-<!--<ul th:each="tr : ${coinTransaction}">-->
-<!--    <li th:text="${tr.market}"></li>-->
-<!--</ul>-->
+<div th:each="tr : ${coinTransactions}">
+    <label>
+        <input type="checkbox">
+    </label>
+    <h2 th:utext="${coinNameMap[tr.market]} + '<br/>' + ${tr.market.replace('KRW-','')+ '/KRW'}"></h2>
+    <p th:text="'주문일자 : ' + ${#temporals.format(tr.transactionDate, 'yyyy-MM-dd HH:mm')}"></p>
+    <p th:class="${tr.transactionType == 'BUY' ? 'text-danger' : 'text-primary'}"
+       th:text="${tr.transactionType == 'BUY' ? '매수' : '매도'}"></p>
+    <p th:text="'주문수량 :  ' + ${#numbers.formatDecimal(tr.transactionCnt,1,'COMMA',1,'POINT')} + ${tr.market.replace('KRW-','')}"></p>
+    <p th:text="'주문가격 :  ' + ${#numbers.formatDecimal(tr.price,1,'COMMA',0,'POINT')} + '  KRW'"></p>
+    <p th:text="'주문금액 :  ' + ${tr.price} * ${tr.transactionCnt} + '  KRW'"></p>
+    <p th:text="${tr.transactionState}"></p>
+</div>
+
 
 
 </div>

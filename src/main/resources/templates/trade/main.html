@@ -97,7 +97,7 @@
                         <td style="color: ${changeColor}">${item.signed_change_rate > 0 ? '+' : ''}${changeRateFormatted}%</td>
                         <td>${(item.acc_trade_price_24h / 1000000).toLocaleString('en-US', {maximumFractionDigits: 0})}백만</td>
                         <td>
-                        <button type="button" class="btn btn-dark favoriteBtn" id="favoriteBtn" data-ticker="${ticker}">+</button>
+                        <button type="button" class="btn btn-dark favoriteBtn" id="favoriteBtn" data-ticker="${ticker}">✚</button>
                         </td>
                     `;
                     tbody.appendChild(tr);
