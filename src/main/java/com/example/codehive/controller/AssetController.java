@@ -66,7 +66,11 @@ public class AssetController {
     }
 
     @GetMapping("open_orders.do")
-    public String openOrders() {
+    public String openOrders(Model model) {
+        List<CoinTransaction> coinTransactions = coinTransactionService.findTransactionStateByUserNo(1);
+        model.addAttribute("coinTransactions", coinTransactions);
+        Map<String, String> coinNameMap = coinNameService.getMarketToKoreanNameMap();
+        model.addAttribute("coinNameMap", coinNameMap);
         return "asset/open_orders";
     }
 }
