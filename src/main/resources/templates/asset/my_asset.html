@@ -42,7 +42,7 @@
 
         <hr/>
         <div th:each="coin : ${profitResultDto.coinDetails}" class="coin-box">
-            <h2 th:text="${coin.market.replace('KRW-','')}"></h2>
+            <h2 th:utext="${coinNameMap[coin.market]} + '<br>' + ${coin.market.replace('KRW-', '') + '/KRW'}"></h2>
             <p><strong>
                 평가손익 :
                 <span th:text="${#numbers.formatDecimal(coin.profit, 1, 'COMMA', 0, 'POINT')} + ' KRW'"

@@ -5,10 +5,7 @@ import com.example.codehive.dto.ProfitResultDto;
 import com.example.codehive.entity.CoinTransaction;
 import com.example.codehive.entity.FavoriteMarket;
 import com.example.codehive.entity.FavoriteMarketId;
-import com.example.codehive.service.CoinTransactionService;
-import com.example.codehive.service.FavoriteCoinMarketService;
-import com.example.codehive.service.MyAssetService;
-import com.example.codehive.service.PriceService;
+import com.example.codehive.service.*;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +32,7 @@ public class TradeController {
     private final CoinTransactionService coinTransactionService;
     private final PriceService priceService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final CoinNameService coinNameService;
 
     @GetMapping("main.do")
     public String main(Model model) {
@@ -108,6 +106,9 @@ public class TradeController {
         Map<String, Double> myAssetMap = myAssetService.readAssetByUserNo(1);
         Map<String, Double> currentPriceMap = new HashMap<>();
 
+        Map<String, String> coinNameMap = coinNameService.getMarketToKoreanNameMap();
+        model.addAttribute("coinNameMap", coinNameMap);
+
         for (String market : myAssetMap.keySet()) {
             if (!"KRW-KRW".equalsIgnoreCase(market)) {
                 String upbitMarket = market.startsWith("KRW-") ? market : "KRW-" + market;
@@ -117,7 +118,6 @@ public class TradeController {
         }
 
         ProfitResultDto result = coinTransactionService.calculateProfit(1, currentPriceMap);
-
         model.addAttribute("coinDetails", result.getCoinDetails());
         return "trade/holding_coin";
     }

@@ -14,8 +14,6 @@ import java.util.List;
 public interface CoinTransactionRepository extends JpaRepository<CoinTransaction, Integer> {
     List<CoinTransaction> findByUserNo(int userNo);
 
-
-
     // BUY 총 합계
     @Query("SELECT new com.example.codehive.dto.CoinTransactionDto( c.market, SUM(c.transactionCnt)) FROM CoinTransaction c WHERE c.userNo=:userNo AND c.transactionType = 'BUY' AND c.transactionState = 'COMPLETED' GROUP BY c.market")
     List<CoinTransactionDto> findSumCoinTransactionsByUserNoWithBuy(int userNo);
