@@ -5,22 +5,47 @@
   <meta charset="UTF-8">
   <title>거래 내역</title>
   <style>
+    button > a {
+      color: black;
+      text-decoration: none;
+    }
 
+    .card {
+      border-bottom: 1px solid #eee;
+      padding: 10px 0;
+    }
+
+    .card:last-child {
+      border-bottom: none;
+    }
   </style>
 </head>
 <body>
 <div class="container">
+  <h1 id="coinTitle">거래 내역 페이지</h1>
+
+  <!-- 상단 탭 링크 -->
+  <p>
+    <a id="buyLink" href="#">매수</a>
+    <a id="sellLink" href="#">매도</a>
+    <a id="historyLink" href="#">내역</a>
+  </p>
+
   <div style="display: flex; justify-content: space-between">
+    <!-- 호가창 -->
     <div>
       <p id="tradeprice" style="font-weight: bold; font-size: 24px;"></p>
       <div id="coindiv"
-           style="height: 400px; overflow-y: auto; border: 1px solid #ddd; border-radius: 5px; padding: 10px;">
+           style="height: 400px; overflow-y: auto; border: 1px solid #ddd; border-radius: 5px; padding: 10px; width: 250px;">
       </div>
     </div>
-  <div>
-    <h2>거래 내역</h2>
-    <div id="history-list">
-      <!-- 거래 내역 항목 출력 -->
+
+    <!-- 거래 내역 -->
+    <div>
+      <h2>거래 내역</h2>
+      <div id="history-list"
+           style="height: 400px; overflow-y: auto; border: 1px solid #ddd; border-radius: 5px; padding: 10px; width: 650px; margin-left: 20px;">
+      </div>
     </div>
   </div>
 </div>
@@ -38,6 +63,12 @@
 
     const market = `KRW-${coinTicker}`;
     const userNo = 1;
+
+    // 링크 경로 세팅
+    document.getElementById("buyLink").href = `buy.do?coin=${coinTicker}`;
+    document.getElementById("sellLink").href = `sell.do?coin=${coinTicker}`;
+    document.getElementById("historyLink").href = `history.do?coin=${coinTicker}`;
+    document.getElementById("coinTitle").innerText = `${coinTicker}/KRW 거래 내역`;
 
     // 현재가 불러오기
     try {
@@ -107,6 +138,5 @@
     container.innerHTML = html;
   }
 </script>
-</div>
 </body>
 </html>
