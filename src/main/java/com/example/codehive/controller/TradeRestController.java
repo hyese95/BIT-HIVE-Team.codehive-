@@ -19,7 +19,8 @@ public class TradeRestController {
     private final MyAssetService myAssetService;
     private final CoinTransactionService coinTransactionService;
 
-    @GetMapping("/my_assets")
+    @GetMapping("/my_assets"
+    )
     public ResponseEntity<Map<String, Double>> getMyAssets() {
         Map<String, Double> myAssetMap = myAssetService.readAssetByUserNo(1);
         return ResponseEntity.ok(myAssetMap);
