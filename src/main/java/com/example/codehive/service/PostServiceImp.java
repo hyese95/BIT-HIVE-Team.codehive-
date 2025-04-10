@@ -129,7 +129,7 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
-    public List<Post> findAll() {
-        return postRepository.findAll();
+    public Page<Post> findAll(Pageable pageable) {
+        return postRepository.findAll(pageable);
     }
 }
