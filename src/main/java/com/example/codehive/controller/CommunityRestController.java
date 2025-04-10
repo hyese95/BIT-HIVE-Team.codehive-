@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/rest/community")
@@ -113,12 +112,12 @@ public class CommunityRestController {
     }
     //localhost:/8888/rest/emp/144/mutate
 //    mutant 돌연변이 => 데이터 조작
-    @PutMapping("/mutate")
+    @PutMapping("/modifyComment")
     public ResponseEntity<Void> modifyComment(@RequestBody Comment comment) {
         logger.info(comment.toString());
         return ResponseEntity.ok().build();
     }
-    @PostMapping("/mutate")
+    @PostMapping("/deleteComments")
     public ResponseEntity<Void> createComment(@RequestBody Comment comment) {
         logger.info(comment.toString());
         try{
