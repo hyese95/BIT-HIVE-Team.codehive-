@@ -5,6 +5,7 @@ import com.example.codehive.dto.CoinTransactionDto;
 import com.example.codehive.dto.ProfitResultDto;
 import com.example.codehive.entity.CoinTransaction;
 import com.example.codehive.repository.CoinTransactionRepository;
+import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class CoinTransactionServiceImp implements CoinTransactionService {
-
+    private final EntityManager entityManager;
     private final CoinTransactionRepository coinTransactionRepository;
 
     @Override
@@ -172,5 +173,14 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
         return list.stream()
                 .map(CoinTransactionDto::fromEntity)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void remove(CoinTransaction coinTransaction) {
+        CoinTransaction removePending = entityManager.find(CoinTransaction.class, coinTransaction);
+        if (removePending == null){
+            throw new IllegalArgumentException("이미 취소된 주문입니다.");
+        }
+        entityManager.remove(removePending);
     }
 }

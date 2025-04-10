@@ -42,7 +42,7 @@ public class FavoriteCoinMarketServiceImp implements FavoriteCoinMarketService {
     public void remove(FavoriteMarketId favoriteMarketid) {
         FavoriteMarket removeFavMarket = entityManager.find(FavoriteMarket.class, favoriteMarketid);
         if (removeFavMarket == null) {
-            throw new IllegalArgumentException("이미 관심목록에서 제거되었스니다.");
+            throw new IllegalArgumentException("이미 관심목록에서 제거되었습니다.");
         }
         entityManager.remove(removeFavMarket);
     }
