@@ -21,4 +21,5 @@ public interface PostService {
     PostDto createPost(PostDto postDto);
     Page<Post> readAll(PostDto postDto, Pageable pageable);
     Page<Post>readByUserNo(Pageable pageable, int userNo);
+    Page<Post> findAll(Pageable pageable);
 }

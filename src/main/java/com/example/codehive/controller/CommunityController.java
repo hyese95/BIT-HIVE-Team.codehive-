@@ -32,6 +32,7 @@ import java.util.*;
 @Controller
 @RequestMapping("/community")
 @AllArgsConstructor
+@CrossOrigin("http://localhost:5173")
 public class CommunityController {
     private final EntityManager entityManager;
     private final PostService postService;
@@ -47,6 +48,7 @@ public class CommunityController {
     public String convertNewlineToBr(String text) {
         return text.replace("\n", "<br>");
     }
+
     @PostMapping("/api/postLike/toggle")
     @ResponseBody
     public ResponseEntity<Map<String, Integer>> togglePostLike(@RequestBody PostLikeDto postLikeDto) {

@@ -59,10 +59,11 @@ public class PostLikeServiceImp implements PostLikeService{
             newLike.setLikeType(likeType);
             postLikeRepository.save(newLike);
         }
-        int likeCount = postLikeRepository.countByPostAndLikeType(post, true);
-        int dislikeCount = postLikeRepository.countByPostAndLikeType(post, false);
+        if(likeType){
+            postLikeRepository.countByPostAndLikeType(post, likeType);
 
-        return new PostDto(post.getId(), likeCount, dislikeCount);
+        }
+        return new PostDto(new Post());
     }
 
     @Override

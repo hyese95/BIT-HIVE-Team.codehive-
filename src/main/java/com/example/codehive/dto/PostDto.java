@@ -44,7 +44,14 @@ public class PostDto {
             this.userId = post.getUser().getId();
             this.commentCount = (post.getComment() != null) ? post.getComment().size() : 0;
             this.likeCount = 0;  // 기본값
-            this.dislikeCount = 0; // 기본값
+            this.dislikeCount = 0;
+            List<PostLike> postLikes=post.getPostLikes();// 기본값
+        for(PostLike pl:postLikes){
+            if(pl.getLikeType().equals(true)){
+                this.likeCount++;
+            }
+        }
+        this.dislikeCount = post.getPostLikes().size()-this.likeCount;
     }
     public PostDto(Integer postNo, int likeCount, int dislikeCount) {
         this.id = postNo;

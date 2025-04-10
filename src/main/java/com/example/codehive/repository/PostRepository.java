@@ -51,6 +51,6 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query("DELETE from Post p where p.id= :postNo")
     int deletePostByPostNo(int postNo);
 
-
+    Page<Post> findAll(Pageable pageable);
 
 }

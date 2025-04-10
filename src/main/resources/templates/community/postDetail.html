@@ -73,9 +73,11 @@
             </div>
             <div style="display: flex; flex-direction: row ;justify-content: space-between; align-items: center">
             <div style="display: flex; flex-direction: row;">
-                <div style="display: flex; flex-direction: column; align-items: center;">
+                <div>
+                    <a th:href="@{/users/{userNo}(userNo=${comment.getUserNo().getId()})}" style="display: flex; flex-direction: column; align-items: center;text-decoration: none">
                 <img th:src="${comment.getUserNo().profileImgUrl}" style="width: 30px; height: 30px" alt="없어">
                 <span th:text="${comment.getUserNo().nickname}"></span>
+                    </a>
                 </div>
                 <span style="font-size: 20px; justify-content: center; align-items: center;" th:text="'&nbsp;'+${comment.commentCont}"></span>
             </div>
