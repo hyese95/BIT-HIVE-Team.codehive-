@@ -1,5 +1,7 @@
 package com.example.codehive.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,6 +25,7 @@ public class CoinTransaction {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_no", nullable = false, insertable = false, updatable = false)
+   // @JsonIgnore
     private User user;
 
     @Column(name = "market", nullable = false)
@@ -38,6 +41,7 @@ public class CoinTransaction {
     private Double transactionCnt;
 
     @Column(name = "transaction_date", nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS", timezone="Asia/Seoul")
     private Instant transactionDate;
 
     @Column(name = "transaction_state", length = 20)

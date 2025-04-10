@@ -165,7 +165,31 @@
             modal.remove();
         }
     }
+    setInterval(async () => {
+        try {
+            const res = await fetch("/trade/api/summary");
+            if (!res.ok) throw new Error("요약 정보 가져오기 실패");
+            const data = await res.json();
 
+            // 보유 자산
+            document.querySelector("#myAsset span").innerText = data.totalAsset.toLocaleString() + "원";
+
+            // 평가손익
+            const profitEl = document.querySelector("span[data-profit]");
+            const profitVal = data.totalProfit;
+            profitEl.innerText = (profitVal > 0 ? '+' : '') + profitVal.toLocaleString();
+            profitEl.style.color = profitVal > 0 ? 'red' : (profitVal < 0 ? 'blue' : 'black');
+
+            // 수익률
+            const rateEl = document.querySelectorAll("span[data-profit]")[1];
+            const rateVal = data.overallProfitRate.toFixed(2);
+            rateEl.innerText = (rateVal > 0 ? '+' : '') + rateVal + '%';
+            rateEl.style.color = rateVal > 0 ? 'red' : (rateVal < 0 ? 'blue' : 'black');
+
+        } catch (e) {
+            console.error("요약 데이터 갱신 실패", e);
+        }
+    }, 10000);
 
 
 

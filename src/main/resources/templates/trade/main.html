@@ -77,7 +77,6 @@
             const tickerData = await response.json();
             const tbody = document.querySelector('#tickerTable tbody');
             tbody.innerHTML = "";
-            console.log(tickerData.length)
 
             tickerData.forEach(item => {
                 if (item.market.startsWith('KRW')) {
@@ -119,19 +118,45 @@
     document.addEventListener("DOMContentLoaded", async () => {
         await fetchCoinNameMapping();
         await updateTickerTable();
-        // setInterval(updateTickerTable,500);
     });
+
+    // 실시간 평가손익/자산 업데이트 (1초 간격)
+    setInterval(async () => {
+        try {
+            const res = await fetch("/trade/api/summary");
+            if (!res.ok) throw new Error("요약 정보 가져오기 실패");
+            const data = await res.json();
+
+            // 보유 자산
+            document.querySelector("#myAsset span").innerText = data.totalAsset.toLocaleString() + "원";
+
+            // 평가 손익
+            const profitEl = document.querySelector("span[data-profit]");
+            const profitVal = data.totalProfit;
+            profitEl.innerText = (profitVal > 0 ? '+' : '') + profitVal.toLocaleString();
+            profitEl.style.color = profitVal > 0 ? 'red' : (profitVal < 0 ? 'blue' : 'black');
+
+            // 수익률
+            const rateEl = document.querySelectorAll("span[data-profit]")[1];
+            const rateVal = data.overallProfitRate.toFixed(2);
+            rateEl.innerText = (rateVal > 0 ? '+' : '') + rateVal + '%';
+            rateEl.style.color = rateVal > 0 ? 'red' : (rateVal < 0 ? 'blue' : 'black');
+
+        } catch (e) {
+            console.error("요약 데이터 갱신 실패", e);
+        }
+    }, 10000);
 
     // 즐겨찾기 추가
     document.querySelector('#tickerTable tbody').addEventListener('click',async function (e) {
         if (!e.target.matches('.favoriteBtn')) return;
 
-            const ticker = e.target.dataset.ticker;
-            const fullMarket = "KRW-" + ticker;
-            const data = {
-                userNo : 1,
-                market: fullMarket
-            };
+        const ticker = e.target.dataset.ticker;
+        const fullMarket = "KRW-" + ticker;
+        const data = {
+            userNo : 1,
+            market: fullMarket
+        };
 
         const URL = "/trade/favorite_action.do";
         const resp = await fetch(URL,{
@@ -146,9 +171,7 @@
         }else{
             showToast("🚫 관심목록 추가에 실패하였습니다.")
         }
-        console.log(`코인 : ${fullMarket}` )
     })
-
 </script>
 </body>
 </html>

@@ -17,5 +17,7 @@ public interface CoinTransactionService {
     void removeAllByUserNo(int userNo);
 
     List<CoinTransactionDto> getUserCoinHistory(int userNo);
+
+    void remove(CoinTransaction coinTransaction);
 }
 

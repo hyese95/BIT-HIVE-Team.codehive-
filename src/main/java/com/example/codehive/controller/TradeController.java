@@ -155,4 +155,39 @@ public class TradeController {
             Model model) {
                 return "trade/history";
             }
+    @GetMapping("/api/summary")
+    @ResponseBody
+    public Map<String, Object> getSummary() {
+        int userNo = 1; // 이후에 세션에서 받아오게 수정 가능
+        Map<String, Double> myAssetMap = myAssetService.readAssetByUserNo(userNo);
+
+        // 현재 시세 가져오기
+        Map<String, Double> currentPriceMap = new HashMap<>();
+        for (String market : myAssetMap.keySet()) {
+            if (!"KRW-KRW".equalsIgnoreCase(market)) {
+                double price = priceService.getCoinPrice(market);
+                currentPriceMap.put(market, price);
+            }
+        }
+
+        // 손익 계산
+        ProfitResultDto result = coinTransactionService.calculateProfit(userNo, currentPriceMap);
+
+        // 총 자산 = 원화 보유 + 보유 코인 * 현재 시세
+        double totalAsset = myAssetMap.entrySet().stream()
+                .mapToDouble(entry -> {
+                    String market = entry.getKey();
+                    double amount = entry.getValue();
+                    if ("KRW-KRW".equalsIgnoreCase(market)) return amount;
+                    return amount * currentPriceMap.getOrDefault(market, 0.0);
+                }).sum();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("totalAsset", totalAsset);
+        response.put("totalProfit", result.getTotalProfit());
+        response.put("overallProfitRate", result.getOverallProfitRate());
+
+        return response;
+    }
+
 }

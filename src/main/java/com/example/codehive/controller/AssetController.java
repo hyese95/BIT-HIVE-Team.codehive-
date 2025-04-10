@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,16 +60,25 @@ public class AssetController {
         model.addAttribute("coinNameMap", coinNameMap);
         return "asset/transaction";
     }
+    @GetMapping("coinTransactions.do")
+    @ResponseBody
+    public Map<String,Object> coinTransactions() {
+        List<CoinTransaction> coinTransactions = coinTransactionService.findByUserNo(1);
 
-    @GetMapping("order_history.do")
-    public String orderHistory() {
-        return "asset/order_history";
+        Map<String, String> coinNameMap = coinNameService.getMarketToKoreanNameMap();
+        Map<String, Object> map = new HashMap<>();
+        map.put("coinTransactions",coinTransactions);
+        map.put("coinNameMap",coinNameMap);
+        System.out.println(map.toString());
+
+        return map;
     }
 
     @GetMapping("open_orders.do")
     public String openOrders(Model model) {
         List<CoinTransaction> coinTransactions = coinTransactionService.findTransactionStateByUserNo(1);
         model.addAttribute("coinTransactions", coinTransactions);
+
         Map<String, String> coinNameMap = coinNameService.getMarketToKoreanNameMap();
         model.addAttribute("coinNameMap", coinNameMap);
         return "asset/open_orders";

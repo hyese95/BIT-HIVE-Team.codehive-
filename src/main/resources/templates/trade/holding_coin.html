@@ -36,7 +36,7 @@
         <td th:text="${#numbers.formatDecimal(coin.currentValuation, 0, 'COMMA', 0, 'POINT')} + ' 원'"></td>
         <td th:text="${#numbers.formatDecimal(coin.buyAvgPrice, 0, 'COMMA', 0, 'POINT')} + ' KRW'"></td>
         <td th:text="${coin.profitRate > 0 ? '+' : ''} +
-        ${#numbers.formatDecimal(coin.profitRate, 0, 'COMMA', 2, 'POINT')} + ' %'"
+        ${#numbers.formatDecimal(coin.profitRate, 1, 'COMMA', 2, 'POINT')} + ' %'"
             th:attr="data-profit=${coin.profitRate}"></td>
     </tr>
     </tbody>
