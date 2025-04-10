@@ -73,13 +73,15 @@
                 <a th:href="@{/users/{userNo}(userNo=${post.userId})}" style="text-decoration: none; color: black; display: flex; flex-direction: column;">
                     <!-- 이미지가 있으면 아이콘 표시 -->
                 <img src="/img/user_icon/user_icon_default.png" alt="프로필 이미지" class="rounded-circle" width="50" height="50">
-                <span th:text="${post.userNickname}">유저 닉네임</span>
+                    <div style="display: flex; flex-direction: row">
+                        <span th:text="'Lv ' + ${post.userId}+' '+${post.userNickname}" >유저 닉네임
+                        </span>
+                        <img th:if="${post.imgUrl != null}" src="/img/ImageIcon/ImageIcon.png"
+                             alt="이미지 있음" width="20" height="20" style="margin-left: 5px;">
+                    </div>
                 </a>
             </h5>
-            <small class="text-muted" th:text="'Lv ' + ${post.userId}"></small>
             </div>
-        <img th:if="${post.imgUrl != null}" src="/img/ImageIcon/ImageIcon.png"
-             alt="이미지 있음" width="20" height="20" style="margin-left: 5px;">
         <a th:href="@{'/community/postDetail.do'(postNo=${post.id})}" style="text-decoration: none; color: black;">
             <input type="hidden" th:value="${post.id}" name="postNo">
             <input type="hidden" th:value="${user.id}" name="userNo">
@@ -223,19 +225,23 @@
                     // 이미지 아이콘 추가 여부 확인
                     let imageIcon = post.imgUrl ? `<img src="/img/ImageIcon/ImageIcon.png" alt="이미지 있음" width="20" height="20" style="margin-left: 5px;">` : '';
                     postItem.innerHTML = `
-                        <a href="/community/postDetail.do?postNo=${post.id}" style="text-decoration: none; color: black;">
-                            <div class="list-group-item">
-                                <div class="d-flex align-items-center mb-2">
-                                    <img src="/img/user_icon/user_icon_default.png" alt="프로필 이미지" class="rounded-circle" width="50" height="50">
+                        <div class="d-flex align-items-center mb-2">
                                     <div class="ms-3">
-                                        <h5 class="mb-0"> ${post.userNickname}${imageIcon}</h5>
-                                        <small class="text-muted"> Lv ${post.userId}</small>
+                                    <a href="/users/${post.userId}" style="text-decoration: none; color: black;">
+                                        <h5 class="mb-0" style="text-decoration: none; color: black; display: flex; flex-direction: column;">
+                                        <img src="/img/user_icon/user_icon_default.png" alt="프로필 이미지" class="rounded-circle" width="50" height="50">
+                                            <div>Lv ${post.userId} ${post.userNickname}${imageIcon}
+                                            </div>
+                                            </h5>
+                                            </a>
                                     </div>
                                 </div>
+                            <div class="list-group-item">
+                                <a href="/community/postDetail.do?postNo=${post.id}" style="text-decoration: none; color: black;">
                                 <p>${post.postCont}</p>
-                                <div style="padding-bottom: 5px;">
-                                <span>좋아요${post.likeCount}개</span>
-                                <span>싫어요${post.dislikeCount}개</span>
+                                <div  style="padding-bottom: 5px;">
+                                <span>좋아요${post.likeCount}</span>
+                                <span>싫어요${post.dislikeCount}</span>
                                 <span>댓글${post.commentCount}개</span>
                                 </div>
                                 <small class="text-muted"> ${post.postCreatedAt.substring(0, 10)}</small>
