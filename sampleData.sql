@@ -125,110 +125,219 @@ VALUES (1, 'BTC-KRW'),
 
 INSERT INTO coin_transactions (user_no, market, transaction_type, price, transaction_cnt, transaction_state)
 VALUES
--- 완전히 무작위로 섞인 거래 내역
-(1, 'KRW-KRW', 'BUY', 1, 10000000, 'COMPLETED'),
-(2, 'KRW-KRW', 'BUY', 1, 5000000, 'COMPLETED'),
-(3, 'KRW-KRW', 'BUY', 1, 8000000, 'COMPLETED'),
-(1, 'KRW-BTC', 'BUY', 77500000, 0.1, 'COMPLETED'),
-(1, 'KRW-KRW', 'SELL', 1, 7750000, 'COMPLETED'),
-(4, 'KRW-KRW', 'BUY', 1, 20000000, 'COMPLETED'),
-(2, 'KRW-ETH', 'BUY', 4320000, 1.0, 'COMPLETED'),
-(2, 'KRW-KRW', 'SELL', 1, 4320000, 'COMPLETED'),
-(5, 'KRW-KRW', 'BUY', 1, 15000000, 'COMPLETED'),
-(3, 'KRW-DOT', 'BUY', 8450, 30, 'COMPLETED'),
-(3, 'KRW-KRW', 'SELL', 1, 253500, 'COMPLETED'),
-(4, 'KRW-XRP', 'SELL', 790, 2000, 'COMPLETED'),
-(4, 'KRW-KRW', 'BUY', 1, 1580000, 'COMPLETED'),
-(5, 'KRW-BTC', 'BUY', 77600000, 0.05, 'COMPLETED'),
-(5, 'KRW-KRW', 'SELL', 1, 3880000, 'COMPLETED'),
-(1, 'KRW-ETH', 'SELL', 4380000, 0.3, 'COMPLETED'),
-(1, 'KRW-KRW', 'BUY', 1, 1314000, 'COMPLETED'),
-(2, 'KRW-XRP', 'BUY', 780, 5000, 'COMPLETED'),
-(2, 'KRW-KRW', 'SELL', 1, 3900000, 'COMPLETED'),
-(3, 'KRW-SOL', 'BUY', 168500, 20, 'COMPLETED'),
-(3, 'KRW-KRW', 'SELL', 1, 3370000, 'COMPLETED'),
-(4, 'KRW-ETH', 'BUY', 4350000, 0.5, 'COMPLETED'),
-(4, 'KRW-KRW', 'SELL', 1, 2175000, 'COMPLETED'),
-(5, 'KRW-LINK', 'BUY', 15100, 15, 'COMPLETED'),
-(5, 'KRW-KRW', 'SELL', 1, 226500, 'COMPLETED'),
-(1, 'KRW-DOT', 'BUY', 8500, 50, 'COMPLETED'),
-(1, 'KRW-KRW', 'SELL', 1, 425000, 'COMPLETED'),
-(2, 'KRW-DOGE', 'BUY', 100, 10000, 'COMPLETED'),
-(2, 'KRW-KRW', 'SELL', 1, 1000000, 'COMPLETED'),
-(3, 'KRW-BTC', 'SELL', 77900000, 0.03, 'COMPLETED'),
-(3, 'KRW-KRW', 'BUY', 1, 2337000, 'COMPLETED'),
-(4, 'KRW-SAND', 'BUY', 950, 500, 'COMPLETED'),
-(4, 'KRW-KRW', 'SELL', 1, 475000, 'COMPLETED'),
-(5, 'KRW-SOL', 'SELL', 169000, 5, 'COMPLETED'),
-(5, 'KRW-KRW', 'BUY', 1, 845000, 'COMPLETED'),
-(1, 'KRW-KRW', 'BUY', 1, 5000000, 'COMPLETED'),
-(2, 'KRW-ADA', 'SELL', 560, 500, 'COMPLETED'),
-(2, 'KRW-KRW', 'BUY', 1, 280000, 'COMPLETED'),
-(3, 'KRW-LINK', 'BUY', 15000, 20, 'COMPLETED'),
-(3, 'KRW-KRW', 'SELL', 1, 300000, 'COMPLETED'),
-(4, 'KRW-DOGE', 'SELL', 105, 5000, 'COMPLETED'),
-(4, 'KRW-KRW', 'BUY', 1, 525000, 'COMPLETED'),
-(5, 'KRW-ADA', 'BUY', 550, 2000, 'COMPLETED'),
-(5, 'KRW-KRW', 'SELL', 1, 1100000, 'COMPLETED'),
-(1, 'KRW-SAND', 'SELL', 970, 200, 'COMPLETED'),
-(1, 'KRW-KRW', 'BUY', 1, 194000, 'COMPLETED'),
-(2, 'KRW-KRW', 'BUY', 1, 3000000, 'COMPLETED'),
-(3, 'KRW-AVAX', 'SELL', 46000, 2, 'COMPLETED'),
-(3, 'KRW-KRW', 'BUY', 1, 92000, 'COMPLETED'),
-(4, 'KRW-SHIB', 'BUY', 0.45, 1000000, 'COMPLETED'),
-(4, 'KRW-KRW', 'SELL', 1, 450000, 'COMPLETED'),
-(5, 'KRW-POL', 'SELL', 1250, 100, 'COMPLETED'),
-(5, 'KRW-KRW', 'BUY', 1, 125000, 'COMPLETED'),
-(1, 'KRW-AVAX', 'BUY', 45000, 5, 'COMPLETED'),
-(1, 'KRW-KRW', 'SELL', 1, 225000, 'COMPLETED'),
-(2, 'KRW-NEAR', 'BUY', 7550, 30, 'COMPLETED'),
-(2, 'KRW-KRW', 'SELL', 1, 226500, 'COMPLETED'),
-(3, 'KRW-POL', 'BUY', 1200, 200, 'COMPLETED'),
-(3, 'KRW-KRW', 'SELL', 1, 240000, 'COMPLETED'),
-(4, 'KRW-XTZ', 'BUY', 2550, 80, 'COMPLETED'),
-(4, 'KRW-KRW', 'SELL', 1, 204000, 'COMPLETED'),
-(5, 'KRW-NEAR', 'BUY', 7500, 50, 'COMPLETED'),
-(5, 'KRW-KRW', 'SELL', 1, 375000, 'COMPLETED'),
-(1, 'KRW-SHIB', 'SELL', 0.47, 500000, 'COMPLETED'),
-(1, 'KRW-KRW', 'BUY', 1, 235000, 'COMPLETED'),
-(2, 'KRW-XTZ', 'BUY', 2500, 100, 'COMPLETED'),
-(2, 'KRW-KRW', 'SELL', 1, 250000, 'COMPLETED'),
-(3, 'KRW-ATOM', 'SELL', 18500, 5, 'COMPLETED'),
-(3, 'KRW-KRW', 'BUY', 1, 92500, 'COMPLETED'),
-(4, 'KRW-XLM', 'BUY', 450, 1000, 'COMPLETED'),
-(4, 'KRW-KRW', 'SELL', 1, 450000, 'COMPLETED'),
-(5, 'KRW-ALGO', 'BUY', 600, 500, 'COMPLETED'),
-(5, 'KRW-KRW', 'SELL', 1, 300000, 'COMPLETED'),
-(1, 'KRW-ATOM', 'BUY', 18000, 10, 'COMPLETED'),
-(1, 'KRW-KRW', 'SELL', 1, 180000, 'COMPLETED'),
-(2, 'KRW-ALGO', 'SELL', 620, 200, 'COMPLETED'),
-(2, 'KRW-KRW', 'BUY', 1, 124000, 'COMPLETED'),
-(3, 'KRW-XLM', 'BUY', 455, 800, 'COMPLETED'),
-(3, 'KRW-KRW', 'SELL', 1, 364000, 'COMPLETED'),
-(4, 'KRW-ATOM', 'BUY', 18200, 8, 'COMPLETED'),
-(4, 'KRW-KRW', 'SELL', 1, 145600, 'COMPLETED'),
-(5, 'KRW-XTZ', 'SELL', 2520, 50, 'COMPLETED'),
-(5, 'KRW-KRW', 'BUY', 1, 126000, 'COMPLETED'),
-(1, 'KRW-XLM', 'BUY', 460, 500, 'COMPLETED'),
-(1, 'KRW-KRW', 'SELL', 1, 230000, 'COMPLETED'),
-(2, 'KRW-ATOM', 'SELL', 18300, 6, 'COMPLETED'),
-(2, 'KRW-KRW', 'BUY', 1, 109800, 'COMPLETED'),
-(3, 'KRW-ALGO', 'BUY', 605, 300, 'COMPLETED'),
-(3, 'KRW-KRW', 'SELL', 1, 181500, 'COMPLETED'),
-(4, 'KRW-AVAX', 'BUY', 45200, 3, 'COMPLETED'),
-(4, 'KRW-KRW', 'SELL', 1, 135600, 'COMPLETED'),
-(5, 'KRW-SHIB', 'BUY', 0.46, 800000, 'COMPLETED'),
-(5, 'KRW-KRW', 'SELL', 1, 368000, 'COMPLETED'),
+-- 유저 1: 초기 원화 충전 (디파짓)
+(1, 'KRW-KRW', 'BUY', 1, 50000000, 'COMPLETED'), -- 5천만원 충전
 
--- 대기 주문들 (무작위 순서)
-(2, 'KRW-BTC', 'BUY', 77400000, 0.1, 'PENDING'),
-(4, 'KRW-ETH', 'SELL', 4400000, 0.5, 'PENDING'),
-(1, 'KRW-SOL', 'BUY', 167000, 10, 'PENDING'),
-(5, 'KRW-XRP', 'BUY', 775, 5000, 'PENDING'),
-(3, 'KRW-DOT', 'BUY', 8400, 50, 'PENDING'),
-(2, 'KRW-AVAX', 'SELL', 46500, 3, 'PENDING'),
-(4, 'KRW-NEAR', 'BUY', 7450, 40, 'PENDING'),
-(1, 'KRW-ATOM', 'SELL', 18600, 8, 'PENDING');
+-- 유저 1: BTC 구매
+(1, 'KRW-BTC', 'BUY', 119764000, 0.1, 'COMPLETED'), -- 비트코인 0.1개 구매
+(1, 'KRW-KRW', 'SELL', 1, 11976400, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+
+-- 유저 1: ETH 구매
+(1, 'KRW-ETH', 'BUY', 2298000, 1.5, 'COMPLETED'), -- 이더리움 1.5개 구매
+(1, 'KRW-KRW', 'SELL', 1, 3447000, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+
+-- 유저 1: SOL 구매
+(1, 'KRW-SOL', 'BUY', 172850, 15, 'COMPLETED'), -- 솔라나 15개 구매
+(1, 'KRW-KRW', 'SELL', 1, 2592750, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+
+-- 유저 1: XRP 구매
+(1, 'KRW-XRP', 'BUY', 2967, 2000, 'COMPLETED'), -- 리플 2000개 구매
+(1, 'KRW-KRW', 'SELL', 1, 5934000, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+
+-- 유저 1: ADA 구매
+(1, 'KRW-ADA', 'BUY', 936, 3000, 'COMPLETED'), -- 에이다 3000개 구매
+(1, 'KRW-KRW', 'SELL', 1, 2808000, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+
+-- 유저 1: AVAX 구매
+(1, 'KRW-AVAX', 'BUY', 27550, 10, 'COMPLETED'), -- 아발란체 10개 구매
+(1, 'KRW-KRW', 'SELL', 1, 275500, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+
+-- 유저 1: DOGE 구매
+(1, 'KRW-DOGE', 'BUY', 233.5, 5000, 'COMPLETED'), -- 도지코인 5000개 구매
+(1, 'KRW-KRW', 'SELL', 1, 1167500, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+
+-- 유저 1: LINK 구매
+(1, 'KRW-LINK', 'BUY', 18420, 25, 'COMPLETED'), -- 체인링크 25개 구매
+(1, 'KRW-KRW', 'SELL', 1, 460500, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+
+-- 유저 1: DOT 구매
+(1, 'KRW-DOT', 'BUY', 5201, 50, 'COMPLETED'), -- 폴카닷 50개 구매
+(1, 'KRW-KRW', 'SELL', 1, 260050, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+
+-- 유저 1: MATIC 구매
+(1, 'KRW-MATIC', 'BUY', 850, 1000, 'COMPLETED'), -- 폴리곤 1000개 구매
+(1, 'KRW-KRW', 'SELL', 1, 850000, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+
+-- 유저 1: SOL 일부 판매 (가격 상승 가정)
+(1, 'KRW-SOL', 'SELL', 175000, 5, 'COMPLETED'), -- 솔라나 5개 판매
+(1, 'KRW-KRW', 'BUY', 1, 875000, 'COMPLETED'), -- 판매 금액만큼 원화 증가
+
+-- 유저 1: BTC 일부 판매 (가격 상승 가정)
+(1, 'KRW-BTC', 'SELL', 120500000, 0.05, 'COMPLETED'), -- 비트코인 0.05개 판매
+(1, 'KRW-KRW', 'BUY', 1, 6025000, 'COMPLETED'), -- 판매 금액만큼 원화 증가
+
+-- 유저 1: ADA 일부 판매 (가격 하락 가정)
+(1, 'KRW-ADA', 'SELL', 920, 1000, 'COMPLETED'), -- 에이다 1000개 판매
+(1, 'KRW-KRW', 'BUY', 1, 920000, 'COMPLETED'), -- 판매 금액만큼 원화 증가
+
+-- 유저 1: DOGE 추가 구매 (가격 상승 가정)
+(1, 'KRW-DOGE', 'BUY', 240, 3000, 'COMPLETED'), -- 도지코인 3000개 추가 구매
+(1, 'KRW-KRW', 'SELL', 1, 720000, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+
+-- 유저 1: ETH 일부 판매 (가격 상승 가정)
+(1, 'KRW-ETH', 'SELL', 2350000, 0.5, 'COMPLETED'), -- 이더리움 0.5개 판매
+(1, 'KRW-KRW', 'BUY', 1, 1175000, 'COMPLETED'), -- 판매 금액만큼 원화 증가
+
+-- 유저 1: XRP 일부 판매 (가격 상승 가정)
+(1, 'KRW-XRP', 'SELL', 3000, 500, 'COMPLETED'), -- 리플 500개 판매
+(1, 'KRW-KRW', 'BUY', 1, 1500000, 'COMPLETED'), -- 판매 금액만큼 원화 증가
+
+-- 유저 1: AVAX 추가 구매 (가격 하락 가정)
+(1, 'KRW-AVAX', 'BUY', 27200, 5, 'COMPLETED'), -- 아발란체 5개 추가 구매
+(1, 'KRW-KRW', 'SELL', 1, 136000, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+
+-- 유저 1: LINK 추가 구매 (가격 하락 가정)
+(1, 'KRW-LINK', 'BUY', 18000, 15, 'COMPLETED'), -- 체인링크 15개 추가 구매
+(1, 'KRW-KRW', 'SELL', 1, 270000, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+
+-- 유저 1: DOT 일부 판매 (가격 상승 가정)
+(1, 'KRW-DOT', 'SELL', 5250, 20, 'COMPLETED'), -- 폴카닷 20개 판매
+(1, 'KRW-KRW', 'BUY', 1, 105000, 'COMPLETED'), -- 판매 금액만큼 원화 증가
+
+-- 유저 1: MATIC 일부 판매 (가격 상승 가정)
+(1, 'KRW-MATIC', 'SELL', 880, 300, 'COMPLETED'), -- 폴리곤 300개 판매
+(1, 'KRW-KRW', 'BUY', 1, 264000, 'COMPLETED'), -- 판매 금액만큼 원화 증가
+
+-- 유저 1: SUI 구매 (새로운 코인 추가)
+(1, 'KRW-SUI', 'BUY', 3246, 100, 'COMPLETED'), -- SUI 100개 구매
+(1, 'KRW-KRW', 'SELL', 1, 324600, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+
+-- 유저 1: ATOM 구매 (새로운 코인 추가)
+(1, 'KRW-ATOM', 'BUY', 6434, 10, 'COMPLETED'), -- ATOM 10개 구매
+(1, 'KRW-KRW', 'SELL', 1, 64340, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+
+-- 유저 1: SHIB 구매 (새로운 코인 추가)
+(1, 'KRW-SHIB', 'BUY', 0.01778, 1000000, 'COMPLETED'), -- SHIB 1,000,000개 구매
+(1, 'KRW-KRW', 'SELL', 1, 17780, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+
+-- 유저 1: SUI 일부 판매 (가격 상승 가정)
+(1, 'KRW-SUI', 'SELL', 3300, 40, 'COMPLETED'), -- SUI 40개 판매
+(1, 'KRW-KRW', 'BUY', 1, 132000, 'COMPLETED'), -- 판매 금액만큼 원화 증가
+
+-- 유저 1: SOL 추가 구매 (가격 하락 가정)
+(1, 'KRW-SOL', 'BUY', 170000, 10, 'COMPLETED'), -- 솔라나 10개 추가 구매
+(1, 'KRW-KRW', 'SELL', 1, 1700000, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+
+-- 유저 1: BTC 추가 구매 (가격 하락 가정)
+(1, 'KRW-BTC', 'BUY', 119000000, 0.03, 'COMPLETED'), -- 비트코인 0.03개 추가 구매
+(1, 'KRW-KRW', 'SELL', 1, 3570000, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+
+-- 유저 1: SHIB 일부 판매 (가격 상승 가정)
+(1, 'KRW-SHIB', 'SELL', 0.0185, 300000, 'COMPLETED'), -- SHIB 300,000개 판매
+(1, 'KRW-KRW', 'BUY', 1, 5550, 'COMPLETED'), -- 판매 금액만큼 원화 증가
+
+-- 유저 1: ATOM 일부 판매 (가격 상승 가정)
+(1, 'KRW-ATOM', 'SELL', 6500, 4, 'COMPLETED'), -- ATOM 4개 판매
+(1, 'KRW-KRW', 'BUY', 1, 26000, 'COMPLETED'), -- 판매 금액만큼 원화 증가
+
+-- 유저 1: XRP 추가 구매 (가격 상승 가정)
+(1, 'KRW-XRP', 'BUY', 3100, 1000, 'COMPLETED'), -- 리플 1000개 추가 구매
+(1, 'KRW-KRW', 'SELL', 1, 3100000, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+
+-- 유저 1: 추가 원화 충전
+(1, 'KRW-KRW', 'BUY', 1, 20000000, 'COMPLETED'), -- 2천만원 추가 충전
+
+-- 유저 1: NEAR 구매 (새로운 코인 추가)
+(1, 'KRW-NEAR', 'BUY', 3026, 200, 'COMPLETED'), -- NEAR 200개 구매
+(1, 'KRW-KRW', 'SELL', 1, 605200, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+
+-- 유저 1: SAND 구매 (새로운 코인 추가)
+(1, 'KRW-SAND', 'BUY', 384, 500, 'COMPLETED'), -- SAND 500개 구매
+(1, 'KRW-KRW', 'SELL', 1, 192000, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+
+-- 유저 1: HBAR 구매 (새로운 코인 추가)
+(1, 'KRW-HBAR', 'BUY', 256.5, 1000, 'COMPLETED'), -- HBAR 1000개 구매
+(1, 'KRW-KRW', 'SELL', 1, 256500, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+
+-- 유저 1: HBAR 일부 판매 (가격 상승 가정)
+(1, 'KRW-HBAR', 'SELL', 265, 300, 'COMPLETED'), -- HBAR 300개 판매
+(1, 'KRW-KRW', 'BUY', 1, 79500, 'COMPLETED'), -- 판매 금액만큼 원화 증가
+
+-- 유저 1: NEAR 일부 판매 (가격 상승 가정)
+(1, 'KRW-NEAR', 'SELL', 3100, 50, 'COMPLETED'), -- NEAR 50개 판매
+(1, 'KRW-KRW', 'BUY', 1, 155000, 'COMPLETED'), -- 판매 금액만큼 원화 증가
+
+-- 유저 1: SAND 일부 판매 (가격 하락 가정)
+(1, 'KRW-SAND', 'SELL', 370, 200, 'COMPLETED'), -- SAND 200개 판매
+(1, 'KRW-KRW', 'BUY', 1, 74000, 'COMPLETED'), -- 판매 금액만큼 원화 증가
+
+-- 유저 2: 초기 원화 충전 및 거래
+(2, 'KRW-KRW', 'BUY', 1, 30000000, 'COMPLETED'), -- 3천만원 충전
+(2, 'KRW-BTC', 'BUY', 119764000, 0.05, 'COMPLETED'), -- 비트코인 0.05개 구매
+(2, 'KRW-KRW', 'SELL', 1, 5988200, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+(2, 'KRW-ETH', 'BUY', 2298000, 2, 'COMPLETED'), -- 이더리움 2개 구매
+(2, 'KRW-KRW', 'SELL', 1, 4596000, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+(2, 'KRW-SOL', 'BUY', 172850, 10, 'COMPLETED'), -- 솔라나 10개 구매
+(2, 'KRW-KRW', 'SELL', 1, 1728500, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+(2, 'KRW-ETH', 'SELL', 2350000, 0.7, 'COMPLETED'), -- 이더리움 0.7개 판매
+(2, 'KRW-KRW', 'BUY', 1, 1645000, 'COMPLETED'), -- 판매 금액만큼 원화 증가
+(2, 'KRW-DOGE', 'BUY', 233.5, 8000, 'COMPLETED'), -- 도지코인 8000개 구매
+(2, 'KRW-KRW', 'SELL', 1, 1868000, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+(2, 'KRW-DOGE', 'SELL', 245, 3000, 'COMPLETED'), -- 도지코인 3000개 판매
+(2, 'KRW-KRW', 'BUY', 1, 735000, 'COMPLETED'), -- 판매 금액만큼 원화 증가
+
+-- 유저 3: 초기 원화 충전 및 거래
+(3, 'KRW-KRW', 'BUY', 1, 25000000, 'COMPLETED'), -- 2천5백만원 충전
+(3, 'KRW-BTC', 'BUY', 119764000, 0.04, 'COMPLETED'), -- 비트코인 0.04개 구매
+(3, 'KRW-KRW', 'SELL', 1, 4790560, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+(3, 'KRW-ETH', 'BUY', 2298000, 1.3, 'COMPLETED'), -- 이더리움 1.3개 구매
+(3, 'KRW-KRW', 'SELL', 1, 2987400, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+(3, 'KRW-ADA', 'BUY', 936, 5000, 'COMPLETED'), -- 에이다 5000개 구매
+(3, 'KRW-KRW', 'SELL', 1, 4680000, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+(3, 'KRW-BTC', 'SELL', 120000000, 0.01, 'COMPLETED'), -- 비트코인 0.01개 판매
+(3, 'KRW-KRW', 'BUY', 1, 1200000, 'COMPLETED'), -- 판매 금액만큼 원화 증가
+(3, 'KRW-DOT', 'BUY', 5201, 100, 'COMPLETED'), -- 폴카닷 100개 구매
+(3, 'KRW-KRW', 'SELL', 1, 520100, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+(3, 'KRW-ADA', 'SELL', 950, 2000, 'COMPLETED'), -- 에이다 2000개 판매
+(3, 'KRW-KRW', 'BUY', 1, 1900000, 'COMPLETED'), -- 판매 금액만큼 원화 증가
+
+-- 유저 4: 초기 원화 충전 및 거래
+(4, 'KRW-KRW', 'BUY', 1, 15000000, 'COMPLETED'), -- 1천5백만원 충전
+(4, 'KRW-ETH', 'BUY', 2298000, 1, 'COMPLETED'), -- 이더리움 1개 구매
+(4, 'KRW-KRW', 'SELL', 1, 2298000, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+(4, 'KRW-SOL', 'BUY', 172850, 20, 'COMPLETED'), -- 솔라나 20개 구매
+(4, 'KRW-KRW', 'SELL', 1, 3457000, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+(4, 'KRW-DOGE', 'BUY', 233.5, 4000, 'COMPLETED'), -- 도지코인 4000개 구매
+(4, 'KRW-KRW', 'SELL', 1, 934000, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+(4, 'KRW-SOL', 'SELL', 178000, 5, 'COMPLETED'), -- 솔라나 5개 판매
+(4, 'KRW-KRW', 'BUY', 1, 890000, 'COMPLETED'), -- 판매 금액만큼 원화 증가
+(4, 'KRW-XRP', 'BUY', 2967, 3000, 'COMPLETED'), -- 리플 3000개 구매
+(4, 'KRW-KRW', 'SELL', 1, 8901000, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+
+-- 유저 5: 초기 원화 충전 및 거래
+(5, 'KRW-KRW', 'BUY', 1, 20000000, 'COMPLETED'), -- 2천만원 충전
+(5, 'KRW-BTC', 'BUY', 119764000, 0.03, 'COMPLETED'), -- 비트코인 0.03개 구매
+(5, 'KRW-KRW', 'SELL', 1, 3592920, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+(5, 'KRW-ETH', 'BUY', 2298000, 0.8, 'COMPLETED'), -- 이더리움 0.8개 구매
+(5, 'KRW-KRW', 'SELL', 1, 1838400, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+(5, 'KRW-LINK', 'BUY', 18420, 50, 'COMPLETED'), -- 체인링크 50개 구매
+(5, 'KRW-KRW', 'SELL', 1, 921000, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+(5, 'KRW-BTC', 'SELL', 121000000, 0.01, 'COMPLETED'), -- 비트코인 0.01개 판매
+(5, 'KRW-KRW', 'BUY', 1, 1210000, 'COMPLETED'), -- 판매 금액만큼 원화 증가
+(5, 'KRW-ATOM', 'BUY', 6434, 20, 'COMPLETED'), -- ATOM 20개 구매
+(5, 'KRW-KRW', 'SELL', 1, 128680, 'COMPLETED'), -- 구매 금액만큼 원화 감소
+
+-- 대기 주문들 (PENDING)
+(1, 'KRW-BTC', 'BUY', 118500000, 0.05, 'PENDING'), -- 비트코인 0.05개 구매 대기
+(1, 'KRW-SOL', 'SELL', 180000, 8, 'PENDING'), -- 솔라나 8개 판매 대기
+(1, 'KRW-ATOM', 'SELL', 6700, 3, 'PENDING'), -- ATOM 3개 판매 대기
+(1, 'KRW-ETH', 'BUY', 2250000, 0.5, 'PENDING'), -- 이더리움 0.5개 구매 대기
+(2, 'KRW-BTC', 'SELL', 121000000, 0.02, 'PENDING'), -- 비트코인 0.02개 판매 대기
+(2, 'KRW-DOGE', 'SELL', 250, 3000, 'PENDING'), -- 도지코인 3000개 판매 대기
+(3, 'KRW-ETH', 'SELL', 2350000, 0.5, 'PENDING'), -- 이더리움 0.5개 판매 대기
+(3, 'KRW-DOT', 'BUY', 5150, 50, 'PENDING'), -- 폴카닷 50개 구매 대기
+(4, 'KRW-SOL', 'BUY', 170000, 5, 'PENDING'), -- 솔라나 5개 구매 대기
+(5, 'KRW-ATOM', 'SELL', 6600, 10, 'PENDING'); -- ATOM 10개 판매 대기
 
 
 -- favorite_markets 테이블

@@ -23,6 +23,7 @@ class CoinTransactionRepositoryTest {
 
     @Test
     void findSumCoinTransactionsByUserNoWithSell() {
+        System.out.println(coinTransactionRepository.findTotalSellQuantityByUserNo(1));
     }
 
 
@@ -31,4 +32,13 @@ class CoinTransactionRepositoryTest {
         System.out.println(coinTransactionRepository.findByUserNo(1));
     }
 
+    @Test
+    void findSummaryCoinTransactionsByUserNoWithBuy() {
+        System.out.println(coinTransactionRepository.findSummaryCoinTransactionsByUserNoWithBuy(1));
+    }
+
+    @Test
+    void testFindSumCoinTransactionsByUserNoWithSell() {
+        System.out.println(coinTransactionRepository.findSumCoinTransactionsByUserNoWithSell(1));
+    }
 }
