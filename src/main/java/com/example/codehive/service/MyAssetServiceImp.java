@@ -1,7 +1,7 @@
 package com.example.codehive.service;
 
 import com.example.codehive.dto.AssetDto;
-import com.example.codehive.dto.BuyCoinTransactionDto;
+import com.example.codehive.dto.BuyCoinTransactionSummaryDto;
 import com.example.codehive.dto.CoinTransactionDto;
 import com.example.codehive.dto.SellQuantityDto;
 import com.example.codehive.repository.CoinTransactionRepository;
@@ -37,14 +37,14 @@ public class MyAssetServiceImp implements MyAssetService {
 
     @Override
     public List<AssetDto> readHoldingCoinListByUserNo(int userNo) {
-        List<BuyCoinTransactionDto> buySummaries = coinTransactionRepository.findSummaryCoinTransactionsByUserNoWithBuy(userNo);
+        List<BuyCoinTransactionSummaryDto> buySummaries = coinTransactionRepository.findSummaryCoinTransactionsByUserNoWithBuy(userNo);
         List<SellQuantityDto> sellList = coinTransactionRepository.findTotalSellQuantityByUserNo(userNo);
 
         Map<String, Double> sellMap = sellList.stream()
                 .collect(Collectors.toMap(SellQuantityDto::getMarket, SellQuantityDto::getTotalSellAmount));
 
         List<AssetDto> assetList = new ArrayList<>();
-        for (BuyCoinTransactionDto buy : buySummaries) {
+        for (BuyCoinTransactionSummaryDto buy : buySummaries) {
             String market = buy.getMarket();
             double buyAmount=buy.getSumAmount();
             double sellAmount=sellMap.getOrDefault(market, 0.0);

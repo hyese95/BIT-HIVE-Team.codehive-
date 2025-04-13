@@ -1,7 +1,7 @@
 package com.example.codehive.repository;
 
 import com.example.codehive.dto.CoinTransactionDto;
-import com.example.codehive.dto.BuyCoinTransactionDto;
+import com.example.codehive.dto.BuyCoinTransactionSummaryDto;
 import com.example.codehive.dto.SellQuantityDto;
 import com.example.codehive.entity.CoinTransaction;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,8 +22,8 @@ public interface CoinTransactionRepository extends JpaRepository<CoinTransaction
     List<CoinTransactionDto> findSumCoinTransactionsByUserNoWithBuy(int userNo);
 
     //BUT 금액합계까지포함
-    @Query("SELECT new com.example.codehive.dto.BuyCoinTransactionDto( c.market, SUM(c.transactionCnt), SUM(c.price)) FROM CoinTransaction c WHERE c.userNo=:userNo AND c.transactionType = 'BUY' AND c.transactionState = 'COMPLETED' GROUP BY c.market")
-    List<BuyCoinTransactionDto> findSummaryCoinTransactionsByUserNoWithBuy(int userNo);
+    @Query("SELECT new com.example.codehive.dto.BuyCoinTransactionSummaryDto( c.market, SUM(c.transactionCnt), SUM(c.price * c.transactionCnt)) FROM CoinTransaction c WHERE c.userNo=:userNo AND c.transactionType = 'BUY' AND c.transactionState = 'COMPLETED' GROUP BY c.market")
+    List<BuyCoinTransactionSummaryDto> findSummaryCoinTransactionsByUserNoWithBuy(int userNo);
 
 
     // SELL 총 합계

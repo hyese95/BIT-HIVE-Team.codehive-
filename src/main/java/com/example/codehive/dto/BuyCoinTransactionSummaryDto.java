@@ -9,10 +9,10 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class BuyCoinTransactionDto {
+public class BuyCoinTransactionSummaryDto {
 
     String market;
-    Double sumAmount;
-    Long sumPrice;
+    Double sumAmount;//구매거래 수량들의 합
+    Double sumPrice;// 거래별 당시 (구매가격 * 수량)의 합
 
 }
