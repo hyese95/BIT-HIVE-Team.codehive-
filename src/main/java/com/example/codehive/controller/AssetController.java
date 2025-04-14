@@ -9,6 +9,7 @@ import com.example.codehive.service.PriceService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -18,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@CrossOrigin(origins = {"http://localhost:5173"})
 @Controller
 @RequestMapping("/asset")
 @AllArgsConstructor
@@ -60,6 +62,7 @@ public class AssetController {
         model.addAttribute("coinNameMap", coinNameMap);
         return "asset/transaction";
     }
+
     @GetMapping("coinTransactions.do")
     @ResponseBody
     public Map<String,Object> coinTransactions() {
