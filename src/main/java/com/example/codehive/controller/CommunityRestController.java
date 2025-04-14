@@ -16,6 +16,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,8 +41,15 @@ public class CommunityRestController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+                .withZone(ZoneId.of("UTC")); // 또는 시스템 타임존
+        String dateStr = LocalDateTime.now().format(formatter);
+        Instant instant = LocalDateTime.parse(dateStr, formatter).atZone(ZoneId.of("UTC")).toInstant();
         PageRequest pageRequest=PageRequest.of(page-1, size);
         Page<Post> postPage=postService.readAllByCategory(pageRequest, category);
+        postPage.stream().forEach(post->{
+            post.setPostCreatedAt(instant);
+        });
         return ResponseEntity.ok(postPage);
     }
 
