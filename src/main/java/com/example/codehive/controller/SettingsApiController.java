@@ -18,10 +18,10 @@ public class SettingsApiController {
     GuideService guideService;
     @GetMapping("/notice")
     public List<Guide> readNotice() {
-        List<Guide>  noticeList=null;
-        noticeList=guideService.readAll();
+        List<Guide> noticeList = null;
+        noticeList = guideService.readAll();
         return noticeList;
-}
+    }
     FaqService faqService;
     @GetMapping("/faq")
     public List<Faq> readFaq(){
