@@ -129,4 +129,9 @@ public class UserServiceImp implements UserService {
         follow.setFollowingDate(Instant.now());
         entityManager.persist(follow);
     }
+
+    @Override
+    public Optional<User> readByUserId(String userId) {
+        return Optional.ofNullable(userRepository.findByUserId(userId));
+    }
 }

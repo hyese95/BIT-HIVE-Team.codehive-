@@ -43,7 +43,7 @@ public class NavBarController {
             double currentPrice = priceService.getCoinPrice(upbitMarket);
             currentPriceMap.put(market, currentPrice);
         }
-        ProfitResultDto profitResultDto = coinTransactionService.calculateProfit(1, currentPriceMap);
+        ProfitResultDto profitResultDto = coinTransactionService.calculateProfit(userNo, currentPriceMap);
         model.addAttribute("profitResultDto", profitResultDto);
         return "fragments/nav_bars";
     }
