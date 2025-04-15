@@ -2,6 +2,10 @@ package com.example.codehive.controller;
 
 import com.example.codehive.dto.ProfitResultDto;
 import com.example.codehive.entity.CoinTransaction;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import com.example.codehive.repository.UserRepository;
+import com.example.codehive.entity.User;
 import com.example.codehive.service.CoinNameService;
 import com.example.codehive.service.CoinTransactionService;
 import com.example.codehive.service.MyAssetService;
@@ -13,7 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,10 +30,13 @@ public class AssetController {
     private final MyAssetService myAssetService;
     private final PriceService priceService;
     private final CoinNameService coinNameService;
+    private final UserRepository userRepository;
 
     @GetMapping("my_asset.do")
-    public String myAsset(Model model) {
-        Map<String, Double> myAssetMap = myAssetService.readAssetByUserNo(1);
+    public String myAsset(@AuthenticationPrincipal UserDetails loginUser, Model model) {
+        User user = userRepository.findByUserId(loginUser.getUsername());
+
+        Map<String, Double> myAssetMap = myAssetService.readAssetByUserNo(user.getId());
         model.addAttribute("myAssetMap", myAssetMap);
 
         // 한글명 매핑
@@ -45,15 +52,17 @@ public class AssetController {
             double currentPrice = priceService.getCoinPrice(upbitMarket);
             currentPriceMap.put(market, currentPrice);
         }
-        ProfitResultDto profitResultDto = coinTransactionService.calculateProfit(1, currentPriceMap);
+        ProfitResultDto profitResultDto = coinTransactionService.calculateProfit(user.getId(), currentPriceMap);
         model.addAttribute("profitResultDto", profitResultDto);
 
         return "asset/my_asset";
     }
 
     @GetMapping("transaction.do")
-    public String transaction(Model model) {
-        List<CoinTransaction> coinTransactions = coinTransactionService.findByUserNo(1);
+    public String transaction(@AuthenticationPrincipal UserDetails loginUser, Model model) {
+        User user = userRepository.findByUserId(loginUser.getUsername());
+
+        List<CoinTransaction> coinTransactions = coinTransactionService.findByUserNo(user.getId());
         model.addAttribute("coinTransactions", coinTransactions);
 
         Map<String, String> coinNameMap = coinNameService.getMarketToKoreanNameMap();
@@ -62,8 +71,9 @@ public class AssetController {
     }
     @GetMapping("coinTransactions.do")
     @ResponseBody
-    public Map<String,Object> coinTransactions() {
-        List<CoinTransaction> coinTransactions = coinTransactionService.findByUserNo(1);
+    public Map<String,Object> coinTransactions(@AuthenticationPrincipal UserDetails loginUser) {
+        User user = userRepository.findByUserId(loginUser.getUsername());
+        List<CoinTransaction> coinTransactions = coinTransactionService.findByUserNo(user.getId());
 
         Map<String, String> coinNameMap = coinNameService.getMarketToKoreanNameMap();
         Map<String, Object> map = new HashMap<>();
@@ -75,8 +85,13 @@ public class AssetController {
     }
 
     @GetMapping("open_orders.do")
-    public String openOrders(Model model) {
-        List<CoinTransaction> coinTransactions = coinTransactionService.findTransactionStateByUserNo(1);
+    public String openOrders(@AuthenticationPrincipal UserDetails loginUser, Model model) {
+        // 로그인한 유저 아이디 가져오기
+        String userId = loginUser.getUsername();
+
+        // userId로 User 객체 가져오기
+        User user = userRepository.findByUserId(userId);
+        List<CoinTransaction> coinTransactions = coinTransactionService.findTransactionStateByUserNo(user.getId());
         model.addAttribute("coinTransactions", coinTransactions);
 
         Map<String, String> coinNameMap = coinNameService.getMarketToKoreanNameMap();
