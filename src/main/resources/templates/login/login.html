@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/default :: html(content=~{::body})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>로그인</h1>
+    <form action="/login/login.do" method="post" style="width: 400px" class="mx-auto">
+      <div class="form-floating mb-3">
+        <input type="text" name="id" class="form-control" id="floatingInput" placeholder="ID">
+        <label for="floatingInput">ID</label>
+      </div>
+      <div class="form-floating">
+        <input type="password"  name="pw" class="form-control" id="floatingPassword" placeholder="PASSWORD">
+        <label for="floatingPassword">PASSWORD</label>
+      </div>
+      <div class="mt-3 text-end">
+        <a class="btn btn-lg btn-outline-primary" href="/login/signup.do">회원가입</a>
+        <button class="btn btn-lg btn-success">로그인</button>
+      </div>
+    </form>
+</body>
+</html>
