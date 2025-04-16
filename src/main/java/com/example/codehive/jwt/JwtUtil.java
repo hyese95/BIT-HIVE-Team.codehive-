@@ -2,15 +2,17 @@ package com.example.codehive.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
 
 @Component
+@AllArgsConstructor
 public class JwtUtil {
 
-    private final String SECRET_KEY = "안녕하세요!이건Jwt비밀키입니다길게하세요";
+    private final String SECRET_KEY = "안녕하세요!이건Jwt비밀키입니다길게하세요더길게길게길게길게길게길게하세요";
     private final SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     private final long EXPIRATION = 1000 * 60 * 30;
 
