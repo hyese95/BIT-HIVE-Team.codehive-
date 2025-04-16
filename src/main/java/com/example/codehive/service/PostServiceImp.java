@@ -10,10 +10,7 @@ import com.example.codehive.repository.PostRepository;
 import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +19,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -131,5 +129,22 @@ public class PostServiceImp implements PostService {
     @Override
     public Page<Post> findAll(Pageable pageable) {
         return postRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<PostDto> readAllDtoByCategory(PostDto.PostSearchRequestDto request) {
+        int page=request.getPage();
+        int size=request.getSize();
+        String category=request.getCategory();
+        Pageable pageable=PageRequest.of(page,size,Sort.by("postCreatedAt").descending());
+        List<Post> posts=postRepository.findAllByCategory(pageable,category);
+        System.out.println(posts);
+        int start=page*size;
+        int end=Math.min(start+size,posts.size());
+        if(start>end) start=end;
+        List<PostDto> postDtoList=posts.subList(start,end).stream().map(post->{
+            return new PostDto(post.getCategory());
+        }).collect(Collectors.toList());
+        return new PageImpl<>(postDtoList,PageRequest.of(page,size),posts.size());
     }
 }

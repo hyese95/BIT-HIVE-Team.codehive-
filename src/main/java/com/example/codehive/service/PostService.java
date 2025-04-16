@@ -22,4 +22,5 @@ public interface PostService {
     Page<Post> readAll(PostDto postDto, Pageable pageable);
     Page<Post>readByUserNo(Pageable pageable, int userNo);
     Page<Post> findAll(Pageable pageable);
+    Page<PostDto> readAllDtoByCategory(PostDto.PostSearchRequestDto request);
 }

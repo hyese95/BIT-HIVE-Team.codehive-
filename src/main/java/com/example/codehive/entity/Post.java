@@ -35,9 +35,9 @@ public class Post {
     private String postCont;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
     @Column(name = "post_created_at", nullable = false)
-    private Instant postCreatedAt;
+    @JsonFormat(pattern = "yyyy-MM-dd a hh시 MM분", shape = JsonFormat.Shape.STRING)
+    private LocalDateTime postCreatedAt;
 
     @Column(name = "img_url")
     private String imgUrl;

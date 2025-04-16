@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,7 +75,7 @@ public class CommentServiceImp implements CommentService {
     @Transactional
     public void writeComments(Comment comment) {
         comment.setPostNo(comment.getPostNo());
-        comment.setCommentCreatedAt(Instant.now());
+        comment.setCommentCreatedAt(LocalDateTime.now(ZoneId.of("UTC")));
         commentRepository.save(comment);
     }
 
@@ -88,7 +90,7 @@ public class CommentServiceImp implements CommentService {
             if (comment.getCommentCreatedAt() != null) {
                 existingComment.setCommentCreatedAt(comment.getCommentCreatedAt());
             } else {
-                existingComment.setCommentCreatedAt(Instant.now());  // 클라이언트에서 전달하지 않으면 서버에서 현재 시간으로 처리
+                existingComment.setCommentCreatedAt(LocalDateTime.now(ZoneId.of("UTC")));  // 클라이언트에서 전달하지 않으면 서버에서 현재 시간으로 처리
             }
         }
     }
@@ -98,7 +100,7 @@ public class CommentServiceImp implements CommentService {
     public void writeChildComments(Comment comment) {
         comment.setPostNo(comment.getPostNo());
         comment.setParentNo(comment.getParentNo());
-        comment.setCommentCreatedAt(Instant.now());
+        comment.setCommentCreatedAt(LocalDateTime.now(ZoneId.of("UTC")));
         commentRepository.save(comment);
     }
 

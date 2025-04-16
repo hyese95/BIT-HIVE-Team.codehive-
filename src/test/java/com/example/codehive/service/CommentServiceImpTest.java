@@ -12,6 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -80,7 +82,7 @@ class CommentServiceImpTest {
         User user = entityManager.find(User.class, 1);
         Hibernate.initialize(user);
         comment.setCommentCont("앙 기모띠 살려줘");
-        comment.setCommentCreatedAt(Instant.now());
+        comment.setCommentCreatedAt(LocalDateTime.now(ZoneId.of("UTC")));
         comment.setPostNo(91);
         comment.setUserNo(user);
         commentService.writeComments(comment);
@@ -92,7 +94,7 @@ class CommentServiceImpTest {
         User user = entityManager.find(User.class, 1);
         Hibernate.initialize(user);
         comment.setCommentCont("쉬바라");
-        comment.setCommentCreatedAt(Instant.now());
+        comment.setCommentCreatedAt(LocalDateTime.now(ZoneId.of("UTC")));
         comment.setUserNo(user);
         comment.setId(94);
         commentService.modifyComment(comment);
@@ -111,7 +113,7 @@ class CommentServiceImpTest {
         User user = entityManager.find(User.class, 1);
         Hibernate.initialize(user);
         comment.setCommentCont("앙 기모띠 살려줘");
-        comment.setCommentCreatedAt(Instant.now());
+        comment.setCommentCreatedAt(LocalDateTime.now(ZoneId.of("UTC")));
         comment.setParentNo(69);
         comment.setPostNo(91);
         comment.setUserNo(user);

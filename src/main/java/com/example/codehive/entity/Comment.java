@@ -11,6 +11,7 @@ import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Getter
@@ -47,7 +48,7 @@ public class Comment {
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "comment_created_at", nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd a h시 M분", shape = JsonFormat.Shape.STRING)
-    private Instant commentCreatedAt;
+    private LocalDateTime commentCreatedAt;
 
     // 🔹 부모 댓글 관계 (N:1)
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
