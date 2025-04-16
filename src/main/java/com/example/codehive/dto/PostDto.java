@@ -58,12 +58,12 @@ public class PostDto {
     }
     @Getter
     @Setter
-    @ToString
-    public class PostSearchRequestDto {
+    public static class PostSearchRequestDto {
         private String category;
         private int page;
         private int size;
     }
+
     public PostDto(String category){
         this.category=category;
     }

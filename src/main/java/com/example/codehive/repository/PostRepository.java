@@ -33,7 +33,8 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query("select pl from PostLike pl where pl.post.id = :postNo ")
     List<PostLike> findLikesByPostNo(int postNo);
 
-    Page<Post> findAllPageByCategory(Pageable pageable, String category);
+    @EntityGraph(attributePaths = {"postLikes"})
+    Page<Post> findByCategory(String category, Pageable pageable);
 //    이건 페이지 반환
 
     @Query("SELECT p FROM Post p JOIN FETCH p.user WHERE p.user.id = :Id")
@@ -50,10 +51,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query("DELETE from Post p where p.id= :postNo")
     int deletePostByPostNo(int postNo);
 
-    Page<Post> read(Pageable pageable);
-
-    @Query("select p from Post p where p.category=:category order by p.postCreatedAt DESC")
-    @EntityGraph(attributePaths = {"postLikes","user","comment"})
-    List<Post> findAllByCategory(String category);
+    @Query("select p from Post p where p.category=:category")
+    Post findByCategory(String category);
 //    이건 리스트 반환
 }

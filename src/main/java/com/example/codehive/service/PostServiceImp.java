@@ -57,7 +57,7 @@ public class PostServiceImp implements PostService {
     @Override
     public Page<Post> readAllByCategory(Pageable pageable, String category) {
         Page<Post> posts;
-        posts = postRepository.findAllPageByCategory(pageable, category);
+        posts = postRepository.findByCategory(category,pageable);
         return posts;
     }
 
@@ -127,24 +127,20 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
-    @Transactional
-    public List<Post> findByCategory(String category) {
-        return postRepository.findAllByCategory(category);
+    public List<Post> getAllPosts() {
+        List<Post> posts = new ArrayList<>();
+//        for (int i = 1; i <= 50; i++) {
+//            posts.add();
+//        }
+        return posts;
     }
 
     @Override
     public Page<PostDto> readAllDtoByCategory(PostDto.PostSearchRequestDto request) {
-        int page=request.getPage();
-        int size=request.getSize();
-        String category=request.getCategory();
-        List<Post> posts=postRepository.findAllByCategory(category);
-        System.out.println(posts);
-        int start=page*size;
-        int end=Math.min(start+size,posts.size());
-        if(start>end) start=end;
-        List<PostDto> postDtoList=posts.subList(start,end).stream().map(post->{
-           return new PostDto(post.getCategory());
-        }).collect(Collectors.toList());
-        return new PageImpl<>(postDtoList,PageRequest.of(page,size),posts.size());
+        Page<Post> page = postRepository.findByCategory(
+                request.getCategory(),
+                PageRequest.of(request.getPage(), request.getSize())
+        );
+        return page.map(PostDto::new);
     }
 }

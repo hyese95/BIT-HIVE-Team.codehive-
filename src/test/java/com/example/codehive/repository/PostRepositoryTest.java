@@ -9,10 +9,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 class PostRepositoryTest {
 
@@ -27,7 +23,7 @@ class PostRepositoryTest {
 
     @Test
     void findAllByCategory() {
-        System.out.println(postRepository.findAllByCategory("free"));
+        System.out.println(postRepository.findByCategory("free"));
     }
 
 
@@ -37,4 +33,12 @@ class PostRepositoryTest {
 
     }
 
+    @Test
+    void findByCategory() {
+        pageable = PageRequest.of(0, 10);
+        String category = "free";
+        Page<Post> post = postRepository.findByCategory(category,pageable);
+        System.out.println(post.getTotalPages());
+        System.out.println(post);
+    }
 }

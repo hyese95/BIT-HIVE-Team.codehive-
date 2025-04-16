@@ -74,12 +74,6 @@ class PostServiceImpTest {
 
     @Test
     @Transactional
-    void findByCategory() {
-        System.out.println(postService.findByCategory("free"));
-    }
-
-    @Test
-    @Transactional
     void readAll() {
         Pageable pageable = PageRequest.of(0, 10);
         PostDto postDto=new PostDto();
@@ -87,10 +81,13 @@ class PostServiceImpTest {
     }
 
     @Test
-    void readAllDtoByCategory(PostDto.PostSearchRequestDto request) {
-        request.setPage(0);
-        request.setSize(10);
+    @Transactional
+    void readAllDtoByCategory() {
+        PostDto.PostSearchRequestDto request = new PostDto.PostSearchRequestDto();
         request.setCategory("free");
-        System.out.println(postService.readAllDtoByCategory(request));
+        request.setPage(1);
+        request.setSize(10);
+       Page<PostDto> postDtoPage=postService.readAllDtoByCategory(request);
+        System.out.println(postDtoPage.getContent());
     }
 }
