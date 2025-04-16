@@ -9,10 +9,7 @@ import com.example.codehive.service.PriceService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @CrossOrigin(origins = {"http://localhost:5173"})
-@Controller
+@RestController
 @RequestMapping("/asset")
 @AllArgsConstructor
 public class AssetController {
@@ -64,7 +61,7 @@ public class AssetController {
     }
 
     @GetMapping("coinTransactions.do")
-    @ResponseBody
+//    @ResponseBody
     public Map<String,Object> coinTransactions() {
         List<CoinTransaction> coinTransactions = coinTransactionService.findByUserNo(1);
 
@@ -86,4 +83,17 @@ public class AssetController {
         model.addAttribute("coinNameMap", coinNameMap);
         return "asset/open_orders";
     }
+
+    @GetMapping("openOrders.do")
+    public Map<String,Object> openOrders() {
+        List<CoinTransaction> coinTransactions = coinTransactionService.findTransactionStateByUserNo(1);
+
+        Map<String, String> coinNameMap = coinNameService.getMarketToKoreanNameMap();
+        Map<String, Object> map = new HashMap<>();
+        map.put("coinTransactions",coinTransactions);
+        map.put("coinNameMap",coinNameMap);
+        System.out.println(map.toString());
+        return map;
+    }
+
 }
