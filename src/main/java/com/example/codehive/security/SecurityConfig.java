@@ -17,13 +17,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // ✅ 테스트 중이라면 CSRF 끄기
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().permitAll()
                 )
                 .formLogin(login -> login
                         .loginPage("/login/login.do")
-                        .loginProcessingUrl("/login/login.do") // ✅ 요게 핵심!
+                        .loginProcessingUrl("/login/login.do")
                         .usernameParameter("id")
                         .passwordParameter("pw")
                         .defaultSuccessUrl("/", true)

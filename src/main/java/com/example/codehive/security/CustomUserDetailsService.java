@@ -31,7 +31,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getUserId())                // 로그인 ID
                 .password(user.getPassword())              // 암호화된 비밀번호
-                .roles(user.getRole().name())              // Enum → "USER" or "ADMIN"
+                .roles(user.getRole().name())
                 .build();
     }
 }
