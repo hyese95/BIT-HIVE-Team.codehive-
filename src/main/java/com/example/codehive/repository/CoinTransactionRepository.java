@@ -1,6 +1,8 @@
 package com.example.codehive.repository;
 
 import com.example.codehive.dto.CoinTransactionDto;
+import com.example.codehive.dto.BuyCoinTransactionSummaryDto;
+import com.example.codehive.dto.SellQuantityDto;
 import com.example.codehive.entity.CoinTransaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -19,6 +21,11 @@ public interface CoinTransactionRepository extends JpaRepository<CoinTransaction
     @Query("SELECT new com.example.codehive.dto.CoinTransactionDto( c.market, SUM(c.transactionCnt)) FROM CoinTransaction c WHERE c.userNo=:userNo AND c.transactionType = 'BUY' AND c.transactionState = 'COMPLETED' GROUP BY c.market")
     List<CoinTransactionDto> findSumCoinTransactionsByUserNoWithBuy(int userNo);
 
+    //BUT 금액합계까지포함
+    @Query("SELECT new com.example.codehive.dto.BuyCoinTransactionSummaryDto( c.market, SUM(c.transactionCnt), SUM(c.price * c.transactionCnt)) FROM CoinTransaction c WHERE c.userNo=:userNo AND c.transactionType = 'BUY' AND c.transactionState = 'COMPLETED' GROUP BY c.market")
+    List<BuyCoinTransactionSummaryDto> findSummaryCoinTransactionsByUserNoWithBuy(int userNo);
+
+
     // SELL 총 합계
     @Query("SELECT new com.example.codehive.dto.CoinTransactionDto( c.market, SUM(c.transactionCnt)) FROM CoinTransaction c WHERE c.userNo=:userNo AND c.transactionType = 'SELL' AND c.transactionState = 'COMPLETED' GROUP BY c.market")
     List<CoinTransactionDto> findSumCoinTransactionsByUserNoWithSell(int userNo);
@@ -28,6 +35,17 @@ public interface CoinTransactionRepository extends JpaRepository<CoinTransaction
 
     @Query("SELECT new com.example.codehive.dto.CoinTransactionDto( c.market, SUM(c.transactionCnt)) FROM CoinTransaction c WHERE c.userNo=:userNo AND c.transactionType = 'SELL' AND c.market = 'KRW-KRW' GROUP BY c.market")
     List<CoinTransactionDto> findSumKRWTransactionsByUserNoWithSell(int userNo);
+
+    //SELL 수량합만
+    @Query("""
+            SELECT new com.example.codehive.dto.SellQuantityDto(c.market, SUM(c.transactionCnt))
+                        FROM CoinTransaction c
+                        WHERE c.userNo = :userNo
+                        AND c.transactionType = 'SELL'
+                        AND c.transactionState = 'COMPLETED'
+                        GROUP BY c.market
+            """)
+    List<SellQuantityDto> findTotalSellQuantityByUserNo(int userNo);
 
     //특정코인거래내역찾기
     @Query("""
