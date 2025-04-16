@@ -26,9 +26,8 @@ class PostRepositoryTest {
 
 
     @Test
-    @Transactional
     void findAllByCategory() {
-        System.out.println(postRepository.findAllByCategory(Pageable.ofSize(1), "free").getContent());
+        System.out.println(postRepository.findAllByCategory("free"));
     }
 
 
@@ -37,4 +36,5 @@ class PostRepositoryTest {
     void findByUserNo() {
 
     }
+
 }

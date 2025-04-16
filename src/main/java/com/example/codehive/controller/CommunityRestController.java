@@ -11,8 +11,11 @@ import com.example.codehive.service.UserService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,15 +34,25 @@ public class CommunityRestController {
     private final CommentLikeService commentLikeService;
     private final Logger logger= LoggerFactory.getLogger(CommunityRestController.class);
 
-    @GetMapping("read/{category}")
+    @GetMapping("/read/{category}")
     public ResponseEntity<Page<Post>> read(
             @PathVariable String category,
-            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
-    ) {
-        PageRequest pageRequest=PageRequest.of(page-1, size);
-        Page<Post> postPage=postService.readAllByCategory(pageRequest, category);
-        return ResponseEntity.ok(postPage);
+            ) {
+        Pageable pageable= PageRequest.of(page, size);
+        Page<Post> posts=postService.readAllByCategory(pageable,category);
+        return ResponseEntity.ok(posts);
+    }
+    @PostMapping("/read/{category}")
+    public ResponseEntity<Page<PostDto>> readPosts(
+            @RequestBody PostDto.PostSearchRequestDto request
+            ,@PathVariable String category) {
+        request.setCategory(category);
+        request.setPage(0);
+        request.setSize(10);
+        Page<PostDto> result = postService.readAllDtoByCategory(request);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("read/{postNo}/postDetail")

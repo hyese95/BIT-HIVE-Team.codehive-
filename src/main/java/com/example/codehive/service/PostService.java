@@ -5,6 +5,7 @@ import com.example.codehive.dto.PostDto;
 import com.example.codehive.entity.Post;
 import com.example.codehive.entity.User;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -22,4 +23,6 @@ public interface PostService {
     Page<Post> readAll(PostDto postDto, Pageable pageable);
     Page<Post>readByUserNo(Pageable pageable, int userNo);
     Page<Post> findAll(Pageable pageable);
+    List<Post> findByCategory(String category);
+    Page<PostDto> readAllDtoByCategory(PostDto.PostSearchRequestDto request);
 }
