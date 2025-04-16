@@ -27,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Controller
@@ -90,7 +91,7 @@ public class CommunityController {
         postDto.setUserId(randomUser.getId());
         postDto.setCategory("free");
         postDto.setUserNickname(randomUser.getNickname());
-        postDto.setPostCreatedAt(Instant.now());
+        postDto.setPostCreatedAt(LocalDateTime.now());
         PostDto savedPost = postService.createPost(postDto);
         return ResponseEntity.ok(savedPost);
     }
@@ -134,7 +135,7 @@ public class CommunityController {
         postDto.setUserId(randomUser.getId());
         postDto.setCategory("pnl");
         postDto.setUserNickname(randomUser.getNickname());
-        postDto.setPostCreatedAt(Instant.now());
+        postDto.setPostCreatedAt(LocalDateTime.now());
         PostDto savedPost = postService.createPost(postDto);
         return ResponseEntity.ok(savedPost);
     }
@@ -175,7 +176,7 @@ public class CommunityController {
         postDto.setUserId(randomUser.getId());
         postDto.setCategory("chart");
         postDto.setUserNickname(randomUser.getNickname());
-        postDto.setPostCreatedAt(Instant.now());
+        postDto.setPostCreatedAt(LocalDateTime.now());
         PostDto savedPost = postService.createPost(postDto);
         return ResponseEntity.ok(savedPost);
     }
@@ -212,7 +213,7 @@ public class CommunityController {
         postDto.setUserId(randomUser.getId());
         postDto.setCategory("expert");
         postDto.setUserNickname(randomUser.getNickname());
-        postDto.setPostCreatedAt(Instant.now());
+        postDto.setPostCreatedAt(LocalDateTime.now());
         PostDto savedPost = postService.createPost(postDto);
         return ResponseEntity.ok(savedPost);
     }
@@ -270,7 +271,7 @@ public class CommunityController {
         Hibernate.initialize(user);
         comment.setPostNo(comment.getPostNo());
         comment.setUserNo(user);
-        comment.setCommentCreatedAt(Instant.now());
+        comment.setCommentCreatedAt(LocalDateTime.now());
         comment.setCommentCont(comment.getCommentCont());
         Comment savedComment = commentRepository.save(comment);
         if(Objects.equals(savedComment.getCommentCont(), "")){
@@ -289,7 +290,7 @@ public class CommunityController {
         Hibernate.initialize(user);
         comment.setPostNo(comment.getPostNo());
         comment.setUserNo(user);
-        comment.setCommentCreatedAt(Instant.now());
+        comment.setCommentCreatedAt(LocalDateTime.now());
         comment.setParentNo(comment.getParentNo());
         String content = comment.getCommentCont().trim();
         if (content.isEmpty()) {

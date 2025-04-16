@@ -39,7 +39,7 @@ public class CommunityRestController {
             @PathVariable String category,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
-    ) {
+            ) {
         Pageable pageable= PageRequest.of(page, size);
         Page<Post> posts=postService.readAllByCategory(pageable,category);
         return ResponseEntity.ok(posts);

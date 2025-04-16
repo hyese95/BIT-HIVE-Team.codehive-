@@ -47,7 +47,7 @@ public class Comment {
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "comment_created_at", nullable = false)
-    @JsonFormat(pattern = "yyyy-MM-dd a h시 M분", shape = JsonFormat.Shape.STRING)
+    @JsonFormat(pattern = "yyyy-MM-dd a hh시 MM분", shape = JsonFormat.Shape.STRING)
     private LocalDateTime commentCreatedAt;
 
     // 🔹 부모 댓글 관계 (N:1)
