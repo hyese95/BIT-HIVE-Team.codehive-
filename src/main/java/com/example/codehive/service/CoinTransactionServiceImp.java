@@ -34,7 +34,7 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
                 .findTransactionStateByUserNo(userNo)
                 .stream()
                 .filter(tr -> !"KRW-KRW".equals(tr.getMarket()))
-                .filter(tr-> "PENDING".equals(tr.getTransactionState()))
+                .filter(tr -> "PENDING".equals(tr.getTransactionState()))
                 .collect(Collectors.toList());
     }
 
@@ -60,7 +60,6 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
                 .collect(Collectors.groupingBy(CoinTransaction::getMarket));
         Map<String, List<CoinTransaction>> sellMap = sellTransactions.stream()
                 .collect(Collectors.groupingBy(CoinTransaction::getMarket));
-
 
 
         List<CoinDetailDto> coinDetails = new ArrayList<>();
@@ -135,6 +134,7 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
 
         return new ProfitResultDto(coinDetails, totalPurchaseValuation, totalCurrentValuation, totalProfit, overallProfitRate);
     }
+
     @Override
     public void saveCoinTransaction(CoinTransaction coinTransaction) {
         coinTransactionRepository.save(coinTransaction);
@@ -142,7 +142,7 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
 
     @Override
     public List<CoinTransactionDto> getSumCoinTransactionsByConditions(int userNo, String market, String transactionType, String transactionState) {
-        return coinTransactionRepository.findSumCoinTransactionsByConditions(userNo, market, transactionType, transactionState) ;
+        return coinTransactionRepository.findSumCoinTransactionsByConditions(userNo, market, transactionType, transactionState);
     }
 
     @Override
@@ -176,11 +176,28 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
     }
 
     @Override
-    public void remove(CoinTransaction coinTransaction) {
-        CoinTransaction removePending = entityManager.find(CoinTransaction.class, coinTransaction);
-        if (removePending == null){
-            throw new IllegalArgumentException("이미 취소된 주문입니다.");
-        }
+    @Transactional
+    public void remove(int id) {
+        CoinTransaction removePending = entityManager.find(CoinTransaction.class, id);
+        if (removePending == null) throw new IllegalArgumentException("취소할 미체결 주문이 없습니다.");
         entityManager.remove(removePending);
+    }
+
+    @Override
+    @Transactional
+    public void removeTransactionPendingByUserNo(int userNo) {
+        List<CoinTransaction> pendingOrders = entityManager.createQuery(
+                        "SELECT ct FROM CoinTransaction ct WHERE ct.userNo = :userNo AND ct.transactionState = 'PENDING'",
+                        CoinTransaction.class)
+                .setParameter("userNo", userNo)
+                .getResultList();
+
+        if (pendingOrders.isEmpty()) {
+            throw new IllegalArgumentException("취소할 미체결 주문이 없습니다.");
+        }
+
+        for (CoinTransaction tx : pendingOrders) {
+            entityManager.remove(tx);
+        }
     }
 }

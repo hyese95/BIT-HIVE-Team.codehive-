@@ -2,19 +2,17 @@ package com.example.codehive.controller;
 
 
 import com.example.codehive.dto.CoinTransactionDto;
-import com.example.codehive.entity.CoinTransaction;
 import com.example.codehive.repository.CoinTransactionRepository;
 import com.example.codehive.service.CoinTransactionService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @AllArgsConstructor
-public class CoinTransactionApiController {
+public class CoinTransactionController {
 
 
     private final CoinTransactionService coinTransactionService;

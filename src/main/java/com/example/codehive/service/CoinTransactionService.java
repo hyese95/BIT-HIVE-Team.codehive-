@@ -18,6 +18,8 @@ public interface CoinTransactionService {
 
     List<CoinTransactionDto> getUserCoinHistory(int userNo);
 
-    void remove(CoinTransaction coinTransaction);
+    void remove(int id);
+
+    void removeTransactionPendingByUserNo(int userNo);
 }
 

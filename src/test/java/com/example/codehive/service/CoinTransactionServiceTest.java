@@ -10,5 +10,4 @@ import static org.junit.jupiter.api.Assertions.*;
 class CoinTransactionServiceTest {
     @Autowired
     private CoinTransactionService coinTransactionService;
-
 }
