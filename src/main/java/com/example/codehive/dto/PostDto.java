@@ -64,7 +64,9 @@ public class PostDto {
         private int size;
     }
 
-    public PostDto(String category){
-        this.category=category;
+    @Getter
+    @Setter
+    public static class FindPostDto{
+        private int postNo;
     }
 }

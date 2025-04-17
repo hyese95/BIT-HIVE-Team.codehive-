@@ -34,48 +34,49 @@ public class CommunityRestController {
     private final CommentLikeService commentLikeService;
     private final Logger logger= LoggerFactory.getLogger(CommunityRestController.class);
 
-    @GetMapping("/read/{category}")
-    public ResponseEntity<Page<Post>> read(
+    @GetMapping("/read/{category}/{page}")
+    public ResponseEntity<Page<PostDto>> read(
             @PathVariable String category,
-            @RequestParam(defaultValue = "0") int page,
+            @PathVariable int page,
             @RequestParam(defaultValue = "10") int size
             ) {
-        Pageable pageable= PageRequest.of(page, size);
-        Page<Post> posts=postService.readAllByCategory(pageable,category);
-        return ResponseEntity.ok(posts);
-    }
-    @PostMapping("/read/{category}")
-    public ResponseEntity<Page<PostDto>> readPosts(
-            @RequestBody PostDto.PostSearchRequestDto request
-            ,@PathVariable String category) {
+        PostDto.PostSearchRequestDto request=new PostDto.PostSearchRequestDto();
         request.setCategory(category);
-        request.setPage(0);
-        request.setSize(10);
-        Page<PostDto> result = postService.readAllDtoByCategory(request);
-        return ResponseEntity.ok(result);
+        request.setPage(page);
+        request.setSize(size);
+        Page<PostDto> posts=postService.readAllDtoByCategory(request);
+        return ResponseEntity.ok().body(posts);
     }
 
-    @GetMapping("read/{postNo}/postDetail")
-    public ResponseEntity<Post> read(@PathVariable int postNo) {
-        Post post=postService.getPostByPostId(postNo);
-        List<Comment> comments=commentService.readCommentByPostNo(postNo);
-        int cntComment=commentService.getCommentCountByPostNo(postNo);
-        Map<Integer, CommentLikeCountDTO> cntCommentLike = new HashMap<>();
-        for (CommentLikeCountDTO dto : commentLikeService.getLikesAndDislikesCount()) {
-            cntCommentLike.put(dto.getCommentNo(), dto);
-        }
-        Map<Integer, Integer> replyCounts = new HashMap<>();
-        for (Comment comment : comments) {
-            if (comment.getParentNo() == null) { // 부모 댓글만 체크
-                int count = commentService.getReplyCount(comment.getId());
-                replyCounts.put(comment.getId(), count);
-            }
-        }
-        if(post==null){
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(post);
+    @PostMapping("/readPost/{category}")
+    public ResponseEntity<Page<PostDto>> readPost(
+            @PathVariable String category,
+            @RequestParam(defaultValue = "0")int page,
+            @RequestParam(defaultValue = "10") int size
+    ){
+        PostDto.PostSearchRequestDto request=new PostDto.PostSearchRequestDto();
+        request.setCategory(category);
+        request.setPage(page);
+        request.setSize(size);
+        Page<PostDto> posts=postService.readAllDtoByCategory(request);
+        return ResponseEntity.ok(posts);
     }
+
+    @GetMapping("/read/{postNo}/postDetail")
+    public ResponseEntity<List<PostDto>> readPostDetail(@PathVariable int postNo) {
+        PostDto.FindPostDto postDto=new PostDto.FindPostDto();
+        postDto.setPostNo(postNo);
+        List<PostDto> postDtos=postService.readPost(postDto);
+        return ResponseEntity.ok().body(postDtos);
+    }
+    @GetMapping("/read/{postNo}/comments")
+    public ResponseEntity<List<Comment>> readComment(@PathVariable int postNo) {
+        PostDto.FindPostDto postDto=new PostDto.FindPostDto();
+        postDto.setPostNo(postNo);
+        List<Comment> comments=commentService.readCommentByPostNo(postNo);
+        return ResponseEntity.ok().body(comments);
+    }
+
     @DeleteMapping("/{postNo}/deletePost")
     public ResponseEntity<Void> deletePost(@PathVariable int postNo) {
         try{

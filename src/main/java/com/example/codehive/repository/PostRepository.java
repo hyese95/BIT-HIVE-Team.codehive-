@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Integer> {
@@ -51,7 +52,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query("DELETE from Post p where p.id= :postNo")
     int deletePostByPostNo(int postNo);
 
-    @Query("select p from Post p where p.category=:category")
-    Post findByCategory(String category);
-//    이건 리스트 반환
+    Optional<Post> findById(int id);
+
+    List<Post> findPostListById(int id);
 }

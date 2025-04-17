@@ -90,4 +90,12 @@ class PostServiceImpTest {
        Page<PostDto> postDtoPage=postService.readAllDtoByCategory(request);
         System.out.println(postDtoPage.getContent());
     }
+
+    @Test
+    @Transactional
+    void readPost() {
+        PostDto.FindPostDto postDto=new PostDto.FindPostDto();
+        postDto.setPostNo(1);
+        System.out.println(postService.readPost(postDto));
+    }
 }

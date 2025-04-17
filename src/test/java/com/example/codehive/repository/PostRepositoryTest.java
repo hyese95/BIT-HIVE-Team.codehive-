@@ -18,14 +18,8 @@ class PostRepositoryTest {
     @Test
     @Transactional
     void findById() {
+        System.out.println(postRepository.findById(1).orElse(null));
     }
-
-
-    @Test
-    void findAllByCategory() {
-        System.out.println(postRepository.findByCategory("free"));
-    }
-
 
     @Test
     @Transactional
@@ -40,5 +34,17 @@ class PostRepositoryTest {
         Page<Post> post = postRepository.findByCategory(category,pageable);
         System.out.println(post.getTotalPages());
         System.out.println(post);
+    }
+
+    @Test
+    @Transactional
+    void findPostById() {
+        System.out.println(postRepository.findPostById(1));
+    }
+
+    @Test
+    @Transactional
+    void findPostListById() {
+        System.out.println(postRepository.findPostListById(1));
     }
 }

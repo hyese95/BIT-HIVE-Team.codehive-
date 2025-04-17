@@ -143,4 +143,13 @@ public class PostServiceImp implements PostService {
         );
         return page.map(PostDto::new);
     }
+
+    @Override
+    public List<PostDto> readPost(PostDto.FindPostDto postDto) {
+        List<Post> posts=postRepository.findPostListById(
+                postDto.getPostNo()
+        );
+        return posts.stream().map(PostDto::new).collect(Collectors.toList());
+    }
+
 }
