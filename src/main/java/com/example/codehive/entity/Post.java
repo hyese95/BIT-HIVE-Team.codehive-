@@ -1,15 +1,13 @@
 package com.example.codehive.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Formula;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -39,7 +37,8 @@ public class Post {
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "post_created_at", nullable = false)
-    private Instant postCreatedAt;
+    @JsonFormat(pattern = "yyyy-MM-dd a hh시 MM분", shape = JsonFormat.Shape.STRING)
+    private LocalDateTime postCreatedAt;
 
     @Column(name = "img_url")
     private String imgUrl;

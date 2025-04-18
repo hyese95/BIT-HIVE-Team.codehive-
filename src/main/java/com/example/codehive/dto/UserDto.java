@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @ToString
@@ -17,7 +18,7 @@ public class UserDto {
     private String phone;
     private String profileImgUrl;
     private String selfIntroduction;
-    private Instant createdAt;
+    private LocalDateTime createdAt;
     private String name;
     private String nationality;
     private String gender;

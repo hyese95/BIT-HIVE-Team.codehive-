@@ -2,23 +2,26 @@ package com.example.codehive.dto;
 
 import com.example.codehive.entity.Post;
 import com.example.codehive.entity.PostLike;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.Column;
+import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
 @Setter
 @ToString
+@AllArgsConstructor
 @NoArgsConstructor
 public class PostDto {
     private Integer id;
     private String postCont;
-    private Instant postCreatedAt;
+    @JsonFormat(pattern = "yyyy-MM-dd a hh시 MM분", shape = JsonFormat.Shape.STRING)
+    private LocalDateTime postCreatedAt;
     private String imgUrl;
     private String category;
     private String userNickname;
@@ -53,9 +56,17 @@ public class PostDto {
         }
         this.dislikeCount = post.getPostLikes().size()-this.likeCount;
     }
-    public PostDto(Integer postNo, int likeCount, int dislikeCount) {
-        this.id = postNo;
-        this.likeCount = likeCount;
-        this.dislikeCount = dislikeCount;
+    @Getter
+    @Setter
+    public static class PostSearchRequestDto {
+        private String category;
+        private int page;
+        private int size;
+    }
+
+    @Getter
+    @Setter
+    public static class FindPostDto{
+        private int postNo;
     }
 }

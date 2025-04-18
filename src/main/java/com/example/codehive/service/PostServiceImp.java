@@ -3,40 +3,33 @@ package com.example.codehive.service;
 
 import com.example.codehive.dto.PostDto;
 import com.example.codehive.entity.Post;
-import com.example.codehive.entity.PostLike;
 import com.example.codehive.entity.User;
 import com.example.codehive.repository.CommentRepository;
 import com.example.codehive.repository.PostRepository;
 import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
-import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class PostServiceImp implements PostService {
-    @Autowired
     PostRepository postRepository;
     UserService userService;
     EntityManager entityManager;
     CommentRepository commentRepository;
     @Override
     public Page<Post> readByCategoryWithKeyword(String category, String keyword, String sortType, Pageable pageable) {
-        Instant startDate = switch (sortType) {
-            case "daily" -> Instant.now().minus(1, ChronoUnit.DAYS);
-            case "weekly" -> Instant.now().minus(7, ChronoUnit.DAYS);
-            case "monthly" -> Instant.now().minus(30, ChronoUnit.DAYS);
+        LocalDate startDate = switch (sortType) {
+            case "daily" -> LocalDate.now().minusDays(1);
+            case "weekly" -> LocalDate.now().minusDays(7);
+            case "monthly" -> LocalDate.now().minusDays(30);
             default -> null;
         };
         System.out.println(sortType);
@@ -64,7 +57,7 @@ public class PostServiceImp implements PostService {
     @Override
     public Page<Post> readAllByCategory(Pageable pageable, String category) {
         Page<Post> posts;
-        posts = postRepository.findAllByCategory(pageable, category);
+        posts = postRepository.findByCategory(category,pageable);
         return posts;
     }
 
@@ -105,7 +98,7 @@ public class PostServiceImp implements PostService {
         Post newPost = new Post();
         newPost.setPostCont(postDto.getPostCont());
 //        newPost.setUser(user); // 현재 로그인한 사용자 정보 추가
-        newPost.setPostCreatedAt(Instant.now());
+        newPost.setPostCreatedAt(LocalDateTime.now());
         newPost.setCategory(postDto.getCategory());
         User user = userService.findAll().getFirst();
         if (user == null) {
@@ -132,4 +125,31 @@ public class PostServiceImp implements PostService {
     public Page<Post> findAll(Pageable pageable) {
         return postRepository.findAll(pageable);
     }
+
+    @Override
+    public List<Post> getAllPosts() {
+        List<Post> posts = new ArrayList<>();
+//        for (int i = 1; i <= 50; i++) {
+//            posts.add();
+//        }
+        return posts;
+    }
+
+    @Override
+    public Page<PostDto> readAllDtoByCategory(PostDto.PostSearchRequestDto request) {
+        Page<Post> page = postRepository.findByCategory(
+                request.getCategory(),
+                PageRequest.of(request.getPage(), request.getSize())
+        );
+        return page.map(PostDto::new);
+    }
+
+    @Override
+    public List<PostDto> readPost(PostDto.FindPostDto postDto) {
+        List<Post> posts=postRepository.findPostListById(
+                postDto.getPostNo()
+        );
+        return posts.stream().map(PostDto::new).collect(Collectors.toList());
+    }
+
 }

@@ -11,15 +11,17 @@ import com.example.codehive.service.UserService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/rest/community")
@@ -32,38 +34,49 @@ public class CommunityRestController {
     private final CommentLikeService commentLikeService;
     private final Logger logger= LoggerFactory.getLogger(CommunityRestController.class);
 
-    @GetMapping("read/{category}")
-    public ResponseEntity<Page<Post>> read(
+    @GetMapping("/read/{category}/{page}")
+    public ResponseEntity<Page<PostDto>> read(
             @PathVariable String category,
-            @RequestParam(defaultValue = "1") int page,
+            @PathVariable int page,
             @RequestParam(defaultValue = "10") int size
-    ) {
-        PageRequest pageRequest=PageRequest.of(page-1, size);
-        Page<Post> postPage=postService.readAllByCategory(pageRequest, category);
-        return ResponseEntity.ok(postPage);
+            ) {
+        PostDto.PostSearchRequestDto request=new PostDto.PostSearchRequestDto();
+        request.setCategory(category);
+        request.setPage(page);
+        request.setSize(size);
+        Page<PostDto> posts=postService.readAllDtoByCategory(request);
+        return ResponseEntity.ok().body(posts);
     }
 
-    @GetMapping("read/{postNo}/postDetail")
-    public ResponseEntity<Post> read(@PathVariable int postNo) {
-        Post post=postService.getPostByPostId(postNo);
-        List<Comment> comments=commentService.readCommentByPostNo(postNo);
-        int cntComment=commentService.getCommentCountByPostNo(postNo);
-        Map<Integer, CommentLikeCountDTO> cntCommentLike = new HashMap<>();
-        for (CommentLikeCountDTO dto : commentLikeService.getLikesAndDislikesCount()) {
-            cntCommentLike.put(dto.getCommentNo(), dto);
-        }
-        Map<Integer, Integer> replyCounts = new HashMap<>();
-        for (Comment comment : comments) {
-            if (comment.getParentNo() == null) { // 부모 댓글만 체크
-                int count = commentService.getReplyCount(comment.getId());
-                replyCounts.put(comment.getId(), count);
-            }
-        }
-        if(post==null){
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(post);
+    @PostMapping("/readPost/{category}")
+    public ResponseEntity<Page<PostDto>> readPost(
+            @PathVariable String category,
+            @RequestParam(defaultValue = "0")int page,
+            @RequestParam(defaultValue = "10") int size
+    ){
+        PostDto.PostSearchRequestDto request=new PostDto.PostSearchRequestDto();
+        request.setCategory(category);
+        request.setPage(page);
+        request.setSize(size);
+        Page<PostDto> posts=postService.readAllDtoByCategory(request);
+        return ResponseEntity.ok(posts);
     }
+
+    @GetMapping("/read/{postNo}/postDetail")
+    public ResponseEntity<List<PostDto>> readPostDetail(@PathVariable int postNo) {
+        PostDto.FindPostDto postDto=new PostDto.FindPostDto();
+        postDto.setPostNo(postNo);
+        List<PostDto> postDtos=postService.readPost(postDto);
+        return ResponseEntity.ok().body(postDtos);
+    }
+    @GetMapping("/read/{postNo}/comments")
+    public ResponseEntity<List<Comment>> readComment(@PathVariable int postNo) {
+        PostDto.FindPostDto postDto=new PostDto.FindPostDto();
+        postDto.setPostNo(postNo);
+        List<Comment> comments=commentService.readCommentByPostNo(postNo);
+        return ResponseEntity.ok().body(comments);
+    }
+
     @DeleteMapping("/{postNo}/deletePost")
     public ResponseEntity<Void> deletePost(@PathVariable int postNo) {
         try{
@@ -113,12 +126,12 @@ public class CommunityRestController {
     }
     //localhost:/8888/rest/emp/144/mutate
 //    mutant 돌연변이 => 데이터 조작
-    @PutMapping("/mutate")
+    @PutMapping("/modifyComment")
     public ResponseEntity<Void> modifyComment(@RequestBody Comment comment) {
         logger.info(comment.toString());
         return ResponseEntity.ok().build();
     }
-    @PostMapping("/mutate")
+    @PostMapping("/deleteComments")
     public ResponseEntity<Void> createComment(@RequestBody Comment comment) {
         logger.info(comment.toString());
         try{

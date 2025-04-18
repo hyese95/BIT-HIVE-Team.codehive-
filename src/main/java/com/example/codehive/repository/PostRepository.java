@@ -1,6 +1,5 @@
 package com.example.codehive.repository;
 
-import com.example.codehive.dto.PostDto;
 import com.example.codehive.entity.Post;
 import com.example.codehive.entity.PostLike;
 import org.springframework.data.domain.Page;
@@ -13,8 +12,9 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Integer> {
@@ -28,14 +28,15 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
             "and p.postCreatedAt >= :startDate " +
             "ORDER BY SIZE(p.postLikes) DESC")
     Page<Post> findByCategoryWithKeywordAndPeriod(String category, String keyword,
-                                                  @Param("startDate") Instant startDate,
+                                                  @Param("startDate") LocalDate startDate,
                                                   Pageable pageable);
 
     @Query("select pl from PostLike pl where pl.post.id = :postNo ")
     List<PostLike> findLikesByPostNo(int postNo);
 
-    @Query("select p from Post p where p.category=:category order by p.postCreatedAt DESC")
-    Page<Post> findAllByCategory(Pageable pageable, String category);
+    @EntityGraph(attributePaths = {"postLikes"})
+    Page<Post> findByCategory(String category, Pageable pageable);
+//    이건 페이지 반환
 
     @Query("SELECT p FROM Post p JOIN FETCH p.user WHERE p.user.id = :Id")
     Page<Post> findByUserNo(@Param("Id") int Id, Pageable pageable);
@@ -51,6 +52,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query("DELETE from Post p where p.id= :postNo")
     int deletePostByPostNo(int postNo);
 
-    Page<Post> findAll(Pageable pageable);
+    Optional<Post> findById(int id);
 
+    List<Post> findPostListById(int id);
 }

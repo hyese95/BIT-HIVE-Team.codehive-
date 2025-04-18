@@ -1,5 +1,6 @@
 package com.example.codehive.service;
 
+import com.example.codehive.dto.PostDto;
 import com.example.codehive.entity.Post;
 import com.example.codehive.entity.User;
 import jakarta.persistence.EntityManager;
@@ -69,5 +70,32 @@ class PostServiceImpTest {
         Page<Post> posts=postService.readByUserNo(pageable,1);
         System.out.println(posts.getContent());
 
+    }
+
+    @Test
+    @Transactional
+    void readAll() {
+        Pageable pageable = PageRequest.of(0, 10);
+        PostDto postDto=new PostDto();
+        System.out.println(postService.readAll(postDto,pageable));
+    }
+
+    @Test
+    @Transactional
+    void readAllDtoByCategory() {
+        PostDto.PostSearchRequestDto request = new PostDto.PostSearchRequestDto();
+        request.setCategory("free");
+        request.setPage(1);
+        request.setSize(10);
+       Page<PostDto> postDtoPage=postService.readAllDtoByCategory(request);
+        System.out.println(postDtoPage.getContent());
+    }
+
+    @Test
+    @Transactional
+    void readPost() {
+        PostDto.FindPostDto postDto=new PostDto.FindPostDto();
+        postDto.setPostNo(1);
+        System.out.println(postService.readPost(postDto));
     }
 }
