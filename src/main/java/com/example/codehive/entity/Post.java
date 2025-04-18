@@ -24,9 +24,11 @@ public class Post {
     @Column(name = "post_no", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(name = "user_no", nullable = false)
+    private Integer userNo;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_no", nullable = false)
+    @JoinColumn(name = "user_no", nullable = false,insertable = false,updatable = false)
     @JsonBackReference
     @ToString.Exclude
     private User user;

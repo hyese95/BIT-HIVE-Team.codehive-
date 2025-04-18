@@ -97,16 +97,9 @@ public class PostServiceImp implements PostService {
     public PostDto createPost(PostDto postDto) {
         Post newPost = new Post();
         newPost.setPostCont(postDto.getPostCont());
-//        newPost.setUser(user); // 현재 로그인한 사용자 정보 추가
         newPost.setPostCreatedAt(LocalDateTime.now());
         newPost.setCategory(postDto.getCategory());
-        User user = userService.findAll().getFirst();
-        if (user == null) {
-            throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
-        }
-        newPost.setUser(user);  // 실제 User 객체 설정
-        newPost.setComment(new ArrayList<>());
-
+        newPost.setUserNo(postDto.getUserNo());
         Post savedPost = postRepository.save(newPost);
         return new PostDto(savedPost);
     }

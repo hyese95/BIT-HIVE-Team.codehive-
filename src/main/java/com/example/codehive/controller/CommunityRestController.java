@@ -4,6 +4,7 @@ import com.example.codehive.dto.CommentLikeCountDTO;
 import com.example.codehive.dto.PostDto;
 import com.example.codehive.entity.Comment;
 import com.example.codehive.entity.Post;
+import com.example.codehive.entity.User;
 import com.example.codehive.service.CommentLikeService;
 import com.example.codehive.service.CommentService;
 import com.example.codehive.service.PostService;
@@ -19,6 +20,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,9 +99,20 @@ public class CommunityRestController {
         logger.info(post.toString());
         return ResponseEntity.ok().build();
     }
-    @PostMapping("/createPost")
-    public ResponseEntity<Void> createPost(@RequestBody PostDto postDto) {
+    @PostMapping("/createPost/{category}")
+    public ResponseEntity<Void> createPost(@RequestBody PostDto postDto,@PathVariable String category) {
         logger.info(postDto.toString());
+//        User user=new User(); //추후 로그인 유저 넣으면 넣을 생각
+//        user.setId(loginUser.getId())
+        User user=new User();
+        user.setId(1);//Id 1 번 유저로 임의 설정
+        if (user.getUserId()==null) {
+            throw new IllegalArgumentException("로그인 한 뒤에 이용하세요");
+        }
+        category=postDto.getCategory();
+        postDto.setCategory(category);
+        postDto.setPostCont(postDto.getPostCont());
+        postDto.setPostCreatedAt(LocalDateTime.now());
         try{
             postService.createPost(postDto);
         }catch (IllegalArgumentException e){

@@ -1,6 +1,7 @@
 package com.example.codehive.service;
 
 import com.example.codehive.dto.PostDto;
+import com.example.codehive.dto.UserDto;
 import com.example.codehive.entity.Post;
 import com.example.codehive.entity.User;
 import jakarta.persistence.EntityManager;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,6 +24,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class PostServiceImpTest {
     @Autowired
     PostService postService;
+    @Autowired
+    UserService userService;
     @Autowired
     EntityManager entityManager;
     @Test
@@ -97,5 +101,17 @@ class PostServiceImpTest {
         PostDto.FindPostDto postDto=new PostDto.FindPostDto();
         postDto.setPostNo(1);
         System.out.println(postService.readPost(postDto));
+    }
+
+    @Test
+    @Transactional
+    void createPost() {
+        PostDto postDto=new PostDto();
+        User user=userService.readByUserNo(1).orElse(null);
+
+        postDto.setCategory("free");
+        postDto.setUserNo(1);
+        postDto.setPostCont("마무리 하고 싶어");
+        System.out.println(postService.createPost(postDto));
     }
 }

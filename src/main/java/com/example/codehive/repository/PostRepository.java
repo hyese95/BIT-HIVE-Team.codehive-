@@ -34,7 +34,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query("select pl from PostLike pl where pl.post.id = :postNo ")
     List<PostLike> findLikesByPostNo(int postNo);
 
-    @EntityGraph(attributePaths = {"postLikes"})
+    @EntityGraph(attributePaths = {"postLikes","user"})
     Page<Post> findByCategory(String category, Pageable pageable);
 //    이건 페이지 반환
 
