@@ -50,20 +50,6 @@ public class CommunityRestController {
         return ResponseEntity.ok().body(posts);
     }
 
-    @PostMapping("/readPost/{category}")
-    public ResponseEntity<Page<PostDto>> readPost(
-            @PathVariable String category,
-            @RequestParam(defaultValue = "0")int page,
-            @RequestParam(defaultValue = "10") int size
-    ){
-        PostDto.PostSearchRequestDto request=new PostDto.PostSearchRequestDto();
-        request.setCategory(category);
-        request.setPage(page);
-        request.setSize(size);
-        Page<PostDto> posts=postService.readAllDtoByCategory(request);
-        return ResponseEntity.ok(posts);
-    }
-
     @GetMapping("/read/{postNo}/postDetail")
     public ResponseEntity<List<PostDto>> readPostDetail(@PathVariable int postNo) {
         PostDto.FindPostDto postDto=new PostDto.FindPostDto();
@@ -100,30 +86,46 @@ public class CommunityRestController {
         return ResponseEntity.ok().build();
     }
     @PostMapping("/createPost/{category}")
-    public ResponseEntity<Void> createPost(@RequestBody PostDto postDto,@PathVariable String category) {
+    public ResponseEntity<?> createPost(@RequestBody String postCont,@PathVariable String category) {
+        PostDto postDto=new PostDto();
         logger.info(postDto.toString());
-//        User user=new User(); //추후 로그인 유저 넣으면 넣을 생각
-//        user.setId(loginUser.getId())
-        User user=new User();
-        user.setId(1);//Id 1 번 유저로 임의 설정
-        if (user.getUserId()==null) {
+        User user=userService.readByUserNo(1).orElse(null);
+        Post post=new Post();
+//        User user=userService.findById(loginUser.getId());
+//        추후 로그인 구현시 사용 예정
+        if (user.getId()==null) {
             throw new IllegalArgumentException("로그인 한 뒤에 이용하세요");
         }
-        category=postDto.getCategory();
-        postDto.setCategory(category);
-        postDto.setPostCont(postDto.getPostCont());
-        postDto.setPostCreatedAt(LocalDateTime.now());
+        post.setCategory(category);
+        post.setPostCont(postCont);
+        post.setPostCreatedAt(LocalDateTime.now());
+        post.setUser(user);
+        post.setUserNo(user.getId());
+        postDto.setPostCreatedAt(post.getPostCreatedAt());
+        postDto.setUserNo(post.getUser().getId());
+        postDto.setCategory(post.getCategory());
+        postDto.setPostCont(post.getPostCont());
+        postDto.setUserNickname(post.getUser().getNickname());
+        System.out.println(post);
+        System.out.println(postDto);
+        System.out.print(user);
         try{
             postService.createPost(postDto);
+            System.out.println(post);
+            System.out.println(postDto);
         }catch (IllegalArgumentException e){
             logger.error(e.getMessage());
+            System.out.println("JSON 형식이 잘못됬어!");
             return ResponseEntity.status(409).build();
         }catch (Exception e){
             logger.error(e.getMessage());
+            System.out.println("서버 오류");
             return ResponseEntity.internalServerError().build();
         }
+        System.out.println(postDto);
         return ResponseEntity.ok().build();
     }
+
     @DeleteMapping("/{commentNo}/deleteComment")
     public ResponseEntity<Void> deleteComment(@PathVariable int commentNo) {
         try{
@@ -137,8 +139,7 @@ public class CommunityRestController {
         }
         return ResponseEntity.ok().build();
     }
-    //localhost:/8888/rest/emp/144/mutate
-//    mutant 돌연변이 => 데이터 조작
+
     @PutMapping("/modifyComment")
     public ResponseEntity<Void> modifyComment(@RequestBody Comment comment) {
         logger.info(comment.toString());

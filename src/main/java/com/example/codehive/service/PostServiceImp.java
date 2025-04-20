@@ -94,13 +94,21 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
+    @Transactional
     public PostDto createPost(PostDto postDto) {
         Post newPost = new Post();
+        User user=userService.readByUserNo(1).orElse(null);
+        postDto.setUserNo(1);
+//        User user=userService.readByUserNo(loginUser).orElse(null);
+//        postDto.setUserNo(user.getId());
         newPost.setPostCont(postDto.getPostCont());
         newPost.setPostCreatedAt(LocalDateTime.now());
         newPost.setCategory(postDto.getCategory());
         newPost.setUserNo(postDto.getUserNo());
         Post savedPost = postRepository.save(newPost);
+        System.out.println(postDto);
+        System.out.println(savedPost);
+        System.out.println(new PostDto(savedPost));
         return new PostDto(savedPost);
     }
 

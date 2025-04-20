@@ -20,7 +20,7 @@ import java.util.List;
 public class PostDto {
     private Integer id;
     private String postCont;
-    private String userProfileImg;
+    private String userProfileImgUrl;
     @JsonFormat(pattern = "yyyy-MM-dd a hh시 MM분", shape = JsonFormat.Shape.STRING)
     private LocalDateTime postCreatedAt;
     private String imgUrl;
@@ -41,12 +41,12 @@ public class PostDto {
     public PostDto(Post post) {
             this.id = post.getId();
             this.postCont = post.getPostCont();
-            this.userProfileImg=post.getUser().getProfileImgUrl();
+            this.userProfileImgUrl=post.getUser().getProfileImgUrl();
             this.postCreatedAt = post.getPostCreatedAt();
             this.imgUrl = post.getImgUrl();
             this.category = post.getCategory();
             this.userNickname = post.getUser().getNickname();
-            this.userNo = post.getUserNo();
+            this.userNo = post.getUser().getId();
             this.commentCount = (post.getComment() != null) ? post.getComment().size() : 0;
             this.likeCount = 0;  // 기본값
             this.dislikeCount = 0;
