@@ -1,19 +1,23 @@
 package com.example.codehive.controller;
 
 
-import com.example.codehive.dto.AssetDto;
+//import com.example.codehive.dto.AssetDto;
 import com.example.codehive.dto.MyAssetDto;
+import com.example.codehive.entity.CoinTransaction;
+import com.example.codehive.service.CoinNameService;
 import com.example.codehive.service.CoinTransactionService;
 import com.example.codehive.service.MyAssetService;
 import com.example.codehive.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -22,6 +26,60 @@ import java.util.List;
 public class AssetApiController {
 
     private MyAssetService myAssetService;
+    private CoinTransactionService coinTransactionService;
+    private CoinNameService coinNameService;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @GetMapping("coinTransactions.do")
+    public Map<String,Object> coinTransactions() {
+        List<CoinTransaction> coinTransactions = coinTransactionService.findByUserNo(1);
+
+        Map<String, String> coinNameMap = coinNameService.getMarketToKoreanNameMap();
+        Map<String, Object> map = new HashMap<>();
+        map.put("coinTransactions",coinTransactions);
+        map.put("coinNameMap",coinNameMap);
+        System.out.println(map.toString());
+
+        return map;
+    }
+
+    @GetMapping("openOrders")
+    public Map<String,Object> openOrders() {
+        List<CoinTransaction> coinTransactions = coinTransactionService.findTransactionStateByUserNo(1);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("coinTransactions",coinTransactions);
+        return map;
+    }
+
+    @DeleteMapping("openOrders/id/{id}")
+    public ResponseEntity<Void> remove(@PathVariable int id) {
+        try{
+            coinTransactionService.remove(id);
+        }catch (IllegalArgumentException e){
+            logger.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("openOrders/user/{userNo}")
+    public ResponseEntity<Void> removeAllPending(@PathVariable int userNo) {
+        try{
+            coinTransactionService.removeTransactionPendingByUserNo(userNo);
+        }catch (IllegalArgumentException e){
+            logger.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+        return ResponseEntity.ok().build();
+    }
+
 
 
     /*
@@ -44,14 +102,9 @@ public class AssetApiController {
     }
      */
 
-    @GetMapping("/me")
-    public List<AssetDto> me() {
-        List<AssetDto> assetDtoList = myAssetService.readHoldingCoinListByUserNo(1);
-        return  assetDtoList;
-    }
-
-
-
-
-
+//    @GetMapping("/me")
+//    public List<AssetDto> me() {
+//        List<AssetDto> assetDtoList = myAssetService.readHoldingCoinListByUserNo(1);
+//        return  assetDtoList;
+//    }
 }
