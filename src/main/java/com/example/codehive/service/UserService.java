@@ -22,5 +22,5 @@ public interface UserService {
     boolean isFollowing(int userNo, int followingUserNo);
     void unfollow(Integer followerUserNo, Integer followingUserNo);
     void follow(int followerUserNo, int followingUserNo);
-
+    Optional<User> readByUserId(String userId);
 }

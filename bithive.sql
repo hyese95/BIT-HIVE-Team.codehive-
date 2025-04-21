@@ -30,7 +30,7 @@ SELECT 'CREATING DATABASE STRUCTURE' as 'INFO';
 CREATE TABLE users(
     user_no INT AUTO_INCREMENT PRIMARY KEY,
     user_id VARCHAR(30) NOT NULL UNIQUE,
-    password VARCHAR(50) NOT NULL,
+    password VARCHAR(255) NOT NULL,
     nickname VARCHAR(36) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
     phone VARCHAR(15) NOT NULL,
@@ -44,7 +44,7 @@ CREATE TABLE users(
     birth_date DATE NOT NULL,
     name VARCHAR(30) NOT NULL,
     self_introduction VARCHAR(150),
-    role VARCHAR(30) NOT NULL DEFAULT 'USER'
+    role ENUM('USER', 'ADMIN') DEFAULT 'USER'
 );
 
 CREATE TABLE notification_settings(

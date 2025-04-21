@@ -12,4 +12,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     List<User> findAllById(int userNo);
     List<User> findAllByUserIdLike(String userId);
     User findNicknameById(int userNo);
+
+    // 로그인 유저 조회용
+    User findByUserId(String userId);
 }
