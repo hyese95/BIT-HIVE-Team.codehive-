@@ -14,6 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
@@ -30,23 +32,32 @@ public class UserApiController {
     private UserService userService;
 
     @GetMapping("/me")
-    public UserDto me() {
-        Optional<User> userOpt = userService.readByUserNo(1);
-        User user = userOpt.get();
+    public UserDto me(@AuthenticationPrincipal UserDetails loginUser) {
+        String userId = loginUser.getUsername();
+        User user = userService.readByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("로그인 유저 정보를 찾을 수 없습니다."));
         return UserDto.from(user);
     }
 
 
     @PatchMapping("/me")
-    public ResponseEntity<Void> updateUserInfo(@RequestBody UserUpdateDto dto
+    public ResponseEntity<Void> updateUserInfo(
+            @AuthenticationPrincipal UserDetails loginUser,
+            @RequestBody UserUpdateDto dto
     ) {
         try {
+            String userId = loginUser.getUsername();
+            User user = userService.readByUserId(userId)
+                    .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
+            int userNo = user.getId();
+
             if (dto.getNickname() != null) {
-                userService.updateNickname(1, dto.getNickname());
+                userService.updateNickname(userNo, dto.getNickname());
             }
             if (dto.getSelfIntroduction() != null) {
-                userService.updateSelfIntroduction(1, dto.getSelfIntroduction());
+                userService.updateSelfIntroduction(userNo, dto.getSelfIntroduction());
             }
+
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
@@ -54,53 +65,71 @@ public class UserApiController {
     }
 
     @GetMapping("/me/summary")
-    public UserDto meSummary() {
-        Optional<User> userOpt = userService.readByUserNo(1);
-        User user = userOpt.get();
+    public UserDto meSummary(@AuthenticationPrincipal UserDetails loginUser) {
+        String userId = loginUser.getUsername(); // 로그인한 사용자 ID 가져오기
+        User user = userService.readByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("로그인된 유저를 찾을 수 없습니다."));
+        int userNo = user.getId();
+
         UserDto userDto = UserDto.from(user);
-        userDto.setPostCount(userService.readPostsCount(1));
-        userDto.setFollowingCount(userService.readFollowingCount(1));
-        userDto.setFollowerCount(userService.readFollowersCount(1));
+        userDto.setPostCount(userService.readPostsCount(userNo));
+        userDto.setFollowingCount(userService.readFollowingCount(userNo));
+        userDto.setFollowerCount(userService.readFollowersCount(userNo));
         return userDto;
     }
 
     @GetMapping("/me/followers")
     public List<FollowDto.Follower> meFollowers(
+            @AuthenticationPrincipal UserDetails loginUser,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
+        String userId = loginUser.getUsername();
+        int userNo = userService.readByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("유저 없음")).getId();
         Pageable pageable = PageRequest.of(page, size);
-        return userService.readFollowersByUserNo(1, pageable);
+        return userService.readFollowersByUserNo(userNo, pageable);
     }
 
     @GetMapping("/me/followings")
     public List<FollowDto.Following> meFollowings(
+            @AuthenticationPrincipal UserDetails loginUser,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
+        String userId = loginUser.getUsername();
+        int userNo = userService.readByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("유저 없음")).getId();
         Pageable pageable = PageRequest.of(page, size);
-        return userService.readFollowingsByUserNo(1, pageable);
+        return userService.readFollowingsByUserNo(userNo, pageable);
     }
 
     @PostMapping("/follow/{followingUserNo}")
-    public ResponseEntity<Void> follow(@PathVariable int followingUserNo) {
+    public ResponseEntity<Void> follow(
+            @AuthenticationPrincipal UserDetails loginUser,
+            @PathVariable int followingUserNo
+    ) {
         try {
-            userService.follow(1, followingUserNo);
+            int userNo = userService.readByUserId(loginUser.getUsername())
+                    .orElseThrow(() -> new RuntimeException("유저 없음")).getId();
+            userService.follow(userNo, followingUserNo);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
-
-
     }
 
 
     @DeleteMapping("/unfollow/{followingUserNo}")
-    public ResponseEntity<Void> unfollow(@PathVariable Integer followingUserNo) {
-        userService.unfollow(1, followingUserNo);
+    public ResponseEntity<Void> unfollow(
+            @AuthenticationPrincipal UserDetails loginUser,
+            @PathVariable Integer followingUserNo
+    ) {
+        int userNo = userService.readByUserId(loginUser.getUsername())
+                .orElseThrow(() -> new RuntimeException("유저 없음")).getId();
+        userService.unfollow(userNo, followingUserNo);
         return ResponseEntity.ok().build();
     }
 
@@ -125,12 +154,13 @@ public class UserApiController {
     }
 
     @GetMapping("/{userNo}/isFollowing")
-    public boolean isFollowing(@PathVariable Integer userNo) {
-
-        //일단은 내 유저넘버를 1로 가정
-        boolean isFollowing = userService.isFollowing(1, userNo);
-        return isFollowing;
-
+    public boolean isFollowing(
+            @AuthenticationPrincipal UserDetails loginUser,
+            @PathVariable Integer userNo
+    ) {
+        int myUserNo = userService.readByUserId(loginUser.getUsername())
+                .orElseThrow(() -> new RuntimeException("유저 없음")).getId();
+        return userService.isFollowing(myUserNo, userNo);
     }
 
     @GetMapping("/{userNo}/boards")

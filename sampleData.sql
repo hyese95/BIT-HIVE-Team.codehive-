@@ -81,7 +81,9 @@ VALUES ('user1', 'pass123', '비트맨', 'user1@example.com', '010-2222-0001', t
        ('user39', 'pass123', '스캘핑여신', 'user39@example.com', '010-3333-0019', true, true, 'KR', 'FEMALE', '1999-07-09',
         '스캘프', '스캘핑 트레이더', 'USER', '/img/user_icon/user_icon_default.png'),
        ('user40', 'pass123', '포지션킹', 'user40@example.com', '010-3333-0020', true, false, 'KR', 'MALE', '2000-08-10',
-        '포지션', '포지션 트레이딩 전문', 'USER', '/img/user_icon/user_icon_default.png');
+        '포지션', '포지션 트레이딩 전문', 'USER', '/img/user_icon/user_icon_default.png'),
+       ('admin1', '1234', '나는관리자', 'admin10@example.com', '010-7777-7777', true, false, 'KR', 'MALE', '1800-08-10',
+        '최고존엄', '최고존엄', 'ADMIN', '/img/user_icon/user_icon_default.png');;
 
 -- notification_settings 테이블
 INSERT INTO notification_settings (volatility_yn, portfolio_yn, target_price_yn, trade_yn, like_yn, comment_yn,

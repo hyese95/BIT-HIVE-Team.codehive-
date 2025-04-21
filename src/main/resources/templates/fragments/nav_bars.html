@@ -36,7 +36,7 @@
                 <div class="d-flex justify-content-between">
 
                     <div class="card text-center flex-grow-1 mx-1">
-                        <a href="/users/1/boards">
+                        <a id="userBoardLink" href="#">
                             <p id="postCount" class="mb-0 fw-bold"></p>
                             <span>게시물</span>
                         </a>
@@ -104,6 +104,8 @@
         const url = '/api/users/me/summary';
         const response = await fetch(url);
         const data = await response.json();
+        const userNo = data.id;
+        document.getElementById("userBoardLink").href = `/users/${userNo}/boards`;
         postCount.innerText = data.postCount;
         nickname.innerText = data.nickname;
         followingCount.innerText = data.followingCount;
