@@ -5,9 +5,11 @@ import com.example.codehive.service.CoinTransactionService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,13 +24,15 @@ public class CoinTransactionApiController {
 
 
     @GetMapping("coinTransactions")
-    public Map<String,Object> coinTransactions() {
-        List<CoinTransaction> coinTransactions = coinTransactionService.findByUserNo(1);
-
-        Map<String, Object> map = new HashMap<>();
-        map.put("coinTransactions",coinTransactions);
-        System.out.println(map.toString());
-        return map;
+    public List<CoinTransaction> getFilteredTransactions(
+            @RequestParam int userNo,
+            @RequestParam(required = false) String transactionType, // BUY, SELL
+            @RequestParam(required = false) String transactionState, // COMPLETED, PENDING
+            @RequestParam(required = false) String market, // KRW-BTC 등
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate
+    ) {
+        return coinTransactionService.getFilteredTransactions(userNo, transactionType, transactionState, market, startDate, endDate);
     }
     //api/transactions/{userNo}
     @GetMapping("openOrders")

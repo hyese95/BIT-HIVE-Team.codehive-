@@ -10,6 +10,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,6 +37,18 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
                 .stream()
                 .filter(tr -> !"KRW-KRW".equals(tr.getMarket()))
                 .filter(tr -> "PENDING".equals(tr.getTransactionState()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CoinTransaction> getFilteredTransactions(int userNo, String type, String state, String market, LocalDateTime start, LocalDateTime end) {
+        return coinTransactionRepository.findByUserNo(userNo).stream()
+                .filter(tx -> type == null || tx.getTransactionType().equalsIgnoreCase(type))
+                .filter(tx -> state == null || tx.getTransactionState().equalsIgnoreCase(state))
+                .filter(tx -> market == null || tx.getMarket().equalsIgnoreCase(market))
+                .filter(tx -> start == null || !tx.getTransactionDate().isBefore(start.atZone(ZoneId.systemDefault()).toInstant()))
+                .filter(tx -> end == null || !tx.getTransactionDate().isAfter(end.atZone(ZoneId.systemDefault()).toInstant()))
+                .filter(tx -> !"KRW-KRW".equalsIgnoreCase(tx.getMarket()))
                 .collect(Collectors.toList());
     }
 

@@ -5,12 +5,14 @@ import com.example.codehive.dto.ProfitResultDto;
 import com.example.codehive.entity.CoinTransaction;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 public interface CoinTransactionService {
     List<CoinTransaction> findByUserNo(int userNo);
     List<CoinTransaction> findTransactionStateByUserNo(int userNo);
+    List<CoinTransaction> getFilteredTransactions(int userNo, String transactionType, String transactionState, String market, LocalDateTime startDate, LocalDateTime endDate);
     ProfitResultDto calculateProfit(int userNo, Map<String, Double> currentPriceMap);
     void saveCoinTransaction(CoinTransaction coinTransaction);
     List<CoinTransactionDto> getSumCoinTransactionsByConditions(int userNo, String market, String transactionType, String transactionState);
