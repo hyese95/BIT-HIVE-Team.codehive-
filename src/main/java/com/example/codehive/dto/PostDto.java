@@ -2,6 +2,7 @@ package com.example.codehive.dto;
 
 import com.example.codehive.entity.Post;
 import com.example.codehive.entity.PostLike;
+import com.example.codehive.entity.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
 import lombok.*;
@@ -46,10 +47,9 @@ public class PostDto {
             this.imgUrl = post.getImgUrl();
             this.category = post.getCategory();
             this.userNickname = post.getUser().getNickname();
-            this.userNo = post.getUserNo();
+            this.userNo = post.getUser().getId();
             this.commentCount = (post.getComment() != null) ? post.getComment().size() : 0;
             this.likeCount = 0;  // 기본값
-            this.dislikeCount = 0;
             List<PostLike> postLikes=post.getPostLikes();// 기본값
         for(PostLike pl:postLikes){
             if(pl.getLikeType().equals(true)){

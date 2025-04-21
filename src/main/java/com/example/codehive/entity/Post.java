@@ -24,6 +24,7 @@ public class Post {
     @Column(name = "post_no", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     @Column(name = "user_no", nullable = false)
     private Integer userNo;
 

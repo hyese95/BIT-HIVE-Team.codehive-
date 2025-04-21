@@ -1,5 +1,6 @@
 package com.example.codehive.repository;
 
+import com.example.codehive.dto.PostDto;
 import com.example.codehive.entity.Post;
 import com.example.codehive.entity.PostLike;
 import org.springframework.data.domain.Page;
@@ -55,4 +56,8 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     Optional<Post> findById(int id);
 
     List<Post> findPostListById(int id);
+
+    @Query("SELECT p FROM Post p WHERE p.category=:category order by p.postCreatedAt DESC")
+    @Transactional
+    Page<Post> findPostByCategoryAndSort(String category,Pageable pageable);
 }

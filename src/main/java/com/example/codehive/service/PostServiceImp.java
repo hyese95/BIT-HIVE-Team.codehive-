@@ -94,12 +94,14 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
+    @Transactional
     public PostDto createPost(PostDto postDto) {
         Post newPost = new Post();
+        User newUser = userService.readByUserNo(1).orElse(null);
         newPost.setPostCont(postDto.getPostCont());
         newPost.setPostCreatedAt(LocalDateTime.now());
         newPost.setCategory(postDto.getCategory());
-        newPost.setUserNo(postDto.getUserNo());
+        newPost.setUser(newUser);
         Post savedPost = postRepository.save(newPost);
         return new PostDto(savedPost);
     }
@@ -130,7 +132,7 @@ public class PostServiceImp implements PostService {
 
     @Override
     public Page<PostDto> readAllDtoByCategory(PostDto.PostSearchRequestDto request) {
-        Page<Post> page = postRepository.findByCategory(
+        Page<Post> page = postRepository.findPostByCategoryAndSort(
                 request.getCategory(),
                 PageRequest.of(request.getPage(), request.getSize())
         );
