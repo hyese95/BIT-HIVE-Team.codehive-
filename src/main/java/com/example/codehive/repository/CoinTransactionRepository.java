@@ -1,5 +1,6 @@
 package com.example.codehive.repository;
 
+
 import com.example.codehive.dto.CoinTransactionDto;
 import com.example.codehive.dto.BuyCoinTransactionSummaryDto;
 import com.example.codehive.dto.SellQuantityDto;
@@ -14,9 +15,11 @@ import java.util.List;
 
 @Repository
 public interface CoinTransactionRepository extends JpaRepository<CoinTransaction, Integer> {
+
     List<CoinTransaction> findByUserNo(int userNo);
 
     List<CoinTransaction> findTransactionStateByUserNo(int userNo);
+
     // BUY 총 합계
     @Query("SELECT new com.example.codehive.dto.CoinTransactionDto( c.market, SUM(c.transactionCnt)) FROM CoinTransaction c WHERE c.userNo=:userNo AND c.transactionType = 'BUY' AND c.transactionState = 'COMPLETED' GROUP BY c.market")
     List<CoinTransactionDto> findSumCoinTransactionsByUserNoWithBuy(int userNo);

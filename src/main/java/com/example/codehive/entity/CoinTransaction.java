@@ -25,7 +25,7 @@ public class CoinTransaction {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_no", nullable = false, insertable = false, updatable = false)
-   // @JsonIgnore
+    @JsonIgnore
     private User user;
 
     @Column(name = "market", nullable = false)

@@ -3,6 +3,7 @@ package com.example.codehive.service;
 import com.example.codehive.dto.CoinTransactionDto;
 import com.example.codehive.dto.ProfitResultDto;
 import com.example.codehive.entity.CoinTransaction;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Map;
