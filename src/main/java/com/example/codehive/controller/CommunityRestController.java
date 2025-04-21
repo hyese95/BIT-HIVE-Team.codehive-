@@ -132,7 +132,7 @@ public class CommunityRestController {
         logger.info(comment.toString());
         return ResponseEntity.ok().build();
     }
-    @PostMapping("/comments")
+    @PostMapping("/comments?postNo={postNo}")
     public ResponseEntity<Void> createComment(@RequestBody Comment comment, @RequestParam int postNo) {
         comment.setPostNo(postNo);
         comment.setUserNo(comment.getUserNo());
@@ -140,9 +140,9 @@ public class CommunityRestController {
         comment.setCommentCreatedAt(LocalDateTime.now());
         comment.setCommentCont(comment.getCommentCont());
         int commentNo=comment.getId();
-        commentRepository.save(comment);
         System.out.println(comment);
         try{
+            commentRepository.save(comment);
             commentService.writeComments(comment);
             if(commentNo!=comment.getId()){
                 return null;
