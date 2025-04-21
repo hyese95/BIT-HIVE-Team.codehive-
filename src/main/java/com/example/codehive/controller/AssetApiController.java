@@ -30,6 +30,7 @@ public class AssetApiController {
     private CoinNameService coinNameService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+
     @GetMapping("coinTransactions.do")
     public Map<String,Object> coinTransactions() {
         List<CoinTransaction> coinTransactions = coinTransactionService.findByUserNo(1);
