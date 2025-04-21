@@ -1,42 +1,53 @@
 package com.example.codehive.security;
 
-import lombok.AllArgsConstructor;
+import com.example.codehive.jwt.JwtLoginFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@AllArgsConstructor
+@EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final JwtLoginFilter jwtLoginFilter;
+
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/",                     // 홈
+                                "/user/jwt/login.do",    // 로그인 요청
+                                "/favicon.ico",
+                                "/static/**"             // 정적 파일
+                        ).permitAll()
+                        .anyRequest().authenticated()  // 그 외 요청은 인증 필요
+                )
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .addFilterBefore(jwtLoginFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
-                )
-                // 스프링 시큐리티 폼로그인 제거떄문에 주석처리
-                // .formLogin(login -> login
-                        // .loginPage("/login/login.do")
-                        // .loginProcessingUrl("/login/login.do")
-                        // .usernameParameter("id")
-                        // .passwordParameter("pw")
-                        // .defaultSuccessUrl("/", true)
-                        // .permitAll()
-                // )
-                .logout(logout -> logout
-                        .logoutSuccessUrl("/login/login.do")
-                        .permitAll()
-                );
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(); // 비밀번호 암호화용
+    }
 
-        return http.build();
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class).build();
     }
 }

@@ -25,10 +25,6 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("존재하지 않는 유저입니다: " + userId);
         }
 
-        return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getUserId())                // 로그인 ID
-                .password(user.getPassword())              // 암호화된 비밀번호
-                .roles(user.getRole().name())
-                .build();
+        return new CustomUserDetails(user);
     }
 }
