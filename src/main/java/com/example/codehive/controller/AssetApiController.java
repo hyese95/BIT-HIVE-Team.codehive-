@@ -1,7 +1,7 @@
 package com.example.codehive.controller;
 
 
-//import com.example.codehive.dto.AssetDto;
+import com.example.codehive.dto.AssetDto;
 import com.example.codehive.dto.MyAssetDto;
 import com.example.codehive.entity.CoinTransaction;
 import com.example.codehive.service.CoinNameService;
@@ -52,6 +52,7 @@ public class AssetApiController {
         return map;
     }
 
+    // 선택 삭제
     @DeleteMapping("openOrders/id/{id}")
     public ResponseEntity<Void> remove(@PathVariable int id) {
         try{
@@ -66,6 +67,7 @@ public class AssetApiController {
         return ResponseEntity.ok().build();
     }
 
+    // 전체 삭제
     @DeleteMapping("openOrders/user/{userNo}")
     public ResponseEntity<Void> removeAllPending(@PathVariable int userNo) {
         try{
@@ -102,9 +104,9 @@ public class AssetApiController {
     }
      */
 
-//    @GetMapping("/me")
-//    public List<AssetDto> me() {
-//        List<AssetDto> assetDtoList = myAssetService.readHoldingCoinListByUserNo(1);
-//        return  assetDtoList;
-//    }
+    @GetMapping("/me")
+    public List<AssetDto> me() {
+        List<AssetDto> assetDtoList = myAssetService.readHoldingCoinListByUserNo(1);
+        return  assetDtoList;
+    }
 }
