@@ -132,18 +132,20 @@ public class CommunityRestController {
         logger.info(comment.toString());
         return ResponseEntity.ok().build();
     }
-    @PostMapping("/comments?postNo={postNo}")
-    public ResponseEntity<Void> createComment(@RequestBody Comment comment, @RequestParam int postNo) {
+    @PostMapping("/comments")
+    public ResponseEntity<?> createComment(@RequestBody String commentCont, @RequestParam int postNo) {
+        //        User user=userService.readByUserNo(loginUser).orElse(null) //추후 로그인 유저 넣으면 넣을 생각//Id 1 번 유저로 임의 설정
+        User user = userService.readByUserNo(1).orElse(null);
+        Comment comment = new Comment();
         comment.setPostNo(postNo);
         comment.setUserNo(comment.getUserNo());
         comment.setParentNo(null);
         comment.setCommentCreatedAt(LocalDateTime.now());
-        comment.setCommentCont(comment.getCommentCont());
+        comment.setCommentCont(commentCont);
         int commentNo=comment.getId();
         System.out.println(comment);
         try{
             commentRepository.save(comment);
-            commentService.writeComments(comment);
             if(commentNo!=comment.getId()){
                 return null;
             }
@@ -154,6 +156,6 @@ public class CommunityRestController {
             logger.error(e.getMessage());
             return ResponseEntity.internalServerError().build();
         }
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(comment);
     }
 }
