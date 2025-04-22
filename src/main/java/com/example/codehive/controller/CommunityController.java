@@ -88,7 +88,7 @@ public class CommunityController {
             throw new IllegalArgumentException("사용자가 없습니다.");
         }
         User randomUser = users.get(new Random().nextInt(users.size()));
-        postDto.setUserId(randomUser.getId());
+        postDto.setUserNo(randomUser.getId());
         postDto.setCategory("free");
         postDto.setUserNickname(randomUser.getNickname());
         postDto.setPostCreatedAt(LocalDateTime.now());
@@ -132,7 +132,7 @@ public class CommunityController {
             throw new IllegalArgumentException("사용자가 없습니다.");
         }
         User randomUser = users.get(new Random().nextInt(users.size()));
-        postDto.setUserId(randomUser.getId());
+        postDto.setUserNo(randomUser.getId());
         postDto.setCategory("pnl");
         postDto.setUserNickname(randomUser.getNickname());
         postDto.setPostCreatedAt(LocalDateTime.now());
@@ -173,7 +173,7 @@ public class CommunityController {
             throw new IllegalArgumentException("사용자가 없습니다.");
         }
         User randomUser = users.get(new Random().nextInt(users.size()));
-        postDto.setUserId(randomUser.getId());
+        postDto.setUserNo(randomUser.getId());
         postDto.setCategory("chart");
         postDto.setUserNickname(randomUser.getNickname());
         postDto.setPostCreatedAt(LocalDateTime.now());
@@ -210,7 +210,7 @@ public class CommunityController {
             throw new IllegalArgumentException("사용자가 없습니다.");
         }
         User randomUser = users.get(new Random().nextInt(users.size()));
-        postDto.setUserId(randomUser.getId());
+        postDto.setUserNo(randomUser.getId());
         postDto.setCategory("expert");
         postDto.setUserNickname(randomUser.getNickname());
         postDto.setPostCreatedAt(LocalDateTime.now());

@@ -94,19 +94,14 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
+    @Transactional
     public PostDto createPost(PostDto postDto) {
         Post newPost = new Post();
+        User newUser = userService.readByUserNo(1).orElse(null);
         newPost.setPostCont(postDto.getPostCont());
-//        newPost.setUser(user); // 현재 로그인한 사용자 정보 추가
         newPost.setPostCreatedAt(LocalDateTime.now());
         newPost.setCategory(postDto.getCategory());
-        User user = userService.findAll().getFirst();
-        if (user == null) {
-            throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
-        }
-        newPost.setUser(user);  // 실제 User 객체 설정
-        newPost.setComment(new ArrayList<>());
-
+        newPost.setUser(newUser);
         Post savedPost = postRepository.save(newPost);
         return new PostDto(savedPost);
     }
@@ -137,7 +132,7 @@ public class PostServiceImp implements PostService {
 
     @Override
     public Page<PostDto> readAllDtoByCategory(PostDto.PostSearchRequestDto request) {
-        Page<Post> page = postRepository.findByCategory(
+        Page<Post> page = postRepository.findPostByCategoryAndSort(
                 request.getCategory(),
                 PageRequest.of(request.getPage(), request.getSize())
         );

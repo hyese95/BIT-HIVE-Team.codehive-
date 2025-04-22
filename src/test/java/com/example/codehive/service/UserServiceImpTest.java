@@ -69,4 +69,5 @@ class UserServiceImpTest {
     void readByUserNo() {
         System.out.println(userService.readByUserNo(1));
     }
+
 }

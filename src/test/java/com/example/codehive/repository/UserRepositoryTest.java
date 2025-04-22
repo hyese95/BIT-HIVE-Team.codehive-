@@ -16,6 +16,6 @@ class UserRepositoryTest {
     @Test
     @Transactional
     void findUserById() {
-
+        System.out.println(userRepository.findById(1).orElse(null));
     }
 }
