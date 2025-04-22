@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -27,10 +28,14 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/",                     // 홈
-                                "/user/jwt/login.do",    // 로그인 요청
+                                "/",
+                                "/user/jwt/login.do",
                                 "/favicon.ico",
-                                "/static/**"             // 정적 파일
+                                "/static/**",
+                                "/img/**",              // ✅ 전부 허용
+                                "/css/**",              // ✅ CSS 전체 허용
+                                "/js/**",                // ✅ JS 전체 허용
+                                "/api/**"              // 개발편의성을 위해 api 주소는 임시로 허용함
                         ).permitAll()
                         .anyRequest().authenticated()  // 그 외 요청은 인증 필요
                 )
