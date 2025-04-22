@@ -15,6 +15,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/trade")
 @AllArgsConstructor
+@CrossOrigin("http://localhost:5173")
 public class TradeRestController {
     private final MyAssetService myAssetService;
     private final CoinTransactionService coinTransactionService;
