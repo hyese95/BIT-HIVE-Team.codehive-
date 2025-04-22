@@ -30,8 +30,7 @@ public class SecurityConfig {
                                 "/",                     // 홈
                                 "/user/jwt/login.do",    // 로그인 요청
                                 "/favicon.ico",
-                                "/static/**",             // 정적 파일
-                                "/api/**"
+                                "/static/**"            // 정적 파일
                         ).permitAll()
                         .anyRequest().authenticated()  // 그 외 요청은 인증 필요
                 )
