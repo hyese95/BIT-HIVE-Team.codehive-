@@ -122,7 +122,7 @@ VALUES (1, 'BTC-KRW'),
        (1, 'DOGE-KRW'),
        (2, 'ADA-KRW'),
        (3, 'SOL-KRW'),
-       (4, 'MATIC-KRW'),
+       (4, 'POL-KRW'),
        (5, 'DOT-KRW');
 
 INSERT INTO coin_transactions (user_no, market, transaction_type, price, transaction_cnt, transaction_state)
@@ -166,8 +166,8 @@ VALUES
 (1, 'KRW-DOT', 'BUY', 5201, 50, 'COMPLETED'), -- 폴카닷 50개 구매
 (1, 'KRW-KRW', 'SELL', 1, 260050, 'COMPLETED'), -- 구매 금액만큼 원화 감소
 
--- 유저 1: MATIC 구매
-(1, 'KRW-MATIC', 'BUY', 850, 1000, 'COMPLETED'), -- 폴리곤 1000개 구매
+-- 유저 1: POL 구매
+(1, 'KRW-POL', 'BUY', 850, 1000, 'COMPLETED'), -- 폴리곤 1000개 구매
 (1, 'KRW-KRW', 'SELL', 1, 850000, 'COMPLETED'), -- 구매 금액만큼 원화 감소
 
 -- 유저 1: SOL 일부 판매 (가격 상승 가정)
@@ -207,7 +207,7 @@ VALUES
 (1, 'KRW-KRW', 'BUY', 1, 105000, 'COMPLETED'), -- 판매 금액만큼 원화 증가
 
 -- 유저 1: MATIC 일부 판매 (가격 상승 가정)
-(1, 'KRW-MATIC', 'SELL', 880, 300, 'COMPLETED'), -- 폴리곤 300개 판매
+(1, 'KRW-POL', 'SELL', 880, 300, 'COMPLETED'), -- 폴리곤 300개 판매
 (1, 'KRW-KRW', 'BUY', 1, 264000, 'COMPLETED'), -- 판매 금액만큼 원화 증가
 
 -- 유저 1: SUI 구매 (새로운 코인 추가)
@@ -351,7 +351,7 @@ VALUES (1, 'KRW-BTC'),
        (5, 'KRW-DOGE'),
        (1, 'KRW-SOL'),
        (2, 'KRW-DOT'),
-       (3, 'KRW-MATIC'),
+       (3, 'KRW-POL'),
        (4, 'KRW-LINK'),
        (5, 'KRW-UNI');
 

@@ -28,8 +28,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/",
-                                "/user/jwt/login.do",
+                                "/",                     // 홈
+                                "/user/jwt/login.do",    // 로그인 요청
                                 "/favicon.ico",
                                 "/static/**",           //  정적파일
                                 "/img/**",              // ✅ 전부 허용

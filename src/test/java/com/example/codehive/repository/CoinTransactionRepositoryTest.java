@@ -41,4 +41,5 @@ class CoinTransactionRepositoryTest {
     void testFindSumCoinTransactionsByUserNoWithSell() {
         System.out.println(coinTransactionRepository.findSumCoinTransactionsByUserNoWithSell(1));
     }
+
 }

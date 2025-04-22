@@ -22,7 +22,7 @@ public interface CoinTransactionService {
     List<CoinTransactionDto> getUserCoinHistory(int userNo);
 
     void remove(int id);
-
     void removeTransactionPendingByUserNo(int userNo);
+    void removeAllTransactionsByUserNo(int userNo);
 }
 
