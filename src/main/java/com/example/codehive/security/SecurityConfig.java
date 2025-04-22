@@ -31,7 +31,7 @@ public class SecurityConfig {
                                 "/",
                                 "/user/jwt/login.do",
                                 "/favicon.ico",
-                                "/static/**",
+                                "/static/**",           //  정적파일
                                 "/img/**",              // ✅ 전부 허용
                                 "/css/**",              // ✅ CSS 전체 허용
                                 "/js/**",                // ✅ JS 전체 허용
