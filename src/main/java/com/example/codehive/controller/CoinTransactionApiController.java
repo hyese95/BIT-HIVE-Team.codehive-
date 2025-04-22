@@ -1,7 +1,9 @@
 package com.example.codehive.controller;
 
+import com.example.codehive.dto.AssetDto;
 import com.example.codehive.entity.CoinTransaction;
 import com.example.codehive.service.CoinTransactionService;
+import com.example.codehive.service.MyAssetService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +22,7 @@ import java.util.Map;
 @CrossOrigin("http://localhost:5173")
 public class CoinTransactionApiController {
     private CoinTransactionService coinTransactionService;
+    private MyAssetService myAssetService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
@@ -59,11 +62,32 @@ public class CoinTransactionApiController {
         return ResponseEntity.ok().build();
     }
 
-    // 전체 삭제
+    // 미체결 전체 삭제
     @DeleteMapping("openOrders/user/{userNo}")
     public ResponseEntity<Void> removeAllPending(@PathVariable int userNo) {
         try{
             coinTransactionService.removeTransactionPendingByUserNo(userNo);
+        }catch (IllegalArgumentException e){
+            logger.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/krwBalance")
+    public List<AssetDto> me() {
+        List<AssetDto> assetDtoList = myAssetService.readHoldingCoinListByUserNo(1);
+        return  assetDtoList;
+    }
+
+    // 보유 자산 초기화
+    @DeleteMapping("krwBalance/{userNo}")
+    public ResponseEntity<Void> removeAllKrwBalance(@PathVariable int userNo) {
+        try{
+            coinTransactionService.removeAllTransactionsByUserNo(userNo);
         }catch (IllegalArgumentException e){
             logger.error(e.getMessage());
             return ResponseEntity.internalServerError().build();

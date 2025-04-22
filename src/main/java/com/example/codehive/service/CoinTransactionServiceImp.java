@@ -214,4 +214,21 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
             entityManager.remove(tx);
         }
     }
+
+    @Override
+    @Transactional
+    public void removeAllTransactionsByUserNo(int userNo) {
+        List<CoinTransaction> allTransactions = entityManager.createQuery(
+                        "SELECT ct FROM CoinTransaction ct WHERE ct.userNo =: userNo",
+                        CoinTransaction.class)
+                .setParameter("userNo", userNo)
+                .getResultList();
+        if (allTransactions.isEmpty()) {
+            throw new IllegalArgumentException("초기화할 보유자산이 없습니다.");
+        }
+        for (CoinTransaction tx : allTransactions) {
+            entityManager.remove(tx);
+        }
+
+    }
 }
