@@ -231,4 +231,10 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
         }
 
     }
+
+    @Override
+    @Transactional
+    public void register(CoinTransaction coinTransaction) {
+        entityManager.persist(coinTransaction);
+    }
 }
