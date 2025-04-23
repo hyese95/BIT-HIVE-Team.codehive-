@@ -4,6 +4,7 @@ import com.example.codehive.jwt.JwtLoginFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -37,6 +38,7 @@ public class SecurityConfig {
                                 "/js/**",                // ✅ JS 전체 허용
                                 "/api/**"              // 개발편의성을 위해 api 주소는 임시로 허용함
                         ).permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/transaction/krwBalance").permitAll()
                         .anyRequest().authenticated()  // 그 외 요청은 인증 필요
                 )
                 .sessionManagement(session -> session

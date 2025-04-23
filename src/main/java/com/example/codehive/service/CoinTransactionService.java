@@ -24,5 +24,6 @@ public interface CoinTransactionService {
     void remove(int id);
     void removeTransactionPendingByUserNo(int userNo);
     void removeAllTransactionsByUserNo(int userNo);
+    void register(CoinTransaction coinTransaction);
 }
 

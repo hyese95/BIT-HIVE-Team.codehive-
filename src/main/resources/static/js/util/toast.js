@@ -22,6 +22,6 @@ function showToast(message) {
 
     setTimeout(() => {
         toast.style.opacity = 0;
-        setTimeout(() => toast.remove(), 300); // remove after fade out
+        setTimeout(() => toast.remove(), 300);
     }, 2500);
 }
