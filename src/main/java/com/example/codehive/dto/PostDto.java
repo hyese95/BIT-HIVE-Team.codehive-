@@ -22,7 +22,7 @@ public class PostDto {
     private Integer id;
     private String postCont;
     private String userProfileImg;
-    @JsonFormat(pattern = "yyyy-MM-dd a hh시 MM분", shape = JsonFormat.Shape.STRING)
+    @JsonFormat(pattern = "yyyy-MM-dd a hh시 mm분", shape = JsonFormat.Shape.STRING)
     private LocalDateTime postCreatedAt;
     private String imgUrl;
     private String category;
