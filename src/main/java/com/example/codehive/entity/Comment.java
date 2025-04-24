@@ -67,4 +67,9 @@ public class Comment {
     @ToString.Exclude
     @JsonManagedReference("parent-comment")
     private Set<Comment> childComments;
+
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
+
+    private List<CommentLike> commentLikes = new ArrayList<>();
 }

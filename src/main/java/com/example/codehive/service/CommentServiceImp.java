@@ -1,6 +1,9 @@
 package com.example.codehive.service;
 
+import com.example.codehive.dto.CommentDto;
 import com.example.codehive.entity.Comment;
+import com.example.codehive.entity.Post;
+import com.example.codehive.entity.User;
 import com.example.codehive.repository.CommentRepository;
 import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
@@ -23,8 +26,9 @@ public class CommentServiceImp implements CommentService {
     private final EntityManager entityManager;
 
     @Override
-    public List<Comment> readComment(int id) {
-        List<Comment> comment = commentRepository.findByPostNo(id);
+    @Transactional
+    public Comment readComment(int id) {
+        Comment comment = commentRepository.findById(id);
         return comment;
     }
 
@@ -106,6 +110,27 @@ public class CommentServiceImp implements CommentService {
     @Override
     public List<Comment> readAll() {
         return commentRepository.findAll();
+    }
+
+    @Override
+    public List<CommentDto> readCommentDto(Comment comment) {
+        CommentDto commentDto=new CommentDto();
+        commentDto.setId(comment.getId());
+        commentDto.setCommentCont(comment.getCommentCont());
+        commentDto.setCommentCreatedAt(LocalDateTime.now());
+        if(comment.getParentNo()!=null){
+            comment.setParentNo(comment.getParentNo());
+        }else commentDto.setParentNo(null);
+        commentDto.setCategory(comment.getPost().getCategory());
+        commentDto.setUserNo(comment.getPost().getUserNo());
+        commentDto.setUserNickname(comment.getUserNo().getNickname());
+        commentDto.setUserProfileImg(comment.getUserNo().getProfileImgUrl());
+        commentDto.setLikeCount(commentDto.getLikeCount());
+        commentDto.setDislikeCount(commentDto.getDislikeCount());
+        commentDto.setReplyCount(commentDto.getReplyCount());
+        List<CommentDto> commentDtoList=new ArrayList<>();
+        commentDtoList.add(commentDto);
+        return commentDtoList;
     }
 
 }

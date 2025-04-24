@@ -31,7 +31,7 @@ class CommentServiceImpTest {
     @Test
     @Transactional
     void readComment() {
-        List<Comment> comment = commentRepository.findByPostNo(1);
+        Comment comment = commentService.readComment(1);
         System.out.println(comment);
     }
 
@@ -118,4 +118,12 @@ class CommentServiceImpTest {
         comment.setUserNo(user);
         commentService.writeChildComments(comment);
     }
+
+    @Test
+    @Transactional
+    void readCommentDto() {
+        Comment comment=commentService.readComment(3);
+        System.out.println(commentService.readCommentDto(comment));
+    }
+
 }

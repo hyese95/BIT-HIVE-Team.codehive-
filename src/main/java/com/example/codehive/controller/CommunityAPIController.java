@@ -1,6 +1,5 @@
 package com.example.codehive.controller;
 
-import com.example.codehive.dto.CommentLikeCountDTO;
 import com.example.codehive.dto.PostDto;
 import com.example.codehive.entity.Comment;
 import com.example.codehive.entity.Post;
@@ -14,30 +13,24 @@ import com.example.codehive.service.UserService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/community")
 @AllArgsConstructor
 @CrossOrigin("http://localhost:5173")
-public class CommunityRestController {
+public class CommunityAPIController {
     private final PostService postService;
     private final UserService userService;
     private final CommentService commentService;
     private final CommentLikeService commentLikeService;
     private final PostRepository postRepository;
-    private final Logger logger= LoggerFactory.getLogger(CommunityRestController.class);
+    private final Logger logger= LoggerFactory.getLogger(CommunityAPIController.class);
     private final CommentRepository commentRepository;
 
     @GetMapping("/posts")
