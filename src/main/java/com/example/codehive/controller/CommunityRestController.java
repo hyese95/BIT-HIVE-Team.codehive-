@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/rest/community")
+@RequestMapping("/api/community")
 @AllArgsConstructor
 @CrossOrigin("http://localhost:5173")
 public class CommunityRestController {
@@ -62,7 +62,7 @@ public class CommunityRestController {
         return ResponseEntity.ok().body(postDtos);
     }
     @GetMapping("/comments")
-    public ResponseEntity<List<Comment>> readComment(@RequestParam int postNo) {
+    public ResponseEntity<?> readComment(@RequestParam int postNo) {
         PostDto.FindPostDto postDto=new PostDto.FindPostDto();
         postDto.setPostNo(postNo);
         List<Comment> comments=commentService.readCommentByPostNo(postNo);
