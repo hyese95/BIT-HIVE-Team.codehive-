@@ -1,6 +1,7 @@
 package com.example.codehive.controller;
 
 import com.example.codehive.dto.AssetDto;
+import com.example.codehive.dto.CoinTransactionResponseDto;
 import com.example.codehive.entity.CoinTransaction;
 import com.example.codehive.repository.UserRepository;
 import com.example.codehive.service.CoinTransactionService;
@@ -30,27 +31,19 @@ public class CoinTransactionApiController {
 
 
     @GetMapping("")
-    public List<CoinTransaction> getFilteredTransactions(
+    public List<CoinTransactionResponseDto> getFilteredTransactions(
             @RequestParam(required = false, defaultValue = "1") int userNo,
-            @RequestParam(required = false) String transactionType, // BUY, SELL
-            @RequestParam(required = false) String transactionState, // COMPLETED, PENDING
-            @RequestParam(required = false) String market, // KRW-BTC 등
+            @RequestParam(required = false) String transactionType,
+            @RequestParam(required = false) String transactionState,
+            @RequestParam(required = false) String market,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate
     ) {
-        return coinTransactionService.getFilteredTransactions(userNo, transactionType, transactionState, market, startDate, endDate);
-    }
-    @GetMapping("openOrders")
-    public Map<String,Object> openOrders() {
-        List<CoinTransaction> coinTransactions = coinTransactionService.findTransactionStateByUserNo(1);
-
-        Map<String, Object> map = new HashMap<>();
-        map.put("coinTransactions",coinTransactions);
-        return map;
+        return coinTransactionService.getFilteredTransactionDtos(userNo, transactionType, transactionState, market, startDate, endDate);
     }
 
     // 선택 삭제
-    @DeleteMapping("openOrders/id/{id}")
+    @DeleteMapping("/openOrder/id/{id}")
     public ResponseEntity<Void> remove(@PathVariable int id) {
         try{
             coinTransactionService.remove(id);
@@ -65,7 +58,7 @@ public class CoinTransactionApiController {
     }
 
     // 미체결 전체 삭제
-    @DeleteMapping("openOrders/user/{userNo}")
+    @DeleteMapping("/openOrder/user/{userNo}")
     public ResponseEntity<Void> removeAllPending(@PathVariable int userNo) {
         try{
             coinTransactionService.removeTransactionPendingByUserNo(userNo);

@@ -1,6 +1,7 @@
 package com.example.codehive.service;
 
 import com.example.codehive.dto.CoinTransactionDto;
+import com.example.codehive.dto.CoinTransactionResponseDto;
 import com.example.codehive.dto.ProfitResultDto;
 import com.example.codehive.entity.CoinTransaction;
 import org.springframework.data.repository.query.Param;
@@ -11,8 +12,8 @@ import java.util.Map;
 
 public interface CoinTransactionService {
     List<CoinTransaction> findByUserNo(int userNo);
-    List<CoinTransaction> findTransactionStateByUserNo(int userNo);
-    List<CoinTransaction> getFilteredTransactions(int userNo, String transactionType, String transactionState, String market, LocalDateTime startDate, LocalDateTime endDate);
+    List<CoinTransaction> findTransactionStateByUserNo(int userNo); // 유저 미체결 transaction
+    List<CoinTransactionResponseDto> getFilteredTransactionDtos(int userNo, String transactionType, String transactionState, String market, LocalDateTime startDate, LocalDateTime endDate);
     ProfitResultDto calculateProfit(int userNo, Map<String, Double> currentPriceMap);
     void saveCoinTransaction(CoinTransaction coinTransaction);
     List<CoinTransactionDto> getSumCoinTransactionsByConditions(int userNo, String market, String transactionType, String transactionState);
