@@ -78,6 +78,7 @@ public class CommentServiceImp implements CommentService {
     @Transactional
     public void writeComments(Comment comment) {
         comment.setPostNo(comment.getPostNo());
+        comment.setUserNo(comment.getUserNo());
         comment.setCommentCreatedAt(LocalDateTime.now());
         commentRepository.save(comment);
     }
@@ -113,10 +114,14 @@ public class CommentServiceImp implements CommentService {
     }
 
     @Override
-    public List<CommentDto> readCommentDto(Comment comment) {
-        CommentDto commentDto=new CommentDto(comment);
+    public List<CommentDto> readCommentDtoByPostNo(int postNo) {
+        List<Comment> comments = commentRepository.findCommentContByPostNo(postNo);
         List<CommentDto> commentDtoList=new ArrayList<>();
-        commentDtoList.add(commentDto);
+        CommentDto commentDto;
+        for (Comment comment : comments) {
+            commentDto = new CommentDto(comment);
+            commentDtoList.add(commentDto);
+        }
         return commentDtoList;
     }
 }

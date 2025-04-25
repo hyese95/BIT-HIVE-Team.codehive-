@@ -1,5 +1,6 @@
 package com.example.codehive.controller;
 
+import com.example.codehive.dto.CommentDto;
 import com.example.codehive.dto.PostDto;
 import com.example.codehive.entity.Comment;
 import com.example.codehive.entity.Post;
@@ -47,23 +48,30 @@ public class CommunityAPIController {
         return ResponseEntity.ok().body(posts);
     }
 
-    @GetMapping("/post")
+    @GetMapping("/posts/detail")
     public ResponseEntity<List<PostDto>> readPostDetail(@RequestParam int postNo) {
         PostDto.FindPostDto postDto=new PostDto.FindPostDto();
         postDto.setPostNo(postNo);
         List<PostDto> postDtos=postService.readPost(postDto);
         return ResponseEntity.ok().body(postDtos);
     }
+
     @GetMapping("/comments")
     public ResponseEntity<?> readComment(@RequestParam int postNo) {
         PostDto.FindPostDto postDto=new PostDto.FindPostDto();
         postDto.setPostNo(postNo);
-        List<Comment> comments=commentService.readCommentByPostNo(postNo);
-        return ResponseEntity.ok().body(comments);
+        List<CommentDto> commentDto=commentService.readCommentDtoByPostNo(postNo);
+        return ResponseEntity.ok().body(commentDto);
     }
 
     @DeleteMapping("/posts")
-    public ResponseEntity<Void> deletePost(@RequestParam int postNo) {
+    public ResponseEntity<Void> deletePost(@RequestParam int postNo, @RequestParam int userNo) {
+        if(userNo!=1){
+            return ResponseEntity.unprocessableEntity().build();
+        }
+//        if(userNo!=loginUserNo){
+//            return ResponseEntity.unprocessableEntity().build();
+//        }
         try{
             postService.deletePost(postNo);
         }catch (IllegalArgumentException e){
@@ -95,7 +103,6 @@ public class CommunityAPIController {
         post.setUser(user);
         post.setUserNo(user.getId());// 반드시 저장 전에 User 세팅
         post.setPostCont(postDto.getPostCont());
-        System.out.println(user);
         if(post.getImgUrl()==null){
             post.setImgUrl(null);
         }else post.setImgUrl(post.getImgUrl());
@@ -106,7 +113,13 @@ public class CommunityAPIController {
         return ResponseEntity.ok().body(postDto);
     }
     @DeleteMapping("/comments")
-    public ResponseEntity<Void> deleteComment(@RequestParam int commentNo) {
+    public ResponseEntity<Void> deleteComment(@RequestParam int commentNo, @RequestParam int userNo) {
+        if(userNo!=1){
+            return ResponseEntity.unprocessableEntity().build();
+        }
+//        if(userNo!=loginUserNo){
+//            return null;
+//        }
         try{
             commentService.removeCommentByCommentNo(commentNo);
         }catch (IllegalArgumentException e){
@@ -118,29 +131,34 @@ public class CommunityAPIController {
         }
         return ResponseEntity.ok().build();
     }
-    //localhost:/8888/rest/emp/144/mutate
-//    mutant 돌연변이 => 데이터 조작
+
     @PutMapping("/comments")
     public ResponseEntity<Void> modifyComment(@RequestBody Comment comment, @RequestParam int commentNo) {
         logger.info(comment.toString());
         return ResponseEntity.ok().build();
     }
     @PostMapping("/comments")
-    public ResponseEntity<?> createComment(@RequestBody String commentCont, @RequestParam int postNo) {
+    public ResponseEntity<?> createComment(@RequestBody CommentDto commentDto, @RequestParam int postNo) {
         //        User user=userService.readByUserNo(loginUser).orElse(null) //추후 로그인 유저 넣으면 넣을 생각//Id 1 번 유저로 임의 설정
         User user = userService.readByUserNo(1).orElse(null);
+        Post post=postService.getPostByPostId(postNo);
         Comment comment = new Comment();
+        comment.setPost(post);
         comment.setPostNo(postNo);
-        comment.setUserNo(comment.getUserNo());
-        comment.setParentNo(null);
+        comment.setUserNo(user);
+        comment.setCommentCont(commentDto.getCommentCont());
+        System.out.println(comment.getCommentCont());
+        System.out.println(commentDto.getCommentCont());
+        if(commentDto.getParentNo()==null){
+            comment.setParentNo(null);
+        }else{comment.setParentNo(commentDto.getParentNo());}
         comment.setCommentCreatedAt(LocalDateTime.now());
-        comment.setCommentCont(commentCont);
-        int commentNo=comment.getId();
-        System.out.println(comment);
+        Comment savedComment = commentRepository.save(comment);
+        commentDto=new CommentDto(savedComment);
+        System.out.println(commentDto);
         try{
-            commentRepository.save(comment);
-            if(commentNo!=comment.getId()){
-                return null;
+            if (user == null || user.getId() == null) {
+                throw new IllegalArgumentException("로그인 한 뒤에 이용하세요");
             }
         }catch (IllegalArgumentException e){
             logger.error(e.getMessage());
@@ -149,6 +167,6 @@ public class CommunityAPIController {
             logger.error(e.getMessage());
             return ResponseEntity.internalServerError().build();
         }
-        return ResponseEntity.ok().body(comment);
+        return ResponseEntity.ok().body(commentDto);
     }
 }
