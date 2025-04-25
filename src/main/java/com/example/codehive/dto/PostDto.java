@@ -21,8 +21,8 @@ import java.util.List;
 public class PostDto {
     private Integer id;
     private String postCont;
-    private String userProfileImgUrl;
-    @JsonFormat(pattern = "yyyy-MM-dd a hh시 MM분", shape = JsonFormat.Shape.STRING)
+    private String userProfileImg;
+    @JsonFormat(pattern = "yyyy-MM-dd a hh시 mm분", shape = JsonFormat.Shape.STRING)
     private LocalDateTime postCreatedAt;
     private String imgUrl;
     private String category;
@@ -42,7 +42,7 @@ public class PostDto {
     public PostDto(Post post) {
             this.id = post.getId();
             this.postCont = post.getPostCont();
-            this.userProfileImgUrl=post.getUser().getProfileImgUrl();
+            this.userProfileImg=post.getUser().getProfileImgUrl();
             this.postCreatedAt = post.getPostCreatedAt();
             this.imgUrl = post.getImgUrl();
             this.category = post.getCategory();

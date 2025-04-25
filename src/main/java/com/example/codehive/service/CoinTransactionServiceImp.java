@@ -2,6 +2,7 @@ package com.example.codehive.service;
 
 import com.example.codehive.dto.CoinDetailDto;
 import com.example.codehive.dto.CoinTransactionDto;
+import com.example.codehive.dto.CoinTransactionResponseDto;
 import com.example.codehive.dto.ProfitResultDto;
 import com.example.codehive.entity.CoinTransaction;
 import com.example.codehive.repository.CoinTransactionRepository;
@@ -41,7 +42,7 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
     }
 
     @Override
-    public List<CoinTransaction> getFilteredTransactions(int userNo, String type, String state, String market, LocalDateTime start, LocalDateTime end) {
+    public List<CoinTransactionResponseDto> getFilteredTransactionDtos(int userNo, String type, String state, String market, LocalDateTime start, LocalDateTime end) {
         return coinTransactionRepository.findByUserNo(userNo).stream()
                 .filter(tx -> type == null || tx.getTransactionType().equalsIgnoreCase(type))
                 .filter(tx -> state == null || tx.getTransactionState().equalsIgnoreCase(state))
@@ -49,8 +50,31 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
                 .filter(tx -> start == null || !tx.getTransactionDate().isBefore(start.atZone(ZoneId.systemDefault()).toInstant()))
                 .filter(tx -> end == null || !tx.getTransactionDate().isAfter(end.atZone(ZoneId.systemDefault()).toInstant()))
                 .filter(tx -> !"KRW-KRW".equalsIgnoreCase(tx.getMarket()))
+                .map(tx -> {
+                    CoinTransactionResponseDto dto = new CoinTransactionResponseDto();
+                    dto.setId(tx.getId());
+                    dto.setMarket(tx.getMarket());
+                    dto.setTransactionType(tx.getTransactionType());
+                    dto.setPrice(tx.getPrice());
+                    dto.setTransactionCnt(tx.getTransactionCnt());
+                    dto.setTransactionState(tx.getTransactionState());
+                    dto.setTransactionDate(LocalDateTime.ofInstant(tx.getTransactionDate(), ZoneId.of("Asia/Seoul")));
+                    return dto;
+                })
                 .collect(Collectors.toList());
     }
+//
+//    @Override
+//    public List<CoinTransaction> getFilteredTransactions(int userNo, String type, String state, String market, LocalDateTime start, LocalDateTime end) {
+//        return coinTransactionRepository.findByUserNo(userNo).stream()
+//                .filter(tx -> type == null || tx.getTransactionType().equalsIgnoreCase(type))
+//                .filter(tx -> state == null || tx.getTransactionState().equalsIgnoreCase(state))
+//                .filter(tx -> market == null || tx.getMarket().equalsIgnoreCase(market))
+//                .filter(tx -> start == null || !tx.getTransactionDate().isBefore(start.atZone(ZoneId.systemDefault()).toInstant()))
+//                .filter(tx -> end == null || !tx.getTransactionDate().isAfter(end.atZone(ZoneId.systemDefault()).toInstant()))
+//                .filter(tx -> !"KRW-KRW".equalsIgnoreCase(tx.getMarket()))
+//                .collect(Collectors.toList());
+//    }
 
 
     @Override
@@ -230,5 +254,11 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
             entityManager.remove(tx);
         }
 
+    }
+
+    @Override
+    @Transactional
+    public void register(CoinTransaction coinTransaction) {
+        entityManager.persist(coinTransaction);
     }
 }

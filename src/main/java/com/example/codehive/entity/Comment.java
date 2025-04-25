@@ -12,6 +12,8 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -65,4 +67,9 @@ public class Comment {
     @ToString.Exclude
     @JsonManagedReference("parent-comment")
     private Set<Comment> childComments;
+
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
+
+    private List<CommentLike> commentLikes = new ArrayList<>();
 }

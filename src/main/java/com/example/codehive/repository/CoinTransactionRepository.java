@@ -5,6 +5,7 @@ import com.example.codehive.dto.CoinTransactionDto;
 import com.example.codehive.dto.BuyCoinTransactionSummaryDto;
 import com.example.codehive.dto.SellQuantityDto;
 import com.example.codehive.entity.CoinTransaction;
+import com.example.codehive.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -74,4 +75,6 @@ public interface CoinTransactionRepository extends JpaRepository<CoinTransaction
     void deleteAllByUserNo(int userNo);
 
     List<CoinTransaction> findByUserNoAndMarketNotOrderByTransactionDateDesc(int userNo, String market);
+
+    int user(User user);
 }
