@@ -1,5 +1,6 @@
 package com.example.codehive.repository;
 
+import com.example.codehive.dto.CommentDto;
 import com.example.codehive.entity.Comment;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;

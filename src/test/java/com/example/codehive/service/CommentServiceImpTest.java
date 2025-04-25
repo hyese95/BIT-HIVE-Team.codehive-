@@ -122,8 +122,7 @@ class CommentServiceImpTest {
     @Test
     @Transactional
     void readCommentDto() {
-        Comment comment=commentService.readComment(3);
-        System.out.println(commentService.readCommentDto(comment));
+        System.out.println(commentService.readCommentDtoByPostNo(1));
     }
 
 }

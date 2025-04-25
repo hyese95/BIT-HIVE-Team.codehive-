@@ -2,10 +2,8 @@ package com.example.codehive.dto;
 
 import com.example.codehive.entity.Comment;
 import com.example.codehive.entity.CommentLike;
-import com.example.codehive.entity.PostLike;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import org.w3c.dom.css.Counter;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,7 +16,7 @@ import java.util.List;
 public class CommentDto {
     private Integer id;
     private Integer parentNo;
-    private String CommentCont;
+    private String commentCont;
     private String userProfileImg;
     @JsonFormat(pattern = "yyyy-MM-dd a hh시 MM분", shape = JsonFormat.Shape.STRING)
     private LocalDateTime CommentCreatedAt;
@@ -32,7 +30,7 @@ public class CommentDto {
     public CommentDto(Comment comment) {
         this.id = comment.getId();
         this.parentNo=comment.getParentNo();
-        this.CommentCont = comment.getCommentCont();
+        this.commentCont = comment.getCommentCont();
         this.CommentCreatedAt = comment.getCommentCreatedAt();
         this.userNo=comment.getUserNo().getId();
         this.userNickname=comment.getUserNo().getNickname();
@@ -45,9 +43,8 @@ public class CommentDto {
             }
         }
         this.dislikeCount = comment.getCommentLikes().size()-this.likeCount;
-        Integer replyCount = comment.getChildComments().size();
-        if(replyCount!=null){
-            this.replyCount=0;
-        }else this.replyCount=comment.getChildComments().size();
+        if(comment.getChildComments()==null){
+            this.replyCount = 0;
+        }else{this.replyCount = comment.getChildComments().size();}
     }
 }
