@@ -25,8 +25,8 @@ import java.util.Map;
 @CrossOrigin("http://localhost:5173")
 public class CoinTransactionApiController {
     private final UserRepository userRepository;
-    private CoinTransactionService coinTransactionService;
-    private MyAssetService myAssetService;
+    private final CoinTransactionService coinTransactionService;
+    private final MyAssetService myAssetService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
@@ -43,7 +43,7 @@ public class CoinTransactionApiController {
     }
 
     // 선택 삭제
-    @DeleteMapping("/openOrder/id/{id}")
+    @DeleteMapping("/openOrder/{id}")
     public ResponseEntity<Void> remove(@PathVariable int id) {
         try{
             coinTransactionService.remove(id);
