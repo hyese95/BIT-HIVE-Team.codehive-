@@ -3,38 +3,29 @@ package com.example.codehive.controller;
 import com.example.codehive.entity.NotificationSetting;
 import com.example.codehive.service.NotificationSettingService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Controller
+@CrossOrigin(origins = "http://localhost:5173")
+@RestController
 @RequestMapping("/setting/support/notifications")
 public class NotificationSettingController {
 
     @Autowired
     private NotificationSettingService notificationSettingService;
 
-    @GetMapping("/notification_setting.do")
-    public String getSettingsPage(Model model) {
+    @GetMapping("/notification_setting_json.do")
+    public NotificationSetting getSettingsJson() {
         NotificationSetting settings = notificationSettingService.getSettingsForUser(1);
         if (settings == null) {
             settings = new NotificationSetting();
-
         }
-        model.addAttribute("settings", settings);
-        return "setting/support/notifications/notification_setting"; // 템플릿 경로 정확히 맞춰줌
+        return settings;
     }
 
-
-
-
-
-
     @PostMapping("/save-auto")
-    @ResponseBody
     public Map<String, Object> autoSave(@RequestBody Map<String, Object> payload) {
         Map<String, Object> response = new HashMap<>();
 
@@ -91,7 +82,7 @@ public class NotificationSettingController {
             response.put("success", true);
         } catch (Exception e) {
             response.put("success", false);
-            response.put("message", e.getMessage()); // 이 메시지를 프론트에서 받게 됨
+            response.put("message", e.getMessage());
         }
 
         return response;
