@@ -3,6 +3,7 @@ package com.example.codehive.service;
 import com.example.codehive.dto.FollowDto;
 import com.example.codehive.entity.Follow;
 import com.example.codehive.entity.FollowId;
+import com.example.codehive.entity.Role;
 import com.example.codehive.entity.User;
 import com.example.codehive.repository.FollowRepository;
 import com.example.codehive.repository.PostRepository;
@@ -11,10 +12,12 @@ import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -133,5 +136,21 @@ public class UserServiceImp implements UserService {
     @Override
     public Optional<User> readByUserId(String userId) {
         return Optional.ofNullable(userRepository.findByUserId(userId));
+    }
+
+    @Override
+    @Transactional
+    public void register(User user) {
+        user.setCreatedAt(LocalDateTime.now());
+        if (userRepository.findByUserId(user.getUserId()) != null) {
+            throw new IllegalArgumentException("이미 존재합니다");
+        }
+
+        // 비밀번호 해시 처리
+        String hashPw = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+        user.setPassword(hashPw);
+        user.setRole(Role.USER);
+        entityManager.persist(user);
+        entityManager.flush();
     }
 }
