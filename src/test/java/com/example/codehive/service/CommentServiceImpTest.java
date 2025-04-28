@@ -3,7 +3,6 @@ package com.example.codehive.service;
 import com.example.codehive.entity.Comment;
 import com.example.codehive.entity.User;
 import com.example.codehive.repository.CommentRepository;
-import com.example.codehive.repository.UserRepository;
 import jakarta.persistence.EntityManager;
 import org.hibernate.Hibernate;
 import org.junit.jupiter.api.Test;
@@ -11,11 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class CommentServiceImpTest {
@@ -63,7 +58,7 @@ class CommentServiceImpTest {
     @Transactional
     void readCommentByPostNo() {
         int postNo = 1;
-        System.out.println(commentRepository.findCommentContByPostNo(postNo));
+        System.out.println(commentRepository.findCommentByPostNo(postNo));
     }
 
     @Test

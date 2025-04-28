@@ -2,8 +2,6 @@ package com.example.codehive.service;
 
 import com.example.codehive.dto.CommentDto;
 import com.example.codehive.entity.Comment;
-import com.example.codehive.entity.Post;
-import com.example.codehive.entity.User;
 import com.example.codehive.repository.CommentRepository;
 import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
@@ -11,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +51,7 @@ public class CommentServiceImp implements CommentService {
 
     @Override
     public List<Comment>  readCommentByPostNo(int postNo) {
-        return commentRepository.findCommentContByPostNo(postNo);
+        return commentRepository.findCommentByPostNo(postNo);
     }
 
     @Override
@@ -115,7 +111,7 @@ public class CommentServiceImp implements CommentService {
 
     @Override
     public List<CommentDto> readCommentDtoByPostNo(int postNo) {
-        List<Comment> comments = commentRepository.findCommentContByPostNo(postNo);
+        List<Comment> comments = commentRepository.findCommentByPostNo(postNo);
         List<CommentDto> commentDtoList=new ArrayList<>();
         CommentDto commentDto;
         for (Comment comment : comments) {
