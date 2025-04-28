@@ -6,17 +6,40 @@ import com.example.codehive.dto.BuyCoinTransactionSummaryDto;
 import com.example.codehive.dto.SellQuantityDto;
 import com.example.codehive.entity.CoinTransaction;
 import com.example.codehive.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
 public interface CoinTransactionRepository extends JpaRepository<CoinTransaction, Integer> {
-
+    @Query("""
+    SELECT c
+    FROM CoinTransaction c
+    WHERE c.userNo = :userNo
+      AND (:transactionType IS NULL OR c.transactionType = :transactionType)
+      AND (:transactionState IS NULL OR c.transactionState = :transactionState)
+      AND (:market IS NULL OR c.market = :market)
+      AND (:startDate IS NULL OR c.transactionDate >= :startDate)
+      AND (:endDate IS NULL OR c.transactionDate <= :endDate)
+      AND (c.market != 'KRW-KRW')
+""")
+    Page<CoinTransaction> findFilteredTransactions(
+            @Param("userNo") int userNo,
+            @Param("transactionType") String transactionType,
+            @Param("transactionState") String transactionState,
+            @Param("market") String market,
+            @Param("startDate") Instant startDate,
+            @Param("endDate") Instant endDate,
+            Pageable pageable
+    );
     List<CoinTransaction> findByUserNo(int userNo);
 
     List<CoinTransaction> findTransactionStateByUserNo(int userNo);
