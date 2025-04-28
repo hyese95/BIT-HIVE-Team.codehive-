@@ -8,9 +8,14 @@ import com.example.codehive.entity.CoinTransaction;
 import com.example.codehive.repository.CoinTransactionRepository;
 import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
@@ -40,42 +45,25 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
                 .filter(tr -> "PENDING".equals(tr.getTransactionState()))
                 .collect(Collectors.toList());
     }
-
     @Override
-    public List<CoinTransactionResponseDto> getFilteredTransactionDtos(int userNo, String type, String state, String market, LocalDateTime start, LocalDateTime end) {
-        return coinTransactionRepository.findByUserNo(userNo).stream()
-                .filter(tx -> type == null || tx.getTransactionType().equalsIgnoreCase(type))
-                .filter(tx -> state == null || tx.getTransactionState().equalsIgnoreCase(state))
-                .filter(tx -> market == null || tx.getMarket().equalsIgnoreCase(market))
-                .filter(tx -> start == null || !tx.getTransactionDate().isBefore(start.atZone(ZoneId.systemDefault()).toInstant()))
-                .filter(tx -> end == null || !tx.getTransactionDate().isAfter(end.atZone(ZoneId.systemDefault()).toInstant()))
-                .filter(tx -> !"KRW-KRW".equalsIgnoreCase(tx.getMarket()))
-                .map(tx -> {
-                    CoinTransactionResponseDto dto = new CoinTransactionResponseDto();
-                    dto.setId(tx.getId());
-                    dto.setMarket(tx.getMarket());
-                    dto.setTransactionType(tx.getTransactionType());
-                    dto.setPrice(tx.getPrice());
-                    dto.setTransactionCnt(tx.getTransactionCnt());
-                    dto.setTransactionState(tx.getTransactionState());
-                    dto.setTransactionDate(LocalDateTime.ofInstant(tx.getTransactionDate(), ZoneId.of("Asia/Seoul")));
-                    return dto;
-                })
-                .collect(Collectors.toList());
-    }
-//
-//    @Override
-//    public List<CoinTransaction> getFilteredTransactions(int userNo, String type, String state, String market, LocalDateTime start, LocalDateTime end) {
-//        return coinTransactionRepository.findByUserNo(userNo).stream()
-//                .filter(tx -> type == null || tx.getTransactionType().equalsIgnoreCase(type))
-//                .filter(tx -> state == null || tx.getTransactionState().equalsIgnoreCase(state))
-//                .filter(tx -> market == null || tx.getMarket().equalsIgnoreCase(market))
-//                .filter(tx -> start == null || !tx.getTransactionDate().isBefore(start.atZone(ZoneId.systemDefault()).toInstant()))
-//                .filter(tx -> end == null || !tx.getTransactionDate().isAfter(end.atZone(ZoneId.systemDefault()).toInstant()))
-//                .filter(tx -> !"KRW-KRW".equalsIgnoreCase(tx.getMarket()))
-//                .collect(Collectors.toList());
-//    }
+    public Page<CoinTransactionResponseDto> getFilteredTransactionDtos(
+            int userNo, String transactionType, String transactionState,
+            String market, Instant startDate, Instant endDate, Pageable pageable) {
 
+        Page<CoinTransaction> page = coinTransactionRepository.findFilteredTransactions(
+                userNo, transactionType, transactionState, market, startDate, endDate, pageable
+        );
+
+        return page.map(tx -> new CoinTransactionResponseDto(
+                tx.getId(),
+                tx.getMarket(),
+                tx.getTransactionType(),
+                tx.getPrice(),
+                tx.getTransactionCnt(),
+                tx.getTransactionState(),
+                LocalDateTime.ofInstant(tx.getTransactionDate(), ZoneId.of("Asia/Seoul"))
+        ));
+    }
 
     @Override
     public ProfitResultDto calculateProfit(int userNo, Map<String, Double> currentPriceMap) {
