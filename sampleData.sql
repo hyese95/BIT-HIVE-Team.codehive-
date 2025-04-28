@@ -2,7 +2,7 @@
 -- /img/user_icon/user_icon_default.png
 INSERT INTO users (user_id, password, nickname, email, phone, privacy_agreements, marketing_agreements, nationality,
                    gender, birth_date, name, self_introduction, role, profile_img_url)
-VALUES ('user1', 'pass123', '비트맨', 'user1@example.com', '010-2222-0001', true, true, 'KR', 'MALE', '1990-01-01', '김철수',
+VALUES ('user1', '$2a$10$WT9ZAkzs3OAC5RCXhTMwPu4TutRlU1SGUFXyb95C1oM/ya/6VnAWe', '비트맨', 'user1@example.com', '010-2222-0001', true, true, 'KR', 'MALE', '1990-01-01', '김철수',
         '비트코인 장기투자자', 'USER', '/img/user_icon/user_icon_default.png'),
        ('user2', 'pass123', '코인女', 'user2@example.com', '010-2222-0002', true, false, 'KR', 'FEMALE', '1992-02-02',
         '이영희', '알트코인 단타 전문', 'USER', '/img/user_icon/user_icon_default.png'),
