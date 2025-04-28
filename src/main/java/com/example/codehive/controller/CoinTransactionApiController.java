@@ -9,12 +9,18 @@ import com.example.codehive.service.MyAssetService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,19 +35,22 @@ public class CoinTransactionApiController {
     private final MyAssetService myAssetService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-
     @GetMapping("")
-    public List<CoinTransactionResponseDto> getFilteredTransactions(
+    public Page<CoinTransactionResponseDto> getFilteredTransactions(
             @RequestParam(required = false, defaultValue = "1") int userNo,
             @RequestParam(required = false) String transactionType,
             @RequestParam(required = false) String transactionState,
             @RequestParam(required = false) String market,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+            @PageableDefault(size = 20, sort = "transactionDate", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        return coinTransactionService.getFilteredTransactionDtos(userNo, transactionType, transactionState, market, startDate, endDate);
+        Instant start = startDate != null ? startDate.atZone(ZoneId.of("Asia/Seoul")).toInstant() : null;
+        Instant end = endDate != null ? endDate.atZone(ZoneId.of("Asia/Seoul")).toInstant() : null;
+
+        return coinTransactionService.getFilteredTransactionDtos(userNo, transactionType, transactionState, market, start, end, pageable);
     }
-    // 주석쓰
+
     // 선택 삭제
     @DeleteMapping("/openOrder/{id}")
     public ResponseEntity<Void> remove(@PathVariable int id) {

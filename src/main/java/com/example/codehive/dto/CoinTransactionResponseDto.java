@@ -18,6 +18,6 @@ public class CoinTransactionResponseDto {
     private Double transactionCnt;
     private String transactionState;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
     private LocalDateTime transactionDate;
 }
