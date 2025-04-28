@@ -23,4 +23,5 @@ public interface UserService {
     void unfollow(Integer followerUserNo, Integer followingUserNo);
     void follow(int followerUserNo, int followingUserNo);
     Optional<User> readByUserId(String userId);
+    void register(User user);
 }

@@ -26,19 +26,21 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
+                .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/",                     // 홈
                                 "/user/jwt/login.do",    // 로그인 요청
+                                "/user/jwt/signup.do", // 회원가입 요철
                                 "/favicon.ico",
                                 "/static/**",           //  정적파일
-                                "/img/**",              // ✅ 전부 허용
-                                "/css/**",              // ✅ CSS 전체 허용
-                                "/js/**",                // ✅ JS 전체 허용
+                                "/img/**",              // 전부 허용
+                                "/css/**",              // CSS 전체 허용
+                                "/js/**",                // JS 전체 허용
                                 "/api/**"              // 개발편의성을 위해 api 주소는 임시로 허용함
                         ).permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/transaction/krwBalance").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/user/jwt/signup.do").permitAll()
                         .anyRequest().authenticated()  // 그 외 요청은 인증 필요
                 )
                 .sessionManagement(session -> session

@@ -28,6 +28,13 @@ public class JwtLoginFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
+        String path = request.getRequestURI();
+
+        // 로그인·회원가입 경로는 필터 타지 않고 바로 통과
+        if (path.startsWith("/user/jwt/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         String authHeader = request.getHeader("Authorization");
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
