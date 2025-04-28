@@ -2,8 +2,6 @@ package com.example.codehive.service;
 
 import com.example.codehive.dto.CommentDto;
 import com.example.codehive.entity.Comment;
-import com.example.codehive.entity.Post;
-import com.example.codehive.entity.User;
 import com.example.codehive.repository.CommentRepository;
 import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
@@ -11,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +51,7 @@ public class CommentServiceImp implements CommentService {
 
     @Override
     public List<Comment>  readCommentByPostNo(int postNo) {
-        return commentRepository.findCommentContByPostNo(postNo);
+        return commentRepository.findCommentByPostNo(postNo);
     }
 
     @Override
@@ -78,6 +74,7 @@ public class CommentServiceImp implements CommentService {
     @Transactional
     public void writeComments(Comment comment) {
         comment.setPostNo(comment.getPostNo());
+        comment.setUserNo(comment.getUserNo());
         comment.setCommentCreatedAt(LocalDateTime.now());
         commentRepository.save(comment);
     }
@@ -113,24 +110,14 @@ public class CommentServiceImp implements CommentService {
     }
 
     @Override
-    public List<CommentDto> readCommentDto(Comment comment) {
-        CommentDto commentDto=new CommentDto();
-        commentDto.setId(comment.getId());
-        commentDto.setCommentCont(comment.getCommentCont());
-        commentDto.setCommentCreatedAt(LocalDateTime.now());
-        if(comment.getParentNo()!=null){
-            comment.setParentNo(comment.getParentNo());
-        }else commentDto.setParentNo(null);
-        commentDto.setCategory(comment.getPost().getCategory());
-        commentDto.setUserNo(comment.getPost().getUserNo());
-        commentDto.setUserNickname(comment.getUserNo().getNickname());
-        commentDto.setUserProfileImg(comment.getUserNo().getProfileImgUrl());
-        commentDto.setLikeCount(commentDto.getLikeCount());
-        commentDto.setDislikeCount(commentDto.getDislikeCount());
-        commentDto.setReplyCount(commentDto.getReplyCount());
+    public List<CommentDto> readCommentDtoByPostNo(int postNo) {
+        List<Comment> comments = commentRepository.findCommentByPostNo(postNo);
         List<CommentDto> commentDtoList=new ArrayList<>();
-        commentDtoList.add(commentDto);
+        CommentDto commentDto;
+        for (Comment comment : comments) {
+            commentDto = new CommentDto(comment);
+            commentDtoList.add(commentDto);
+        }
         return commentDtoList;
     }
-
 }
