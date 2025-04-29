@@ -145,6 +145,10 @@ public class SettingController {
     public String termsNft() {
         return "setting/support/terms/nft";
     }
+    @GetMapping("/support/terms/marketing.do")
+    public String termsMarketing() {
+        return "setting/support/terms/marketing";
+    }
 
 
 
