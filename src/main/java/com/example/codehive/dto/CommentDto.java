@@ -16,6 +16,7 @@ import java.util.List;
 public class CommentDto {
     private Integer id;
     private Integer parentNo;
+    private Integer postNo;
     private String commentCont;
     private String userProfileImg;
     @JsonFormat(pattern = "yyyy-MM-dd a hh시 MM분", shape = JsonFormat.Shape.STRING)
@@ -30,6 +31,7 @@ public class CommentDto {
     public CommentDto(Comment comment) {
         this.id = comment.getId();
         this.parentNo=comment.getParentNo();
+        this.postNo=comment.getPostNo();
         this.commentCont = comment.getCommentCont();
         this.CommentCreatedAt = comment.getCommentCreatedAt();
         this.userNo=comment.getUserNo().getId();
