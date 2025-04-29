@@ -15,11 +15,13 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/community")
@@ -86,10 +88,21 @@ public class CommunityAPIController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/modifyPost")
-    public ResponseEntity<Void> modifyPost(@RequestBody Post post) {
-        logger.info(post.toString());
-        return ResponseEntity.ok().build();
+    @PutMapping("/posts")
+    public ResponseEntity<String> modifyPost(@RequestBody Post post,@RequestParam int postNo,@RequestParam int userNo) {
+        postNo=post.getId();
+        String postCont=post.getPostCont();
+        if(userNo!=post.getUserNo()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 접근입니다.");
+        }
+        try {
+            // 게시글 수정 서비스 호출
+            postService.modifyPost(postNo, postCont);
+            return ResponseEntity.ok("게시글이 성공적으로 수정되었습니다.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글 수정 중 오류 발생");
+        }
     }
 
     @PostMapping("/posts")
@@ -111,7 +124,6 @@ public class CommunityAPIController {
         Post savedPost = postRepository.save(post); // ★ 저장 후 id 부여됨
         postDto = new PostDto(savedPost);
         postDto.setUserNo(post.getUserNo());// ★ 이제 DTO 생성 시 id 포함됨
-        System.out.println(postDto);
         return ResponseEntity.ok().body(postDto);
     }
     @DeleteMapping("/comments")
@@ -135,10 +147,28 @@ public class CommunityAPIController {
     }
 
     @PutMapping("/comments")
-    public ResponseEntity<Void> modifyComment(@RequestBody Comment comment, @RequestParam int commentNo) {
-        logger.info(comment.toString());
-        return ResponseEntity.ok().build();
+    public ResponseEntity<String> modifyComment(@RequestBody Comment comment,@RequestParam int commentNo,@RequestParam int userNo) {
+        if(userNo!=comment.getUserNo().getId()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 접근입니다.");
+        }
+        try {
+            // 댓글이 존재하는지 확인
+            Comment existingComment=commentService.readComment(commentNo);
+            if (existingComment==null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 댓글을 찾을 수 없습니다.");
+            }
+            // 기존 내용과 비교하여 변경된 것이 없는 경우
+            if (existingComment.getCommentCont().equals(comment.getCommentCont())) {
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body("댓글 내용이 변경되지 않았습니다.");
+            }
+            commentService.modifyComment(comment);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("댓글 수정 중 오류 발생");
+        }
     }
+
     @PostMapping("/comments")
     public ResponseEntity<?> createComment(@RequestBody CommentDto commentDto, @RequestParam int postNo) {
         //        User user=userService.readByUserNo(loginUser).orElse(null) //추후 로그인 유저 넣으면 넣을 생각//Id 1 번 유저로 임의 설정
