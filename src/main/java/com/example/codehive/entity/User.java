@@ -61,14 +61,14 @@ public class User {
     private String profileImgUrl;
 
     @Column(name = "nationality", nullable = false, length = 20)
-    private String nationality;
+    private String nationality = "KOR";
 
     @Column(name = "gender", nullable = false, length = 10)
     private String gender;
 
     @ColumnDefault("'DARK'")
     @Column(name = "theme", nullable = false, length = 10)
-    private String theme;
+    private String theme = "DARK";
 
     @Column(name = "birth_date", nullable = false)
     private LocalDate birthDate;
