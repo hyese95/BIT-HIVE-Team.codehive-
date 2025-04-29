@@ -33,6 +33,8 @@ public class CommunityAPIController {
     private final Logger logger= LoggerFactory.getLogger(CommunityAPIController.class);
     private final CommentRepository commentRepository;
 
+    //
+
     @GetMapping("/posts")
     public ResponseEntity<Page<PostDto>> read(
             @RequestParam String category,

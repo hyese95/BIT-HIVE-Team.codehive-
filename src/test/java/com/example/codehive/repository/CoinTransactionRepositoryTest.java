@@ -5,6 +5,7 @@ import com.example.codehive.entity.CoinTransaction;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -40,6 +41,14 @@ class CoinTransactionRepositoryTest {
     @Test
     void testFindSumCoinTransactionsByUserNoWithSell() {
         System.out.println(coinTransactionRepository.findSumCoinTransactionsByUserNoWithSell(1));
+    }
+
+    @Test
+    void pw(){
+        BCrypt bCrypt = new BCrypt();
+        System.out.println(bCrypt.hashpw("pass123", BCrypt.gensalt()));
+        boolean check=bCrypt.checkpw("pass123", "$2a$10$3/Sh6Tv3wKS8K.J/EUHAo.UwsVVgU8bhyvyaeqiu.uFrwS4wDKAN6");
+        System.out.println(check);
     }
 
 }
