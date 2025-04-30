@@ -5,12 +5,14 @@ import com.example.codehive.entity.User;
 import com.example.codehive.jwt.JwtUtil;
 import com.example.codehive.security.CustomUserDetailsService;
 import com.example.codehive.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -69,5 +71,41 @@ public class LoginApiController {
             e.printStackTrace();
             return ResponseEntity.status(500).build(); // 서버 에러
         }
+    }
+    // 중복 체크 API 3개 추가
+    @GetMapping("/check-userid")
+    public ResponseEntity<Map<String, Boolean>> checkUserId(@RequestParam String userId) {
+        boolean exists = userService.existsByUserId(userId);
+        return ResponseEntity.ok(Map.of("exists", exists));
+    }
+
+    @GetMapping("/check-nickname")
+    public ResponseEntity<Map<String, Boolean>> checkNickname(@RequestParam String nickname) {
+        boolean exists = userService.existsByNickname(nickname);
+        return ResponseEntity.ok(Map.of("exists", exists));
+    }
+
+    @GetMapping("/check-email")
+    public ResponseEntity<Map<String, Boolean>> checkEmail(@RequestParam String email) {
+        boolean exists = userService.existsByEmail(email);
+        return ResponseEntity.ok(Map.of("exists", exists));
+    }
+
+
+    // 로컬에 로그인유저 안뜨게하고 새로고침마다 jwt 다시받아오게하기
+
+    @GetMapping("/myinfo")
+    public ResponseEntity<User> getMyInfo(HttpServletRequest request) {
+        String token = jwtUtil.resolveToken(request);
+        if (token != null && jwtUtil.validateToken(token)) {
+            String userId = jwtUtil.getUsername(token);
+            Optional<User> userOpt = userService.readByUserId(userId);
+            if (userOpt.isPresent()) {
+                return ResponseEntity.ok(userOpt.get());
+            } else {
+                return ResponseEntity.status(404).build(); // 유저 없음
+            }
+        }
+        return ResponseEntity.status(401).build(); // 토큰 없음 or 유효하지 않음
     }
 }

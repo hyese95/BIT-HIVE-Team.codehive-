@@ -15,7 +15,11 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     // 로그인 유저 조회용
     User findByUserId(String userId);
-
     boolean existsById(Integer id);
+
+    // 중복체크
+
     boolean existsByUserId(String userId);
+    boolean existsByNickname(String nickname);
+    boolean existsByEmail(String email);
 }

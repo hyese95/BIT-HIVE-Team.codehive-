@@ -38,6 +38,10 @@ public class SecurityConfig {
                                 "/img/**",              // 전부 허용
                                 "/css/**",              // CSS 전체 허용
                                 "/js/**",                // JS 전체 허용
+                                // 중복체크 용
+                                "/user/check-userid",
+                                "/user/check-nickname",
+                                "/user/check-email",
                                 "/api/**"              // 개발편의성을 위해 api 주소는 임시로 허용함
                         ).permitAll()
                         .requestMatchers("/user/jwt/**").permitAll()

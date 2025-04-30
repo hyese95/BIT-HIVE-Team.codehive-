@@ -24,4 +24,9 @@ public interface UserService {
     void follow(int followerUserNo, int followingUserNo);
     Optional<User> readByUserId(String userId);
     void register(User user);
+
+    // 중복체크
+    boolean existsByUserId(String userId);
+    boolean existsByNickname(String nickname);
+    boolean existsByEmail(String email);
 }

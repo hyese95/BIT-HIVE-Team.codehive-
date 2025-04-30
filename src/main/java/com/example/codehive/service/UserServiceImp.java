@@ -153,4 +153,20 @@ public class UserServiceImp implements UserService {
         entityManager.persist(user);
         entityManager.flush();
     }
+
+    // 중복체크
+    @Override
+    public boolean existsByUserId(String userId) {
+        return userRepository.existsByUserId(userId);
+    }
+
+    @Override
+    public boolean existsByNickname(String nickname) {
+        return userRepository.existsByNickname(nickname);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
 }
