@@ -109,7 +109,7 @@ class PostServiceImpTest {
         PostDto postDto=new PostDto();
         User user=userService.readByUserNo(1).orElse(null);
         postDto.setCategory("free");
-        postDto.setUserNo(1);
+        postDto.setUserNo(user.getId());
         postDto.setPostCont("마무리 하고 싶어");
         System.out.println(user);
         System.out.println(postService.createPost(postDto));

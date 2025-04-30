@@ -30,7 +30,6 @@ public class UserServiceImp implements UserService {
     private FollowRepository followRepository;
     private EntityManager entityManager;
 
-
     @Override
     public List<User> findAll() {
         List<User> users = userRepository.findAll();

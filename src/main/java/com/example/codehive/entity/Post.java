@@ -16,7 +16,7 @@ import java.util.List;
 
 @Getter
 @Setter
-@ToString
+@ToString(callSuper = true)
 @Entity
 @Table(name = "posts", schema = "bithive")
 public class Post {
@@ -29,7 +29,7 @@ public class Post {
     private Integer userNo;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_no", nullable = false,insertable = false,updatable = false)
+    @JoinColumn(name = "user_no", nullable = false, insertable = false,updatable = false)
     @JsonBackReference
     @ToString.Exclude
     private User user;
