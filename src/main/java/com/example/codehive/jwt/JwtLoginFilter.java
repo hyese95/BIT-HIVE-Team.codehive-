@@ -1,5 +1,8 @@
 package com.example.codehive.jwt;
 
+import com.example.codehive.entity.User;
+import com.example.codehive.security.CustomUserDetails;
+import com.example.codehive.service.UserService;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -21,6 +24,7 @@ public class JwtLoginFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
+    private final UserService userService;
 
     @Override
     protected void doFilterInternal(
@@ -31,7 +35,7 @@ public class JwtLoginFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
         System.out.println("JwtLoginFilter 요청 path = ####################################" + path);
         // 로그인·회원가입 경로는 필터 타지 않고 바로 통과
-        if (path.startsWith("/user/jwt/")) {
+        if (path.equals("/user/jwt/login.do") || path.equals("/user/jwt/signup.do")) {
             filterChain.doFilter(request, response);
             return;
         }

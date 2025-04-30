@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface CommentLikeRepository extends JpaRepository<CommentLike, CommentLikeId> {
 
-    Optional<CommentLike> findById(CommentLikeId id);
+    Optional<CommentLike> findCommentLikeById(CommentLikeId id);
 
     @Query("SELECT new com.example.codehive.dto.CommentLikeCountDTO( " +
             "cl.commentNo.id, " +

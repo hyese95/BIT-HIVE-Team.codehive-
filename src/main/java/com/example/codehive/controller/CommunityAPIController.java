@@ -5,8 +5,11 @@ import com.example.codehive.dto.PostDto;
 import com.example.codehive.entity.Comment;
 import com.example.codehive.entity.Post;
 import com.example.codehive.entity.User;
+import com.example.codehive.jwt.JwtUtil;
 import com.example.codehive.repository.CommentRepository;
 import com.example.codehive.repository.PostRepository;
+import com.example.codehive.security.CustomUserDetails;
+import com.example.codehive.security.CustomUserDetailsService;
 import com.example.codehive.service.CommentLikeService;
 import com.example.codehive.service.CommentService;
 import com.example.codehive.service.PostService;
@@ -17,6 +20,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -35,7 +40,8 @@ public class CommunityAPIController {
     private final PostRepository postRepository;
     private final Logger logger= LoggerFactory.getLogger(CommunityAPIController.class);
     private final CommentRepository commentRepository;
-
+    private final JwtUtil jwtUtil;
+    private final CustomUserDetailsService customUserDetailsService;
     //
 
     @GetMapping("/posts")
@@ -69,13 +75,16 @@ public class CommunityAPIController {
     }
 
     @DeleteMapping("/posts")
-    public ResponseEntity<Void> deletePost(@RequestParam int postNo, @RequestParam int userNo) {
-        if(userNo!=1){
+    public ResponseEntity<Void> deletePost(@RequestParam int postNo, @RequestParam int userNo,
+           @AuthenticationPrincipal CustomUserDetails userDetails
+            ) {
+        User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
+        if(loginUser==null){
+            return ResponseEntity.badRequest().build();
+        }int loginUserNo=loginUser.getId();
+        if(userNo!=loginUserNo){
             return ResponseEntity.unprocessableEntity().build();
         }
-//        if(userNo!=loginUserNo){
-//            return ResponseEntity.unprocessableEntity().build();
-//        }
         try{
             postService.deletePost(postNo);
         }catch (IllegalArgumentException e){
@@ -89,14 +98,19 @@ public class CommunityAPIController {
     }
 
     @PutMapping("/posts")
-    public ResponseEntity<String> modifyPost(@RequestBody Post post,@RequestParam int postNo,@RequestParam int userNo) {
+    public ResponseEntity<String> modifyPost(@RequestBody Post post,@RequestParam int postNo
+            ,@RequestParam int userNo,@AuthenticationPrincipal CustomUserDetails userDetails) {
+        User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
+        if(loginUser==null){
+            return ResponseEntity.badRequest().build();
+        }int loginUserNo=loginUser.getId();
         postNo=post.getId();
+        userNo=loginUserNo;
         String postCont=post.getPostCont();
         if(userNo!=post.getUserNo()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 접근입니다.");
         }
         try {
-            // 게시글 수정 서비스 호출
             postService.modifyPost(postNo, postCont);
             return ResponseEntity.ok("게시글이 성공적으로 수정되었습니다.");
         } catch (Exception e) {
@@ -106,17 +120,17 @@ public class CommunityAPIController {
     }
 
     @PostMapping("/posts")
-    public ResponseEntity<?> createPost(@RequestParam String category, @RequestBody PostDto postDto) {
-//        User user=userService.readByUserNo(loginUser).orElse(null) //추후 로그인 유저 넣으면 넣을 생각//Id 1 번 유저로 임의 설정
-        User user = userService.readByUserNo(1).orElse(null);
-        if (user == null || user.getId() == null) {
-            throw new IllegalArgumentException("로그인 한 뒤에 이용하세요");
-        }
+    public ResponseEntity<?> createPost(@RequestParam String category, @RequestBody PostDto postDto
+            ,@AuthenticationPrincipal CustomUserDetails userDetails) {
+        User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
+        if(loginUser==null){
+            return ResponseEntity.badRequest().build();
+        }int loginUserNo=loginUser.getId();
         Post post = new Post();
         post.setCategory(category);
         post.setPostCreatedAt(LocalDateTime.now());
-        post.setUser(user);
-        post.setUserNo(user.getId());// 반드시 저장 전에 User 세팅
+        post.setUser(loginUser);
+        post.setUserNo(loginUserNo);// 반드시 저장 전에 User 세팅
         post.setPostCont(postDto.getPostCont());
         if(post.getImgUrl()==null){
             post.setImgUrl(null);
@@ -127,13 +141,15 @@ public class CommunityAPIController {
         return ResponseEntity.ok().body(postDto);
     }
     @DeleteMapping("/comments")
-    public ResponseEntity<Void> deleteComment(@RequestParam int commentNo, @RequestParam int userNo) {
-        if(userNo!=1){
+    public ResponseEntity<Void> deleteComment(@RequestParam int commentNo, @RequestParam int userNo
+            ,@AuthenticationPrincipal CustomUserDetails userDetails) {
+        User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
+        if(loginUser==null){
+            return ResponseEntity.badRequest().build();
+        }int loginUserNo=loginUser.getId();
+        if(userNo!=loginUserNo){
             return ResponseEntity.unprocessableEntity().build();
         }
-//        if(userNo!=loginUserNo){
-//            return null;
-//        }
         try{
             commentService.removeCommentByCommentNo(commentNo);
         }catch (IllegalArgumentException e){
@@ -147,7 +163,13 @@ public class CommunityAPIController {
     }
 
     @PutMapping("/comments")
-    public ResponseEntity<String> modifyComment(@RequestBody Comment comment,@RequestParam int commentNo,@RequestParam int userNo) {
+    public ResponseEntity<String> modifyComment(@RequestBody Comment comment,@RequestParam int commentNo
+            ,@RequestParam int userNo,@AuthenticationPrincipal CustomUserDetails userDetails) {
+        User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
+        if(loginUser==null){
+            return ResponseEntity.badRequest().build();
+        }int loginUserNo=loginUser.getId();
+        userNo=loginUserNo;
         if(userNo!=comment.getUserNo().getId()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 접근입니다.");
         }
@@ -170,14 +192,17 @@ public class CommunityAPIController {
     }
 
     @PostMapping("/comments")
-    public ResponseEntity<?> createComment(@RequestBody CommentDto commentDto, @RequestParam int postNo) {
-        //        User user=userService.readByUserNo(loginUser).orElse(null) //추후 로그인 유저 넣으면 넣을 생각//Id 1 번 유저로 임의 설정
-        User user = userService.readByUserNo(1).orElse(null);
+    public ResponseEntity<?> createComment(@RequestBody CommentDto commentDto, @RequestParam int postNo
+            ,@AuthenticationPrincipal CustomUserDetails userDetails) {
+        User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
+        if(loginUser==null){
+            return ResponseEntity.badRequest().build();
+        }int loginUserNo=loginUser.getId();
         Post post=postService.getPostByPostId(postNo);
         Comment comment = new Comment();
         comment.setPost(post);
         comment.setPostNo(postNo);
-        comment.setUserNo(user);
+        comment.setUserNo(loginUser);
         comment.setCommentCont(commentDto.getCommentCont());
         System.out.println(comment.getCommentCont());
         System.out.println(commentDto.getCommentCont());
@@ -189,7 +214,7 @@ public class CommunityAPIController {
         commentDto=new CommentDto(savedComment);
         System.out.println(commentDto);
         try{
-            if (user == null || user.getId() == null) {
+            if ( loginUser.getId() == null) {
                 throw new IllegalArgumentException("로그인 한 뒤에 이용하세요");
             }
         }catch (IllegalArgumentException e){

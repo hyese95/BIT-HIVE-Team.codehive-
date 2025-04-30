@@ -45,7 +45,7 @@ public class CommentLikeServiceImp implements CommentLikeService {
         CommentLikeId id = new CommentLikeId();
         id.setUserNo(userNo);
         id.setCommentNo(commentNo);
-        Optional<CommentLike> existingLike = commentLikeRepository.findById(id);
+        Optional<CommentLike> existingLike = commentLikeRepository.findCommentLikeById(id);
         if (existingLike.isPresent()) {
             commentLikeRepository.delete(existingLike.get());
         } else {
