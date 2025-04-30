@@ -42,6 +42,8 @@ public class SecurityConfig {
                                 "/user/check-userid",
                                 "/user/check-nickname",
                                 "/user/check-email",
+                                "/user/oauth/**",
+                                "/user/myinfo",
                                 "/api/**"              // 개발편의성을 위해 api 주소는 임시로 허용함
                         ).permitAll()
                         .requestMatchers("/user/jwt/**").permitAll()
