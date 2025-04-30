@@ -17,27 +17,18 @@ public class NewsApiController {
 
     private final NewsService newsService;
 
-    @GetMapping("/crypto")
-    public ResponseEntity<List<NewsDto>> getCryptoNews() {
+    @GetMapping
+    public ResponseEntity<List<NewsDto>> getNewsByCategory(@RequestParam(required = false) String category) {
         try {
-            return ResponseEntity.ok(newsService.fetchNewsByKeyword("암호화폐%20OR%20비트코인"));
+            String keyword;
+            switch (category) {
+                case "crypto": keyword = "암호화폐 AND 코인"; break;
+                case "finance": keyword = "금리인상 AND 금리인하"; break;
+                case "global": keyword = "글로벌증시 AND 나스닥"; break;
+                default: keyword = "암호화폐"; // fallback or throw error
+            }
+            return ResponseEntity.ok(newsService.fetchNewsByKeyword(keyword));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-    @GetMapping("/finance")
-    public ResponseEntity<List<NewsDto>> getFinanceNews() {
-        try{
-            return ResponseEntity.ok(newsService.fetchNewsByKeyword("환율%20OR%20금리"));
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-    @GetMapping("/global")
-    public ResponseEntity<List<NewsDto>> getGlobalNews() {
-        try {
-            return ResponseEntity.ok(newsService.fetchNewsByKeyword("글로벌증시%20OR%미증시"));
-        }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

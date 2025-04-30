@@ -12,21 +12,10 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 public class NewsDto {
-    @JsonProperty("title")
     private String title;
-
-    @JsonProperty("summary")
     private String summary;
-
-    @JsonProperty("content_url")
     private String contentUrl;
-
-    @JsonProperty("published_at")
     private String publishedAt;
-
-    @JsonProperty("publisher")
     private String publisher;
-
-    @JsonProperty("thumbnail_url")
     private String thumbnailUrl;
 }
