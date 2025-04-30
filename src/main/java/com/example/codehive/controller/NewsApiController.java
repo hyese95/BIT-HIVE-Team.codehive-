@@ -20,7 +20,7 @@ public class NewsApiController {
     @GetMapping("/crypto")
     public ResponseEntity<List<NewsDto>> getCryptoNews() {
         try {
-            return ResponseEntity.ok(newsService.fetchNewsByKeyword("암호화폐%20OR%20비트코인"));
+            return ResponseEntity.ok(newsService.fetchNewsByKeyword("암호화폐%20AND%20코인"));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
@@ -28,7 +28,7 @@ public class NewsApiController {
     @GetMapping("/finance")
     public ResponseEntity<List<NewsDto>> getFinanceNews() {
         try{
-            return ResponseEntity.ok(newsService.fetchNewsByKeyword("환율%20OR%20금리"));
+            return ResponseEntity.ok(newsService.fetchNewsByKeyword("금리인상%20AND%20금리인하"));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
@@ -36,7 +36,7 @@ public class NewsApiController {
     @GetMapping("/global")
     public ResponseEntity<List<NewsDto>> getGlobalNews() {
         try {
-            return ResponseEntity.ok(newsService.fetchNewsByKeyword("글로벌증시%20OR%미증시"));
+            return ResponseEntity.ok(newsService.fetchNewsByKeyword("글로벌증시%20AND%20나스닥"));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
