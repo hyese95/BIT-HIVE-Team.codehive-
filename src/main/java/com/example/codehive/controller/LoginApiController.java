@@ -49,24 +49,6 @@ public class LoginApiController {
         return ResponseEntity.ok(loginDto);
     }
 
-//    내가 댓글 올릴때마다 로그아웃되서 페이지 백색되는거 존나 불편해서
-//    새로 만듬 작동은 정상작동 되는데 카톡내용 보셈 프론트쪽의 뭔가가 문제인듯 함
-    @GetMapping("/jwt/check.do")
-    public ResponseEntity<LoginDto> checkLogin(
-            @AuthenticationPrincipal CustomUserDetails userDetails
-    ){
-        LoginDto loginDto=new LoginDto();
-        String jwt=jwtUtil.generateToken(userDetails.getUsername());
-        Optional<User> userOpt=userService.readByUserId(userDetails.getUsername());
-        if(userOpt.isPresent()) {
-            User user=userOpt.get();
-            loginDto.setUser(user);
-            loginDto.setJwt(jwt);
-            return ResponseEntity.ok(loginDto);
-        }
-        return ResponseEntity.badRequest().build();
-    }
-
     @PostMapping("/jwt/signup.do")
     public ResponseEntity<LoginDto> signupAction(@RequestBody User user) {
         try {

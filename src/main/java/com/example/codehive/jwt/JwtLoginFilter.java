@@ -41,7 +41,7 @@ public class JwtLoginFilter extends OncePerRequestFilter {
         }
 
         String authHeader = request.getHeader("Authorization");
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+        if (path.startsWith("/user/jwt/")) {
             String jwt = authHeader.substring(7);
             try {
                 if (jwtUtil.validateToken(jwt)) {
