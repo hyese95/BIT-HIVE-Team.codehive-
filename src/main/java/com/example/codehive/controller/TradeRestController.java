@@ -30,7 +30,10 @@ public class TradeRestController {
     @PostMapping("/api/transaction")
     public ResponseEntity<Void> buy(@RequestBody CoinTransaction coinTransaction) {
         log.info("Received request data: {}", coinTransaction);
+        System.out.println(coinTransaction);
+        int userNo=1;//하드코딩
         try {
+            coinTransaction.setUserNo(userNo);
             coinTransaction.setTransactionDate(Instant.now());
             log.info("Setting transaction date: {}", coinTransaction.getTransactionDate());
             coinTransactionService.saveCoinTransaction(coinTransaction);

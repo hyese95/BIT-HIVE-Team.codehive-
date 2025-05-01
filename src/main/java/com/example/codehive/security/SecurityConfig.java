@@ -44,7 +44,8 @@ public class SecurityConfig {
                                 "/user/check-email",
                                 "/user/oauth/**",
                                 "/user/myinfo",
-                                "/api/**"              // 개발편의성을 위해 api 주소는 임시로 허용함
+                                "/api/**",// 개발편의성을 위해 api 주소는 임시로 허용함
+                                "/trade/api/**"// 개발편의성을 위해 api 주소는 임시로 허용함
                         ).permitAll()
                         .requestMatchers("/user/jwt/**").permitAll()
                         .anyRequest().authenticated()  // 그 외 요청은 인증 필요
