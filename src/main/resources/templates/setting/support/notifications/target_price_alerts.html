@@ -17,10 +17,12 @@
         <td th:text="${alert.targetPrice}">50000</td>
         <td>
           <div class="form-check form-switch">
-            <input class="form-check-input toggle-switch"
-                   type="checkbox"
-                   th:checked="${!alert.market.contains('OFF')}"
-                   th:attr="data-id=${alert.id}">
+            <label>
+              <input class="form-check-input toggle-switch"
+                     type="checkbox"
+                     th:checked="${!alert.market.contains('OFF')}"
+                     th:attr="data-id=${alert.id}">
+            </label>
           </div>
         </td>
       </tr>

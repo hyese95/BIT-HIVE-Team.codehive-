@@ -7,38 +7,22 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.List;
 
 @Controller
 @RequestMapping("/setting/support/notifications")
+@CrossOrigin("http://localhost:5173")
 public class VolatilityAlertController {
 
     @Autowired
     private VolatilityAlertsService service;
 
+    // HTML 렌더링용 GET 요청
     @GetMapping("/volatility_alerts.do")
     public String listVolatilityAlerts(Model model) {
-        int userId = 2;
+        int userId = 2; // 테스트용
         List<VolatilityAlert> alerts = service.getAlertsForUser(userId);
         model.addAttribute("volatilityAlerts", alerts);
-        model.addAttribute("userNo", userId);
         return "setting/support/notifications/volatility_alerts";
-    }
-
-    @PostMapping("/volatility_alerts/save")
-    @ResponseBody
-    public Map<String, Object> updateStatus(@RequestBody Map<String, Object> body) {
-        Integer alertId = (Integer) body.get("id");
-        Boolean enabled = (Boolean) body.get("enabled");
-
-        Map<String, Object> response = new HashMap<>();
-        try {
-            service.toggleAlert(alertId, enabled);
-            response.put("success", true);
-        } catch (Exception e) {
-            response.put("success", false);
-        }
-
-        return response;
     }
 }
