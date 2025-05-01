@@ -122,7 +122,11 @@ public class CommunityAPIController {
     @PostMapping("/posts")
     public ResponseEntity<?> createPost(@RequestParam String category, @RequestBody PostDto postDto
             ,@AuthenticationPrincipal CustomUserDetails userDetails) {
-        User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
+        System.out.println("userDetails:?");
+        if(userDetails==null){
+            return ResponseEntity.badRequest().body("userDetails 가 사라졌어.");
+        }
+        User loginUser=userService.readByUserId(userDetails.getUsername()).orElse(null);
         if(loginUser==null){
             return ResponseEntity.badRequest().build();
         }int loginUserNo=loginUser.getId();

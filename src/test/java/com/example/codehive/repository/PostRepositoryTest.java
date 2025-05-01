@@ -81,6 +81,6 @@ class PostRepositoryTest {
         postDto.setUserNo(user.getId());
         System.out.println(user);
         System.out.println(postDto);
-        System.out.println(postService.createPost(postDto));
+        System.out.println(postService.createPost(postDto,post.getUser().getNickname()));
     }
 }
