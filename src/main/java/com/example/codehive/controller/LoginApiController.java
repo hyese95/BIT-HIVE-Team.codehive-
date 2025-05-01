@@ -1,18 +1,22 @@
 package com.example.codehive.controller;
 
 import com.example.codehive.dto.LoginDto;
+import com.example.codehive.dto.OAuthUserDto;
+import com.example.codehive.entity.Role;
 import com.example.codehive.entity.User;
 import com.example.codehive.jwt.JwtUtil;
 import com.example.codehive.security.CustomUserDetails;
 import com.example.codehive.security.CustomUserDetailsService;
 import com.example.codehive.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import java.time.LocalDate;
 
 import java.util.Map;
 import java.util.Optional;
@@ -109,5 +113,76 @@ public class LoginApiController {
             }
         }
         return ResponseEntity.status(401).build(); // 토큰 없음 or 유효하지 않음
+    }
+
+    // 소셜 로그인
+
+    @PostMapping("/oauth/login.do")
+    public ResponseEntity<LoginDto> oauthLogin(@RequestBody @Valid OAuthUserDto oAuthUserDto) {
+        Optional<User> userOpt = userService.readByEmail(oAuthUserDto.getEmail());
+
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+
+            // 소셜 로그인 방식이 일치하면 로그인 성공
+            if (user.getOauth().equalsIgnoreCase(oAuthUserDto.getOauth())) {
+                String jwt = jwtUtil.generateToken(user.getUserId());
+                LoginDto loginDto = new LoginDto();
+                loginDto.setUser(user);
+                loginDto.setJwt(jwt);
+                return ResponseEntity.ok(loginDto);
+            } else {
+                // 이미 가입된 유저지만 소셜 방식 다름
+                LoginDto loginDto = new LoginDto();
+                loginDto.setUser(user);
+                return ResponseEntity.status(409).body(loginDto);
+            }
+        }
+
+        // 가입 안 되어 있음
+        return ResponseEntity.status(404).build();
+    }
+
+    @PostMapping("/oauth/signup.do")
+    public ResponseEntity<LoginDto> oauthSignup(@Valid @RequestBody OAuthUserDto oAuthUserDto) {
+        try {
+            // 회원가입
+            User user = User.builder()
+                    .userId(oAuthUserDto.getEmail())
+                    .email(oAuthUserDto.getEmail())
+                    .name(oAuthUserDto.getName())
+                    .nickname(oAuthUserDto.getName())
+                    .profileImgUrl(oAuthUserDto.getPicture())
+                    .oauth(oAuthUserDto.getOauth())
+                    .role(Role.USER)
+                    .theme("DARK")
+                    .nationality("KOR")
+                    .marketingAgreements(false)
+                    .gender("MALE")  // 참고 프로젝트에선 기본값 고정
+                    .birthDate(LocalDate.now()) // 참고 프로젝트처럼 기본값 처리
+                    .privacyAgreements(true)
+                    .password("SOCIAL_LOGIN") // NOT NULL 대응용 더미 비밀번호
+                    .build();
+
+            userService.register(user);
+
+            Optional<User> loginUserOpt = userService.readByUserId(user.getUserId());
+            if (loginUserOpt.isPresent()) {
+                String jwt = jwtUtil.generateToken(user.getUserId());
+                LoginDto loginDto = new LoginDto();
+                loginDto.setJwt(jwt);
+                loginDto.setUser(loginUserOpt.get());
+                return ResponseEntity.ok(loginDto);
+            } else {
+                return ResponseEntity.status(404).build();
+            }
+
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(409).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).build();
+        }
     }
 }

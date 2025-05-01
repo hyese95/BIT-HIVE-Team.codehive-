@@ -168,4 +168,9 @@ public class UserServiceImp implements UserService {
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
+
+    @Override
+    public Optional<User> readByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
 }

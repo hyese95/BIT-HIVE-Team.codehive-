@@ -44,7 +44,8 @@ CREATE TABLE users(
     birth_date DATE NOT NULL,
     name VARCHAR(30) NOT NULL,
     self_introduction VARCHAR(150),
-    role ENUM('USER', 'ADMIN') DEFAULT 'USER'
+    role ENUM('USER', 'ADMIN') DEFAULT 'USER',
+    oauth ENUM('GOOGLE','KAKAO','NAVER','GITHUB')
 );
 
 CREATE TABLE notification_settings(

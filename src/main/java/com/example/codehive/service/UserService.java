@@ -29,4 +29,7 @@ public interface UserService {
     boolean existsByUserId(String userId);
     boolean existsByNickname(String nickname);
     boolean existsByEmail(String email);
+
+    // 소셜 로그인 용
+    Optional<User> readByEmail(String email);
 }
