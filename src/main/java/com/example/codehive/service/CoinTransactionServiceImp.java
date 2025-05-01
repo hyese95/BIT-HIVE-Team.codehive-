@@ -163,6 +163,7 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
 
     @Override
     public void saveCoinTransaction(CoinTransaction coinTransaction) {
+
         coinTransactionRepository.save(coinTransaction);
     }
 
