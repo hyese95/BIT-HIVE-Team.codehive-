@@ -24,16 +24,8 @@ public class VolatilityAlertsServiceImp implements VolatilityAlertsService {
     public void toggleAlert(int alertId, boolean enabled) {
         VolatilityAlert alert = repository.findById(alertId)
                 .orElseThrow(() -> new IllegalArgumentException("알림이 존재하지 않습니다."));
-
-
-        if (enabled) {
-            alert.setMarket(alert.getMarket().replace(" (OFF)", ""));
-        } else {
-            if (!alert.getMarket().contains(" (OFF)")) {
-                alert.setMarket(alert.getMarket() + " (OFF)");
-            }
-        }
-
+        String baseMarket = alert.getMarket().replace(" (OFF)", "");
+        alert.setMarket(enabled ? baseMarket : baseMarket + " (OFF)");
         repository.save(alert);
     }
 }

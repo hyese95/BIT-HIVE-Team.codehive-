@@ -21,10 +21,11 @@ public class TargetPriceAlertsServiceImp implements TargetPriceAlertsService {
 
     @Override
     @Transactional
-    public void updateTargetPrice(int alertId, double newPrice) {
+    public void updateMarketEnabled(int alertId, boolean enabled) {
         TargetPriceAlert alert = alertsRepository.findById(alertId)
                 .orElseThrow(IllegalArgumentException::new);
-        alert.setTargetPrice(newPrice);
+        String baseMarket = alert.getMarket().replace(" (OFF)", "");
+        alert.setMarket(enabled ? baseMarket : baseMarket + " (OFF)");
         alertsRepository.save(alert);
     }
 }
