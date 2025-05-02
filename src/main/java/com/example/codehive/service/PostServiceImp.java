@@ -142,7 +142,7 @@ public class PostServiceImp implements PostService {
 
     @Override
     public Page<PostDto> readAllDtoByCategory(PostDto.PostSearchRequestDto request) {
-        Page<Post> page = postRepository.findByCategory(
+        Page<Post> page = postRepository.findPostByCategoryAndSort(
                 request.getCategory(),
                 PageRequest.of(request.getPage(), request.getSize())
         );

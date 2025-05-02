@@ -9,7 +9,7 @@ class SecurityConfigTest {
 
     @Test
     void passwordEncoder() {
-        System.out.println(BCrypt.hashpw("1234", BCrypt.gensalt()));
+        System.out.println(BCrypt.hashpw("pass123", BCrypt.gensalt()));
         // $2a$10$WT9ZAkzs3OAC5RCXhTMwPu4TutRlU1SGUFXyb95C1oM/ya/6VnAWe
     }
 }

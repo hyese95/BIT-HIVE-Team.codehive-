@@ -1,6 +1,8 @@
 package com.example.codehive.service;
 
 import com.example.codehive.dto.CommentLikeCountDTO;
+import com.example.codehive.dto.CommentLikeDto;
+import com.example.codehive.entity.Comment;
 import com.example.codehive.entity.CommentLike;
 import com.example.codehive.entity.CommentLikeId;
 import com.example.codehive.repository.CommentLikeRepository;
@@ -65,5 +67,48 @@ public class CommentLikeServiceImp implements CommentLikeService {
         return likeCounts.stream()
                 .collect(Collectors.toMap(CommentLikeCountDTO::getCommentNo, dto -> dto));
     }
+
+    @Override
+    public CommentLikeDto.LikeStatusResponse getLikeStatus(Integer userNo, Integer commentNo) {
+        CommentLikeId commentLikeId = new CommentLikeId();
+        commentLikeId.setUserNo(userNo);
+        commentLikeId.setCommentNo(commentNo);
+//        commentLikeId 값 저장된 것 불러오기
+        return commentLikeRepository.findById(commentLikeId)
+                .map(cl -> new CommentLikeDto.LikeStatusResponse(cl.getLikeType()))
+                .orElse(new CommentLikeDto.LikeStatusResponse(null));
+    }
+
+    @Override
+    public void setLike(Integer userNo, Integer commentNo, Boolean likeType) {
+        CommentLikeId id = new CommentLikeId();
+        id.setUserNo(userNo);
+        id.setCommentNo(commentNo);
+        Optional<CommentLike> existing = commentLikeRepository.findById(id);
+        //이미 존재하는 좋아요는 likeType 을 바꾼다.
+        if (existing.isPresent()) {
+            CommentLike like = existing.get();
+            like.setLikeType(likeType);
+            commentLikeRepository.save(like);
+        } else {
+//            새 좋아요를 누르는 유저를 저장한다.
+            Comment comment = commentRepository.findById(commentNo)
+                    .orElseThrow(() -> new RuntimeException("댓글 없음"));
+            CommentLike like = new CommentLike();
+            like.setId(id);
+            like.setComment(comment);
+            like.setLikeType(likeType);
+            commentLikeRepository.save(like);
+        }
+    }
+
+    @Override
+    public void cancelLike(Integer userNo, Integer commentNo) {
+        CommentLikeId id = new CommentLikeId();
+        id.setUserNo(userNo);
+        id.setCommentNo(commentNo);
+        commentLikeRepository.deleteById(id);
+    }
+    //좋아요, 싫어요 취소
 }
 

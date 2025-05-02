@@ -40,8 +40,7 @@ public class CommunityAPIController {
     private final PostRepository postRepository;
     private final Logger logger= LoggerFactory.getLogger(CommunityAPIController.class);
     private final CommentRepository commentRepository;
-    private final JwtUtil jwtUtil;
-    private final CustomUserDetailsService customUserDetailsService;
+
     //
 
     @GetMapping("/posts")
@@ -75,16 +74,13 @@ public class CommunityAPIController {
     }
 
     @DeleteMapping("/posts")
-    public ResponseEntity<Void> deletePost(@RequestParam int postNo, @RequestParam int userNo,
-           @AuthenticationPrincipal CustomUserDetails userDetails
+    public ResponseEntity<Void> deletePost(@RequestParam int postNo
+//           ,@AuthenticationPrincipal CustomUserDetails userDetails
             ) {
-        User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
-        if(loginUser==null){
-            return ResponseEntity.badRequest().build();
-        }int loginUserNo=loginUser.getId();
-        if(userNo!=loginUserNo){
-            return ResponseEntity.unprocessableEntity().build();
-        }
+//        User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
+//        if(loginUser==null){
+//            return ResponseEntity.badRequest().build();
+//        }int loginUserNo=loginUser.getId();
         try{
             postService.deletePost(postNo);
         }catch (IllegalArgumentException e){
@@ -98,20 +94,19 @@ public class CommunityAPIController {
     }
 
     @PutMapping("/posts")
-    public ResponseEntity<String> modifyPost(@RequestBody Post post,@RequestParam int postNo
-            ,@RequestParam int userNo,@AuthenticationPrincipal CustomUserDetails userDetails) {
-        User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
-        if(loginUser==null){
-            return ResponseEntity.badRequest().build();
-        }int loginUserNo=loginUser.getId();
-        postNo=post.getId();
-        userNo=loginUserNo;
-        String postCont=post.getPostCont();
-        if(userNo!=post.getUserNo()){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 접근입니다.");
-        }
+    public ResponseEntity<String> modifyPost(@RequestBody PostDto.ModifyPostRequest request, @RequestParam int postNo
+//            ,@AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+//        User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
+//        if(loginUser==null){
+//            return ResponseEntity.badRequest().build();
+//        }int loginUserNo=loginUser.getId();
+//        userNo=loginUserNo;
+//        if(userNo!=post.getUserNo()){
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 접근입니다.");
+//        }
         try {
-            postService.modifyPost(postNo, postCont);
+            postService.modifyPost(request.getPostNo(),request.getPostCont());
             return ResponseEntity.ok("게시글이 성공적으로 수정되었습니다.");
         } catch (Exception e) {
             e.printStackTrace();
@@ -121,20 +116,26 @@ public class CommunityAPIController {
 
     @PostMapping("/posts")
     public ResponseEntity<?> createPost(@RequestParam String category, @RequestBody PostDto postDto
-            ,@AuthenticationPrincipal CustomUserDetails userDetails) {
-        System.out.println("userDetails:?");
-        if(userDetails==null){
-            return ResponseEntity.badRequest().body("userDetails 가 사라졌어.");
-        }
-        User loginUser=userService.readByUserId(userDetails.getUsername()).orElse(null);
-        if(loginUser==null){
-            return ResponseEntity.badRequest().build();
-        }int loginUserNo=loginUser.getId();
+//            ,@AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+//        System.out.println("userDetails:?");
+//        if(userDetails==null){
+//            return ResponseEntity.badRequest().body("userDetails 가 사라졌어.");
+//        }
+//        User loginUser=userService.readByUserId(userDetails.getUsername()).orElse(null);
+//        if(loginUser==null){
+//            return ResponseEntity.badRequest().build();
+//        }int loginUserNo=loginUser.getId();
+        User loginUser=userService.readByUserNo(1).orElse(null);
         Post post = new Post();
         post.setCategory(category);
         post.setPostCreatedAt(LocalDateTime.now());
         post.setUser(loginUser);
-        post.setUserNo(loginUserNo);// 반드시 저장 전에 User 세팅
+//        post.setUserNo(loginUserNo);// 반드시 저장 전에 User 세팅
+        if(loginUser==null){
+            return ResponseEntity.badRequest().build();
+        }
+        post.setUserNo(loginUser.getId());
         post.setPostCont(postDto.getPostCont());
         if(post.getImgUrl()==null){
             post.setImgUrl(null);
@@ -145,15 +146,16 @@ public class CommunityAPIController {
         return ResponseEntity.ok().body(postDto);
     }
     @DeleteMapping("/comments")
-    public ResponseEntity<Void> deleteComment(@RequestParam int commentNo, @RequestParam int userNo
-            ,@AuthenticationPrincipal CustomUserDetails userDetails) {
-        User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
-        if(loginUser==null){
-            return ResponseEntity.badRequest().build();
-        }int loginUserNo=loginUser.getId();
-        if(userNo!=loginUserNo){
-            return ResponseEntity.unprocessableEntity().build();
-        }
+    public ResponseEntity<Void> deleteComment(@RequestParam int commentNo
+//            ,@AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+//        User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
+//        if(loginUser==null){
+//            return ResponseEntity.badRequest().build();
+//        }int loginUserNo=loginUser.getId();
+//        if(userNo!=loginUserNo){
+//            return ResponseEntity.unprocessableEntity().build();
+//        }
         try{
             commentService.removeCommentByCommentNo(commentNo);
         }catch (IllegalArgumentException e){
@@ -168,15 +170,16 @@ public class CommunityAPIController {
 
     @PutMapping("/comments")
     public ResponseEntity<String> modifyComment(@RequestBody Comment comment,@RequestParam int commentNo
-            ,@RequestParam int userNo,@AuthenticationPrincipal CustomUserDetails userDetails) {
-        User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
-        if(loginUser==null){
-            return ResponseEntity.badRequest().build();
-        }int loginUserNo=loginUser.getId();
-        userNo=loginUserNo;
-        if(userNo!=comment.getUserNo().getId()){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 접근입니다.");
-        }
+//            ,@AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+//        User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
+//        if(loginUser==null){
+//            return ResponseEntity.badRequest().build();
+//        }int loginUserNo=loginUser.getId();
+//        userNo=loginUserNo;
+//        if(userNo!=comment.getUserNo().getId()){
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 접근입니다.");
+//        }
         try {
             // 댓글이 존재하는지 확인
             Comment existingComment=commentService.readComment(commentNo);
@@ -197,11 +200,13 @@ public class CommunityAPIController {
 
     @PostMapping("/comments")
     public ResponseEntity<?> createComment(@RequestBody CommentDto commentDto, @RequestParam int postNo
-            ,@AuthenticationPrincipal CustomUserDetails userDetails) {
-        User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
-        if(loginUser==null){
-            return ResponseEntity.badRequest().build();
-        }int loginUserNo=loginUser.getId();
+//            ,@AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+//        User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
+//        if(loginUser==null){
+//            return ResponseEntity.badRequest().build();
+//        }int loginUserNo=loginUser.getId();
+        User loginUser=userService.readByUserNo(1).orElse(null);
         Post post=postService.getPostByPostId(postNo);
         Comment comment = new Comment();
         comment.setPost(post);
