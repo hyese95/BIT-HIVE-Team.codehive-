@@ -110,9 +110,6 @@ public class PostServiceImp implements PostService {
         newPost.setCategory(postDto.getCategory());
         newPost.setUserNo(postDto.getUserNo());
         Post savedPost = postRepository.save(newPost);
-        System.out.println(postDto);
-        System.out.println(savedPost);
-        System.out.println(new PostDto(savedPost));
         return new PostDto(savedPost);
     }
 

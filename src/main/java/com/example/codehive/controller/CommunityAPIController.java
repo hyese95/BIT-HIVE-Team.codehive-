@@ -80,7 +80,7 @@ public class CommunityAPIController {
 //        User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
 //        if(loginUser==null){
 //            return ResponseEntity.badRequest().build();
-//        }int loginUserNo=loginUser.getId();
+//        }
         try{
             postService.deletePost(postNo);
         }catch (IllegalArgumentException e){
@@ -120,7 +120,7 @@ public class CommunityAPIController {
     ) {
 //        System.out.println("userDetails:?");
 //        if(userDetails==null){
-//            return ResponseEntity.badRequest().body("userDetails 가 사라졌어.");
+//            return ResponseEntity.badRequest().body("userDetail가 없어 반영할 수 없습니다.");
 //        }
 //        User loginUser=userService.readByUserId(userDetails.getUsername()).orElse(null);
 //        if(loginUser==null){
