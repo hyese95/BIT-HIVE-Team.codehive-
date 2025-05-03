@@ -23,11 +23,20 @@ public class NewsApiController {
             String keyword;
             switch (category) {
                 case "crypto": keyword = "암호화폐 AND 코인"; break;
-                case "finance": keyword = "금리인상 AND 금리인하"; break;
-                case "global": keyword = "글로벌증시 AND 나스닥"; break;
+                case "finance": keyword = "금리 AND 환율"; break;
+                case "global": keyword = "미증시 AND 나스닥"; break;
                 default: keyword = "암호화폐"; // fallback or throw error
             }
             return ResponseEntity.ok(newsService.fetchNewsByKeyword(keyword));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/yesterday")
+    public ResponseEntity<List<NewsDto>> getYesterdayNews() {
+        try {
+            return ResponseEntity.ok(newsService.fetchNewsForYesterday());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
