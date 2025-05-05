@@ -103,7 +103,6 @@ public class CommunityLikeAPIController {
         int userNo=1;//임시 하드코딩
         // request.getLikeType() 이 null 이면 삭제 코드 추가
         // Body에 담긴 postLike가 같아도 삭제 -> 완벽한 토글
-        PostLike existingPostLike=postLikeService.GetPostLike(userNo, postNo);
         if(postLike.getLikeType()==null){
            return postLikeService.DeletePostLike(userNo, postNo);
 //            postLikeService.DeletePostLike(loginUserNo, postNo);
