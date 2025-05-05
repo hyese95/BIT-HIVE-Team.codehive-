@@ -5,11 +5,8 @@ import com.example.codehive.dto.PostDto;
 import com.example.codehive.entity.Comment;
 import com.example.codehive.entity.Post;
 import com.example.codehive.entity.User;
-import com.example.codehive.jwt.JwtUtil;
 import com.example.codehive.repository.CommentRepository;
 import com.example.codehive.repository.PostRepository;
-import com.example.codehive.security.CustomUserDetails;
-import com.example.codehive.security.CustomUserDetailsService;
 import com.example.codehive.service.CommentLikeService;
 import com.example.codehive.service.CommentService;
 import com.example.codehive.service.PostService;
@@ -20,13 +17,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/community")
@@ -41,10 +35,8 @@ public class CommunityAPIController {
     private final Logger logger= LoggerFactory.getLogger(CommunityAPIController.class);
     private final CommentRepository commentRepository;
 
-    //
-
     @GetMapping("/posts")
-    public ResponseEntity<Page<PostDto>> read(
+    public ResponseEntity<Page<PostDto>> readPost(
             @RequestParam String category,
             @RequestParam int page,
             @RequestParam(defaultValue = "10") int size
@@ -66,9 +58,10 @@ public class CommunityAPIController {
     }
 
     @GetMapping("/comments")
-    public ResponseEntity<?> readComment(@RequestParam int postNo) {
-        PostDto.FindPostDto postDto=new PostDto.FindPostDto();
-        postDto.setPostNo(postNo);
+    public ResponseEntity<?> readComment(
+            @RequestParam int postNo
+    ) {
+        Post post=postService.getPostByPostId(postNo);
         List<CommentDto> commentDto=commentService.readCommentDtoByPostNo(postNo);
         return ResponseEntity.ok().body(commentDto);
     }
@@ -105,6 +98,7 @@ public class CommunityAPIController {
 //        if(userNo!=post.getUserNo()){
 //            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 접근입니다.");
 //        }
+        postNo=request.getPostNo();
         try {
             postService.modifyPost(request.getPostNo(),request.getPostCont());
             return ResponseEntity.ok("게시글이 성공적으로 수정되었습니다.");
@@ -126,7 +120,7 @@ public class CommunityAPIController {
 //        if(loginUser==null){
 //            return ResponseEntity.badRequest().build();
 //        }int loginUserNo=loginUser.getId();
-        User loginUser=userService.readByUserNo(1).orElse(null);
+        User loginUser=userService.readByUserNo(1).orElse(null); //유저넘버 1로 하드코딩
         Post post = new Post();
         post.setCategory(category);
         post.setPostCreatedAt(LocalDateTime.now());
@@ -169,7 +163,7 @@ public class CommunityAPIController {
     }
 
     @PutMapping("/comments")
-    public ResponseEntity<String> modifyComment(@RequestBody Comment comment,@RequestParam int commentNo
+    public ResponseEntity<?> modifyComment(@RequestBody CommentDto commentDto
 //            ,@AuthenticationPrincipal CustomUserDetails userDetails
     ) {
 //        User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
@@ -182,16 +176,18 @@ public class CommunityAPIController {
 //        }
         try {
             // 댓글이 존재하는지 확인
-            Comment existingComment=commentService.readComment(commentNo);
+            Comment existingComment=commentService.readComment(commentDto.getId());
             if (existingComment==null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 댓글을 찾을 수 없습니다.");
             }
             // 기존 내용과 비교하여 변경된 것이 없는 경우
-            if (existingComment.getCommentCont().equals(comment.getCommentCont())) {
+            if (existingComment.getCommentCont().equals(commentDto.getCommentCont())) {
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).body("댓글 내용이 변경되지 않았습니다.");
             }
-            commentService.modifyComment(comment);
-            return ResponseEntity.ok().build();
+            existingComment.setCommentCont(commentDto.getCommentCont());
+            Comment modifiedComment=commentRepository.save(existingComment);
+            System.out.println(modifiedComment);
+            return ResponseEntity.ok().body(new CommentDto(modifiedComment));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("댓글 수정 중 오류 발생");
@@ -206,15 +202,14 @@ public class CommunityAPIController {
 //        if(loginUser==null){
 //            return ResponseEntity.badRequest().build();
 //        }int loginUserNo=loginUser.getId();
-        User loginUser=userService.readByUserNo(1).orElse(null);
+//        User loginUser=userService.readByUserNo(loginUserNo).orElseThrow();
+        User loginUser=userService.readByUserNo(1).orElseThrow();
         Post post=postService.getPostByPostId(postNo);
         Comment comment = new Comment();
         comment.setPost(post);
         comment.setPostNo(postNo);
         comment.setUserNo(loginUser);
         comment.setCommentCont(commentDto.getCommentCont());
-        System.out.println(comment.getCommentCont());
-        System.out.println(commentDto.getCommentCont());
         if(commentDto.getParentNo()==null){
             comment.setParentNo(null);
         }else{comment.setParentNo(commentDto.getParentNo());}

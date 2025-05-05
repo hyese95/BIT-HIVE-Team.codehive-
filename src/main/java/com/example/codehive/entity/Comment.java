@@ -41,7 +41,7 @@ public class Comment {
     private Post post;
 
     // 🔹 댓글(Comment) - User 관계 (N:1)
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_no", nullable = false)
     @ToString.Exclude
     @JsonBackReference
@@ -69,7 +69,6 @@ public class Comment {
     private Set<Comment> childComments;
 
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonBackReference
-
+    @JsonBackReference("comment-Like")
     private List<CommentLike> commentLikes = new ArrayList<>();
 }

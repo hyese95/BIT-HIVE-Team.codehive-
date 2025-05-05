@@ -22,4 +22,5 @@ public interface CommentService {
     void writeChildComments(Comment comment);
     public List<Comment> readAll();
     List<CommentDto> readCommentDtoByPostNo(int postNo);
+    CommentDto modifyCommentDto(Comment comment);
 }

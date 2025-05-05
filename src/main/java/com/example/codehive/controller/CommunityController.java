@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -61,7 +60,7 @@ public class CommunityController {
             System.out.println(postLikeDto);
             return ResponseEntity.badRequest().build();
         }
-        postLikeService.toggleLike(userNo, postNo, likeType);
+        postLikeService.modifyLike(userNo, postNo, likeType);
         PostLikeDto updatedCounts = postLikeService.getPostLikeById(postNo);
         Map<String, Integer> response = new HashMap<>();
         response.put("likeCount", updatedCounts.getLikeCount());
