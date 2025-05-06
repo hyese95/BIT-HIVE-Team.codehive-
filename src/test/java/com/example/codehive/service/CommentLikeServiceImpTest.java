@@ -9,11 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 class CommentLikeServiceImpTest {
     @Autowired
     CommentLikeService commentLikeService;
-    @Test
-    @Transactional
-    void GetCommentLike() {
-        System.out.println(commentLikeService.GetCommentLike(1,1));
-    }
 
     @Test
     @Transactional

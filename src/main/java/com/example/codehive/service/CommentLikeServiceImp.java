@@ -71,19 +71,7 @@ public class CommentLikeServiceImp implements CommentLikeService {
                 .collect(Collectors.toMap(CommentLikeCountDTO::getCommentNo, dto -> dto));
     }
 
-    @Override
-    @Transactional
-    public CommentLike GetCommentLike(Integer userNo, Integer commentNo){
-        CommentLikeId commentLikeId = new CommentLikeId();
-        commentLikeId.setUserNo(userNo);
-        commentLikeId.setCommentNo(commentNo);
-//        commentLikeId 값 저장된 것 불러오기
-        Optional<CommentLike> existingLike = commentLikeRepository.findCommentLikeById(commentLikeId);
-        if (existingLike.isEmpty()) {
-            return null;
-        }
-        return existingLike.get();
-    }
+
 
     @Override
     public ResponseEntity<?> setCommentLike(Integer userNo, Integer commentNo, Boolean likeType) {
@@ -101,16 +89,21 @@ public class CommentLikeServiceImp implements CommentLikeService {
         newLike.setLikeType(likeType);
         newLike.setId(id);
         commentLikeRepository.save(newLike);
-    return ResponseEntity.ok(newLike);
-        }
+    return ResponseEntity.ok(newLike);}
 
     @Override
-    public ResponseEntity<?> deleteCommentLike(Integer userNo, Integer commentNo) {
+    public ResponseEntity<?> deleteCommentLike(Integer userNo, Integer commentNo,Boolean likeType) {
         CommentLikeId id = new CommentLikeId();
         id.setUserNo(userNo);
         id.setCommentNo(commentNo);
-        commentLikeRepository.deleteById(id);
-        return ResponseEntity.ok().build();
+        CommentLike existingLike = commentLikeRepository.findCommentLikeById(id).orElse(null);
+        if(existingLike!=null){
+            commentLikeRepository.delete(existingLike);
+        };
+        CommentLike commentLike =new CommentLike();
+        commentLike.setId(id);
+        commentLike.setLikeType(likeType);
+        return ResponseEntity.ok(commentLike);
     }
 }
 

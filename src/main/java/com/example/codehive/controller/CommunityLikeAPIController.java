@@ -2,22 +2,17 @@ package com.example.codehive.controller;
 
 import com.example.codehive.dto.CommentDto;
 import com.example.codehive.dto.CommentLikeDto;
-import com.example.codehive.entity.Comment;
-import com.example.codehive.entity.CommentLike;
-import com.example.codehive.entity.Post;
 import com.example.codehive.entity.PostLike;
 import com.example.codehive.service.CommentLikeService;
 import com.example.codehive.service.CommentService;
 import com.example.codehive.service.PostLikeService;
 import com.example.codehive.service.PostService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/community/LikeStatus")
@@ -28,9 +23,9 @@ public class CommunityLikeAPIController {
     private CommentService commentService;
     private PostLikeService postLikeService;
     private PostService postService;
-    @GetMapping("/comments/{commentNo}")
-    public ResponseEntity<List<CommentDto.CommentDtoRequest>> getLikeTypeStatus(
-            @PathVariable int commentNo
+    @GetMapping("/posts/{postNo}/comments")
+    public ResponseEntity<List<CommentDto.CommentDtoRequest>> getCommentLikeTypeStatus(
+            @PathVariable int postNo
             ,@RequestParam int userNo
             //           ,@AuthenticationPrincipal CustomUserDetails userDetails
 //    ) {
@@ -38,10 +33,9 @@ public class CommunityLikeAPIController {
 //        if(loginUser==null){
 //            return ResponseEntity.badRequest().build();
 //        }int loginUserNo=loginUser.getId();
+//         const userNo=loginUserNo
     ) {
         userNo=1;//하드코딩상태
-        Comment comment=commentService.readComment(commentNo);
-        int postNo=comment.getPost().getId();
         List<CommentDto.CommentDtoRequest> request=commentService.getCommentsWithLikes(postNo,userNo);
         return ResponseEntity.ok(request);
     }
@@ -59,15 +53,10 @@ public class CommunityLikeAPIController {
         int loginUserNo=1; //임시 하드코딩
         // 1. likeType이 null 이면 삭제 (토글시 삭제)
         if(request.getLikeType()==null){
-            return commentLikeService.deleteCommentLike(loginUserNo, commentNo);
+            return commentLikeService.deleteCommentLike(loginUserNo, commentNo,null);
         }
         // 2. likeType이 null 이 아니면 새로 설정
-        commentLikeService.setCommentLike(loginUserNo, commentNo, request.getLikeType());
-        return ResponseEntity.ok(Map.of(
-                "commentNo", commentNo,
-                "loginUserNo", loginUserNo,
-                "likeType", request.getLikeType()
-        ));
+        return commentLikeService.setCommentLike(loginUserNo, commentNo, request.getLikeType());
     }
     @GetMapping("/posts/{postNo}")
     public ResponseEntity<?> getPostLikeTypeStatus(
@@ -103,7 +92,7 @@ public class CommunityLikeAPIController {
         // request.getLikeType() 이 null 이면 삭제 코드 추가
         // Body에 담긴 postLike가 같아도 삭제 -> 완벽한 토글
         if(postLike.getLikeType()==null){
-           return postLikeService.DeletePostLike(userNo, postNo);
+           return postLikeService.DeletePostLike(userNo, postNo, null);
 //            postLikeService.DeletePostLike(loginUserNo, postNo);
         }
         // 그후에 다시 생성, 서비스 코드에 필요한거 다 해뒀다고 생각함

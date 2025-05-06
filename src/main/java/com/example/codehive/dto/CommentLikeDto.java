@@ -29,12 +29,12 @@ public class CommentLikeDto {
             this.userNo = commentLikedto.getUserNo();
             this.commentNo = commentLikedto.getCommentNo();
             this.likeType=commentLikedto.getLikeType();
-        }}//게시글별로 상태를 조회하기 위한 조건 postNo 삽입
+        }}//게시글별로 상태를 조회하기 위한 조건 postNo 삽입 후 에러나서 다시 제거
 
     @Getter
     @Setter
     public static class LikeRequest {
-        private Boolean likeType; // true: 좋아요, false: 싫어요
+        private Boolean likeType; // true: 좋아요, false: 싫어요 null : 제거
     }
 
     @Getter

@@ -124,8 +124,7 @@ public class CommunityAPIController {
         Post post = new Post();
         post.setCategory(category);
         post.setPostCreatedAt(LocalDateTime.now());
-        post.setUser(loginUser);
-//        post.setUserNo(loginUserNo);// 반드시 저장 전에 User 세팅
+        post.setUser(loginUser); // 반드시 저장 전에 User 세팅
         if(loginUser==null){
             return ResponseEntity.badRequest().build();
         }

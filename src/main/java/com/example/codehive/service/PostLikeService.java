@@ -14,5 +14,5 @@ public interface PostLikeService {
     public PostLike GetPostLike(Integer userNo, Integer postNo);
     public ResponseEntity<?> setPostLike(Integer userNo, Integer postNo, Boolean likeType);
     public PostLike CreatePostLike(Integer userNo, Integer postNo, Boolean likeType);
-    public ResponseEntity<?> DeletePostLike(Integer userNo, Integer postNo);
+    public ResponseEntity<?> DeletePostLike(Integer userNo, Integer postNo,Boolean likeType);
 }

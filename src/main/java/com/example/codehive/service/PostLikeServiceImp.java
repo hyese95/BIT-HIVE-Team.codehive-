@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -120,13 +121,28 @@ public class PostLikeServiceImp implements PostLikeService{
     }
 
     @Override
-    public ResponseEntity<?> DeletePostLike(Integer userNo, Integer postNo) {
+    public ResponseEntity<?> DeletePostLike(Integer userNo, Integer postNo,Boolean likeType) {
         Post post=postRepository.findPostById(postNo);
         User user=userRepository.findById(userNo).orElseThrow();
-        PostLike existingpostLike=postLikeRepository.findByPostAndUser(post,user).orElse(null);
-        if(existingpostLike!=null){
-            postLikeRepository.delete(existingpostLike);
+        Optional<PostLike> existing = postLikeRepository.findByPostAndUser(post, user);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("userNo", userNo);
+        response.put("postNo", postNo);
+
+        if (existing.isPresent()) {
+            postLikeRepository.delete(existing.get());
+            response.put("likeType", null);
+        } else {
+            PostLike newLike = new PostLike();
+            newLike.setPost(post);
+            newLike.setUser(user);
+            newLike.setLikeType(likeType);
+            postLikeRepository.save(newLike);
+            response.put("likeType", likeType);
         }
-        return ResponseEntity.ok().build();
+
+        return ResponseEntity.ok(response);
+
     }
 }
