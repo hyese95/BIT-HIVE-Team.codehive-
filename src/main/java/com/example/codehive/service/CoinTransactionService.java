@@ -3,6 +3,7 @@ package com.example.codehive.service;
 import com.example.codehive.dto.CoinTransactionDto;
 import com.example.codehive.dto.CoinTransactionResponseDto;
 import com.example.codehive.dto.ProfitResultDto;
+import com.example.codehive.dto.TradeRequestDto;
 import com.example.codehive.entity.CoinTransaction;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,5 +31,6 @@ public interface CoinTransactionService {
     void removeTransactionPendingByUserNo(int userNo);
     void removeAllTransactionsByUserNo(int userNo);
     void register(CoinTransaction coinTransaction);
+    void submitTrade(TradeRequestDto tradeRequestDto);
 }
 

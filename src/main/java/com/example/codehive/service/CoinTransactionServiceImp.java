@@ -1,9 +1,6 @@
 package com.example.codehive.service;
 
-import com.example.codehive.dto.CoinDetailDto;
-import com.example.codehive.dto.CoinTransactionDto;
-import com.example.codehive.dto.CoinTransactionResponseDto;
-import com.example.codehive.dto.ProfitResultDto;
+import com.example.codehive.dto.*;
 import com.example.codehive.entity.CoinTransaction;
 import com.example.codehive.repository.CoinTransactionRepository;
 import jakarta.persistence.EntityManager;
@@ -45,6 +42,7 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
                 .filter(tr -> "PENDING".equals(tr.getTransactionState()))
                 .collect(Collectors.toList());
     }
+
     @Override
     public Page<CoinTransactionResponseDto> getFilteredTransactionDtos(
             int userNo, String transactionType, String transactionState,
@@ -249,5 +247,79 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
     @Transactional
     public void register(CoinTransaction coinTransaction) {
         entityManager.persist(coinTransaction);
+    }
+
+    @Override
+    @Transactional
+    public void submitTrade(TradeRequestDto tradeRequestDto) {
+        switch (tradeRequestDto.transactionType) {
+            case "BUY" -> handleBuy(tradeRequestDto);
+            case "SELL" -> handleSell(tradeRequestDto);
+            default -> throw new IllegalArgumentException("주문유형 오류");
+
+        }
+
+    }
+
+    public void handleBuy(TradeRequestDto tradeRequestDto) {
+        Integer userNo = tradeRequestDto.getUserNo();
+        String market = tradeRequestDto.getMarket();
+        String transactionType = tradeRequestDto.getTransactionType();
+        Double price = tradeRequestDto.getPrice();
+        Double transactionCnt = tradeRequestDto.getTransactionCnt();
+        Instant now = Instant.now();
+
+        //코인거래요청처리
+        CoinTransaction coinTransaction = new CoinTransaction();
+        coinTransaction.setUserNo(userNo);
+        coinTransaction.setMarket(market);
+        coinTransaction.setTransactionType(transactionType);
+        coinTransaction.setPrice(price);
+        coinTransaction.setTransactionCnt(transactionCnt);
+        coinTransaction.setTransactionDate(now);
+        coinTransaction.setTransactionState("PENDING");
+        coinTransactionRepository.save(coinTransaction);
+
+        //디파짓처리,즉시처리
+        CoinTransaction depositTransaction = new CoinTransaction();
+        depositTransaction.setUserNo(userNo);
+        depositTransaction.setMarket("KRW-KRW");
+        depositTransaction.setTransactionType("SELL");
+        depositTransaction.setPrice(1.0);
+        depositTransaction.setTransactionCnt(transactionCnt*price);
+        depositTransaction.setTransactionDate(now);
+        depositTransaction.setTransactionState("COMPLETED");
+        coinTransactionRepository.save(depositTransaction);
+    }
+
+    public void handleSell(TradeRequestDto tradeRequestDto) {
+        Integer userNo = tradeRequestDto.getUserNo();
+        String market = tradeRequestDto.getMarket();
+        String transactionType = tradeRequestDto.getTransactionType();
+        Double price = tradeRequestDto.getPrice();
+        Double transactionCnt = tradeRequestDto.getTransactionCnt();
+        Instant now = Instant.now();
+
+        //코인거래요청처리
+        CoinTransaction coinTransaction = new CoinTransaction();
+        coinTransaction.setUserNo(userNo);
+        coinTransaction.setMarket(market);
+        coinTransaction.setTransactionType(transactionType);
+        coinTransaction.setPrice(price);
+        coinTransaction.setTransactionCnt(transactionCnt);
+        coinTransaction.setTransactionDate(now);
+        coinTransaction.setTransactionState("PENDING");
+        coinTransactionRepository.save(coinTransaction);
+
+        //디파짓처리,즉시처리
+        CoinTransaction depositTransaction = new CoinTransaction();
+        depositTransaction.setUserNo(userNo);
+        depositTransaction.setMarket("KRW-KRW");
+        depositTransaction.setTransactionType("BUY");
+        depositTransaction.setPrice(1.0);
+        depositTransaction.setTransactionCnt(transactionCnt*price);
+        depositTransaction.setTransactionDate(now);
+        depositTransaction.setTransactionState("PENDING");
+        coinTransactionRepository.save(depositTransaction);
     }
 }

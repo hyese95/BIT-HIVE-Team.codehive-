@@ -1,6 +1,8 @@
 package com.example.codehive.controller;
 
 
+import com.example.codehive.entity.FavoriteMarket;
+import com.example.codehive.entity.FavoriteMarketId;
 import com.example.codehive.service.FavoriteCoinMarketService;
 import com.example.codehive.service.FavoriteCoinMarketServiceImp;
 import lombok.AllArgsConstructor;
@@ -24,6 +26,35 @@ public class FavoriteMarketApiController {
         List<String> FavoriteMarketList=favoriteCoinMarketService.readByUserNo(1);
         return ResponseEntity.ok(FavoriteMarketList);
 
+    }
+
+    @PostMapping("/me")
+    public ResponseEntity<Void> registerFavorites(
+            @RequestBody FavoriteMarket favoriteMarket
+    ){
+        try{
+            favoriteMarket.setUserNo(1);//하드코딩
+            favoriteCoinMarketService.regiseter(favoriteMarket);
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.status(409).build();
+        }catch (Exception e){
+            return ResponseEntity.internalServerError().build();
+        }
+        return ResponseEntity.status(201).build();
+    }
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> deleteFavorite(
+            @RequestBody FavoriteMarketId favoriteMarketId
+    ){
+        try{
+            favoriteMarketId.setUserNo(1);//하드코딩
+            favoriteCoinMarketService.remove(favoriteMarketId);
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.notFound().build();
+        }catch (Exception e){
+            return ResponseEntity.internalServerError().build();
+        }
+        return ResponseEntity.status(202).build();
     }
 
 

@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/users")
+@CrossOrigin("http://localhost:5173")
 public class UserApiController {
     private final PostService postService;
     private UserService userService;
@@ -65,12 +66,17 @@ public class UserApiController {
     }
 
     @GetMapping("/me/summary")
-    public UserDto meSummary(@AuthenticationPrincipal UserDetails loginUser) {
-        String userId = loginUser.getUsername(); // 로그인한 사용자 ID 가져오기
-        User user = userService.readByUserId(userId)
+    public UserDto meSummary(
+//            @AuthenticationPrincipal UserDetails loginUser
+    ) {
+//        String userId = loginUser.getUsername(); // 로그인한 사용자 ID 가져오기
+        User user = userService.readByUserId("user1")
                 .orElseThrow(() -> new RuntimeException("로그인된 유저를 찾을 수 없습니다."));
-        int userNo = user.getId();
+//        int userNo = user.getId();
 
+
+        //하드코딩
+        int userNo = 1;
         UserDto userDto = UserDto.from(user);
         userDto.setPostCount(userService.readPostsCount(userNo));
         userDto.setFollowingCount(userService.readFollowingCount(userNo));
@@ -164,9 +170,9 @@ public class UserApiController {
     }
 
     @GetMapping("/{userNo}/boards")
-    public List<PostDto> getUserBoards(@PathVariable Integer userNo, @RequestParam (defaultValue = "0") int page) {
+    public List<PostDto> getUserBoards(@PathVariable Integer userNo, @RequestParam(defaultValue = "0") int page) {
         Pageable pageable = PageRequest.of(page, 2);
-        Page<Post> posts= postService.readByUserNo(pageable, userNo);
+        Page<Post> posts = postService.readByUserNo(pageable, userNo);
 
         return posts.getContent().stream().map(PostDto::new).collect(Collectors.toList());
 
