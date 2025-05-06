@@ -123,8 +123,10 @@ public class PostLikeServiceImp implements PostLikeService{
     public ResponseEntity<?> DeletePostLike(Integer userNo, Integer postNo) {
         Post post=postRepository.findPostById(postNo);
         User user=userRepository.findById(userNo).orElseThrow();
-        PostLike existingpostLike=postLikeRepository.findByPostAndUser(post,user).orElseThrow();
-        postLikeRepository.delete(existingpostLike);
+        PostLike existingpostLike=postLikeRepository.findByPostAndUser(post,user).orElse(null);
+        if(existingpostLike!=null){
+            postLikeRepository.delete(existingpostLike);
+        }
         return ResponseEntity.ok().build();
     }
 }

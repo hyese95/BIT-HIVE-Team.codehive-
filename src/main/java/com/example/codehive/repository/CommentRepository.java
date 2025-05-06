@@ -37,8 +37,8 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
             "    c.id AS commentNo, " +
             "    c.comment_cont," +
             "    c.parent_no AS parentNo , " +
-            "    CAST(SUM(CASE WHEN cl.like_type = TRUE THEN 1 ELSE 0 END) AS int) AS likeCount, " +
-            "    CAST(SUM(CASE WHEN cl.like_type = FALSE THEN 1 ELSE 0 END) AS int) AS dislikeCount, " +
+            "    CAST(SUM(CASE WHEN cl.like_type = TRUE THEN 1 ELSE 0 END) AS SIGNED) AS likeCount, " +
+            "    CAST(SUM(CASE WHEN cl.like_type = FALSE THEN 1 ELSE 0 END) AS SIGNED) AS dislikeCount, " +
             "        SELECT cl2.like_type" +
             "        FROM comment_likes cl2" +
             "        WHERE cl2.comment_id = c.id AND cl2.user_no = :userNo " +
