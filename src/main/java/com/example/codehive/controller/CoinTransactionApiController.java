@@ -86,6 +86,7 @@ public class CoinTransactionApiController {
         List<AssetDto> assetDtoList = myAssetService.readHoldingCoinListByUserNo(userNo);
         return ResponseEntity.ok(assetDtoList);
     }
+    // 그냥 주소로 해놓고
 
     // 보유 자산 초기화
     @DeleteMapping("/{userNo}")
