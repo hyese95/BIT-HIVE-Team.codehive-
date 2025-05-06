@@ -1,5 +1,6 @@
 package com.example.codehive.repository;
 
+import com.example.codehive.dto.CommentDto;
 import com.example.codehive.entity.Comment;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -32,6 +33,25 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
     @Query("DELETE FROM Comment c WHERE c.id = :commentNo")
     void deleteCommentByPostNo(@Param("commentNo") int commentNo);
     int countByParentNo(int parentNo);
+    @Query( value = "SELECT " +
+            "    c.id AS commentNo, " +
+            "    c.comment_cont," +
+            "    c.parent_no AS parentNo , " +
+            "    CAST(SUM(CASE WHEN cl.like_type = TRUE THEN 1 ELSE 0 END) AS int) AS likeCount, " +
+            "    CAST(SUM(CASE WHEN cl.like_type = FALSE THEN 1 ELSE 0 END) AS int) AS dislikeCount, " +
+            "        SELECT cl2.like_type" +
+            "        FROM comment_likes cl2" +
+            "        WHERE cl2.comment_id = c.id AND cl2.user_no = :userNo " +
+            "        LIMIT 1" +
+            "    ) AS userLikeType " +
+            "FROM comment c" +
+            "LEFT JOIN comment_like cl ON c.id = cl.comment_id " +
+            "WHERE c.post_id = :postNo " +
+            "GROUP BY c.id " +
+            "ORDER BY c.id ASC",nativeQuery=true)
+    List<CommentDto.CommentDtoRequest> findCommentsWithUserLike(@Param("postNo") int postNo,
+                                              @Param("userNo") int userNo);
+    //유저 별로 누른 like 추출하기 위해 만듬
 //    @Modifying
 //    @Query("INSERT INTO Comment (postNo,userNo,commentCreatedAt,parentNo,commentCont) values (?,?,?,?,?)")
 //    List<Comment> createChildComments(int commentNo);

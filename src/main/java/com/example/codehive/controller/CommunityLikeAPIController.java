@@ -1,5 +1,6 @@
 package com.example.codehive.controller;
 
+import com.example.codehive.dto.CommentDto;
 import com.example.codehive.dto.CommentLikeDto;
 import com.example.codehive.entity.Comment;
 import com.example.codehive.entity.CommentLike;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -27,7 +29,7 @@ public class CommunityLikeAPIController {
     private PostLikeService postLikeService;
     private PostService postService;
     @GetMapping("/comments/{commentNo}")
-    public ResponseEntity<CommentLikeDto.CommentLikeRequest> getLikeTypeStatus(
+    public ResponseEntity<List<CommentDto.CommentDtoRequest>> getLikeTypeStatus(
             @PathVariable int commentNo
             ,@RequestParam int userNo
             //           ,@AuthenticationPrincipal CustomUserDetails userDetails
@@ -37,13 +39,10 @@ public class CommunityLikeAPIController {
 //            return ResponseEntity.badRequest().build();
 //        }int loginUserNo=loginUser.getId();
     ) {
-        CommentLike commentLike = commentLikeService.GetCommentLike(userNo, commentNo);
-        if (commentLike == null) {
-            return ResponseEntity.ok().build();
-        }
-        CommentLikeDto commentLikeDto = new CommentLikeDto(commentLike);
-        CommentLikeDto.CommentLikeRequest request =
-                new CommentLikeDto.CommentLikeRequest(commentLikeDto);
+        userNo=1;//하드코딩상태
+        Comment comment=commentService.readComment(commentNo);
+        int postNo=comment.getPost().getId();
+        List<CommentDto.CommentDtoRequest> request=commentService.getCommentsWithLikes(postNo,userNo);
         return ResponseEntity.ok(request);
     }
     @PostMapping("/comments/{commentNo}")

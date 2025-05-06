@@ -134,4 +134,9 @@ public class CommentServiceImp implements CommentService {
         CommentDto commentDto= new CommentDto(comment);
         return commentDto;
     }
+
+    @Override
+    public List<CommentDto.CommentDtoRequest> getCommentsWithLikes(int postNo, int userNo) {
+        return commentRepository.findCommentsWithUserLike(postNo, userNo);
+    }
 }

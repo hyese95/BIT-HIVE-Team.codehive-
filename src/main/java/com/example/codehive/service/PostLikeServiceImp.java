@@ -125,6 +125,6 @@ public class PostLikeServiceImp implements PostLikeService{
         User user=userRepository.findById(userNo).orElseThrow();
         PostLike existingpostLike=postLikeRepository.findByPostAndUser(post,user).orElseThrow();
         postLikeRepository.delete(existingpostLike);
-        return ResponseEntity.ok(Map.of("status", "deleted"));
+        return ResponseEntity.ok().build();
     }
 }

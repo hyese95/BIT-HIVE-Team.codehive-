@@ -51,4 +51,26 @@ public class CommentDto {
             this.replyCount = 0;
         }else{this.replyCount = comment.getChildComments().size();}
     }
+
+    @Getter
+    @Setter
+    public static class CommentDtoRequest {
+        private int id;
+        private Integer parentNo;
+        private String commentCont;
+        private Integer likeCount;
+        private Integer dislikeCount;
+        private Boolean userLikeType; // ← 로그인 유저의 좋아요 상태
+
+        public CommentDtoRequest(CommentDto dto, Boolean userLikeType) {
+            this.id = dto.getId();
+            this.parentNo = dto.getParentNo();
+            this.commentCont = dto.getCommentCont();
+            this.likeCount = dto.getLikeCount();
+            this.dislikeCount = dto.getDislikeCount();
+            this.userLikeType = userLikeType;
+        }
+
+        // getter/setter 생략
+    }
 }

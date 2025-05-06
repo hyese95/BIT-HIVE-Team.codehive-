@@ -110,7 +110,7 @@ public class CommentLikeServiceImp implements CommentLikeService {
         id.setUserNo(userNo);
         id.setCommentNo(commentNo);
         commentLikeRepository.deleteById(id);
-        return ResponseEntity.ok(Map.of("status","deleted"));
+        return ResponseEntity.ok().build();
     }
 }
 

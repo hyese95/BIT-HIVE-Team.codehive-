@@ -23,14 +23,12 @@ public class CommentLikeDto {
     public static class CommentLikeRequest {
         private int userNo;
         private int commentNo;
-        private int postNo;
         private Boolean likeType; // 1 = 좋아요, 0 = 싫어요, null = 취소
-
         // 생성자
-        public CommentLikeRequest(CommentLikeDto commentLikeDto) {
-            this.userNo = commentLikeDto.getUserNo();
-            this.commentNo = commentLikeDto.getCommentNo();
-            this.likeType = commentLikeDto.getLikeType();
+        public CommentLikeRequest(CommentLikeDto commentLikedto) {
+            this.userNo = commentLikedto.getUserNo();
+            this.commentNo = commentLikedto.getCommentNo();
+            this.likeType=commentLikedto.getLikeType();
         }}//게시글별로 상태를 조회하기 위한 조건 postNo 삽입
 
     @Getter
