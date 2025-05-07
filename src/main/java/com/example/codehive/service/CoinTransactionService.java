@@ -3,6 +3,7 @@ package com.example.codehive.service;
 import com.example.codehive.dto.CoinTransactionDto;
 import com.example.codehive.dto.CoinTransactionResponseDto;
 import com.example.codehive.dto.ProfitResultDto;
+import com.example.codehive.dto.TradeRequestDto;
 import com.example.codehive.entity.CoinTransaction;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,5 +31,22 @@ public interface CoinTransactionService {
     void removeTransactionPendingByUserNo(int userNo);
     void removeAllTransactionsByUserNo(int userNo);
     void register(CoinTransaction coinTransaction);
+    void submitTrade(TradeRequestDto tradeRequestDto);
+
+    /**
+     * 특정 유저의 특정 코인의 가용 수량을 확인하는 메서드
+     * @param userNo 유저 번호
+     * @param market 마켓 코드 (예: BTC-KRW)
+     * @return 가용 수량
+     */
+    double getAvailableCoinQuantity(int userNo, String market);
+    
+    /**
+     * 특정 유저의 KRW 디파짓 잔액을 확인하는 메서드
+     * (COMPLETED BUY - (COMPLETED SELL + PENDING SELL))
+     * @param userNo 유저 번호
+     * @return 가용 KRW 디파짓 잔액
+     */
+    double getAvailableDeposit(int userNo);
 }
 
