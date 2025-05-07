@@ -72,19 +72,17 @@ public class CoinTransactionController {
         return ResponseEntity.ok(result);
     }
 
-    @DeleteMapping("/api/transaction/me")
-    public ResponseEntity<Void> resetAsset(){
-        try {
-            coinTransactionService.removeAllByUserNo(1);
-            return ResponseEntity.ok().build();
-        }
-        catch(Exception e){
-            return ResponseEntity.badRequest().build();
-
-        }
-
-
-    }
+//    @DeleteMapping("/api/transaction/me")
+//    public ResponseEntity<Void> resetAsset(){
+//        try {
+//            coinTransactionService.removeAllByUserNo(1);
+//            return ResponseEntity.ok().build();
+//        }
+//        catch(Exception e){
+//            return ResponseEntity.badRequest().build();
+//
+//        }
+//    }
 
     @GetMapping("/api/history/{userNo}")
     public ResponseEntity<List<CoinTransactionDto>> getHistory(@PathVariable int userNo) {
