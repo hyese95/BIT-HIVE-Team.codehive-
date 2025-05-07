@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -61,7 +60,7 @@ public class CommunityController {
             System.out.println(postLikeDto);
             return ResponseEntity.badRequest().build();
         }
-        postLikeService.toggleLike(userNo, postNo, likeType);
+        postLikeService.modifyLike(userNo, postNo, likeType);
         PostLikeDto updatedCounts = postLikeService.getPostLikeById(postNo);
         Map<String, Integer> response = new HashMap<>();
         response.put("likeCount", updatedCounts.getLikeCount());
@@ -92,7 +91,7 @@ public class CommunityController {
         postDto.setCategory("free");
         postDto.setUserNickname(randomUser.getNickname());
         postDto.setPostCreatedAt(LocalDateTime.now());
-        PostDto savedPost = postService.createPost(postDto);
+        PostDto savedPost = postService.createPost(postDto,randomUser.getUserId());
         return ResponseEntity.ok(savedPost);
     }
 
@@ -136,7 +135,7 @@ public class CommunityController {
         postDto.setCategory("pnl");
         postDto.setUserNickname(randomUser.getNickname());
         postDto.setPostCreatedAt(LocalDateTime.now());
-        PostDto savedPost = postService.createPost(postDto);
+        PostDto savedPost = postService.createPost(postDto,randomUser.getUserId());
         return ResponseEntity.ok(savedPost);
     }
     @GetMapping("/pnl_post.do")
@@ -177,7 +176,7 @@ public class CommunityController {
         postDto.setCategory("chart");
         postDto.setUserNickname(randomUser.getNickname());
         postDto.setPostCreatedAt(LocalDateTime.now());
-        PostDto savedPost = postService.createPost(postDto);
+        PostDto savedPost = postService.createPost(postDto,randomUser.getUserId());
         return ResponseEntity.ok(savedPost);
     }
     @GetMapping("/chart_post.do")
@@ -214,7 +213,7 @@ public class CommunityController {
         postDto.setCategory("expert");
         postDto.setUserNickname(randomUser.getNickname());
         postDto.setPostCreatedAt(LocalDateTime.now());
-        PostDto savedPost = postService.createPost(postDto);
+        PostDto savedPost = postService.createPost(postDto,randomUser.getUserId());
         return ResponseEntity.ok(savedPost);
     }
     @GetMapping("/expert_post.do")

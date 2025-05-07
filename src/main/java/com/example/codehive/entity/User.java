@@ -1,9 +1,6 @@
 package com.example.codehive.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -89,4 +86,10 @@ public class User {
 
     @Column
     private String oauth;
+
+    @OneToMany(mappedBy = "userNo", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("comment-user")
+    @ToString.Exclude
+    @JsonIgnore
+    private List<Comment> userComment;
 }

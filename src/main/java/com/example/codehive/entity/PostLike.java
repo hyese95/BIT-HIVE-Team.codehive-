@@ -25,6 +25,8 @@ public class PostLike {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_no", nullable = false)
     @JsonIgnore
+    @ToString.Exclude
+    @JsonBackReference
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false,cascade = CascadeType.MERGE)
@@ -32,6 +34,7 @@ public class PostLike {
     @ToString.Exclude
     @MapsId("postNo")
     @JsonIgnore
+    @JsonBackReference
     private Post post;
 
     @Column(name = "like_type")

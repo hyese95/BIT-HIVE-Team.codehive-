@@ -4,6 +4,7 @@ package com.example.codehive.service;
 import com.example.codehive.dto.PostDto;
 import com.example.codehive.entity.Post;
 import com.example.codehive.entity.User;
+import com.example.codehive.jwt.JwtUtil;
 import com.example.codehive.repository.CommentRepository;
 import com.example.codehive.repository.PostRepository;
 import jakarta.persistence.EntityManager;
@@ -23,7 +24,7 @@ public class PostServiceImp implements PostService {
     PostRepository postRepository;
     UserService userService;
     EntityManager entityManager;
-    CommentRepository commentRepository;
+    JwtUtil jwtUtil;
     @Override
     public Page<Post> readByCategoryWithKeyword(String category, String keyword, String sortType, Pageable pageable) {
         LocalDate startDate = switch (sortType) {
@@ -57,15 +58,15 @@ public class PostServiceImp implements PostService {
     @Override
     public Page<Post> readAllByCategory(Pageable pageable, String category) {
         Page<Post> posts;
-        posts = postRepository.findByCategory(category,pageable);
+        posts = postRepository.findPostByCategoryAndSort(category,pageable);
         return posts;
     }
 
     @Override
     public Post getPostByPostId(int id) {
-        Post posts;
-        posts = postRepository.findPostById(id);
-        return posts;
+        Post post;
+        post = postRepository.findPostById(id);
+        return post;
     }
 
     @Override
@@ -95,20 +96,20 @@ public class PostServiceImp implements PostService {
 
     @Override
     @Transactional
-    public PostDto createPost(PostDto postDto) {
+    public PostDto createPost(PostDto postDto,String username) {
         Post newPost = new Post();
-        User user=userService.readByUserNo(1).orElse(null);
-        postDto.setUserNo(1);
-//        User user=userService.readByUserNo(loginUser).orElse(null);
-//        postDto.setUserNo(user.getId());
+        String jwt= jwtUtil.generateToken(username);
+        username=jwtUtil.getUsername(jwt);
+        User user=userService.readByUserId(username).orElse(null);
+        if (user==null) {
+            throw new IllegalArgumentException("존재하지 않는 유저");
+        }
+        postDto.setUserNo(user.getId());
         newPost.setPostCont(postDto.getPostCont());
         newPost.setPostCreatedAt(LocalDateTime.now());
         newPost.setCategory(postDto.getCategory());
         newPost.setUserNo(postDto.getUserNo());
         Post savedPost = postRepository.save(newPost);
-        System.out.println(postDto);
-        System.out.println(savedPost);
-        System.out.println(new PostDto(savedPost));
         return new PostDto(savedPost);
     }
 
@@ -138,7 +139,7 @@ public class PostServiceImp implements PostService {
 
     @Override
     public Page<PostDto> readAllDtoByCategory(PostDto.PostSearchRequestDto request) {
-        Page<Post> page = postRepository.findByCategory(
+        Page<Post> page = postRepository.findPostByCategoryAndSort(
                 request.getCategory(),
                 PageRequest.of(request.getPage(), request.getSize())
         );

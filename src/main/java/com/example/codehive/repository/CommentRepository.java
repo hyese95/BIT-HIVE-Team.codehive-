@@ -1,5 +1,6 @@
 package com.example.codehive.repository;
 
+import com.example.codehive.dto.CommentDto;
 import com.example.codehive.entity.Comment;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -32,6 +33,8 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
     @Query("DELETE FROM Comment c WHERE c.id = :commentNo")
     void deleteCommentByPostNo(@Param("commentNo") int commentNo);
     int countByParentNo(int parentNo);
+
+    //유저 별로 누른 like 추출하기 위해 만듬
 //    @Modifying
 //    @Query("INSERT INTO Comment (postNo,userNo,commentCreatedAt,parentNo,commentCont) values (?,?,?,?,?)")
 //    List<Comment> createChildComments(int commentNo);

@@ -112,6 +112,6 @@ class PostServiceImpTest {
         postDto.setUserNo(user.getId());
         postDto.setPostCont("마무리 하고 싶어");
         System.out.println(user);
-        System.out.println(postService.createPost(postDto));
+        System.out.println(postService.createPost(postDto, user.getNickname()));
     }
 }

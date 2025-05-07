@@ -19,7 +19,7 @@ public interface PostService {
     Post getPostByPostId(int id);
     void modifyPost(int postNo, String content);
     void deletePost(int postNo);
-    PostDto createPost(PostDto postDto);
+    PostDto createPost(PostDto postDto,String username);
     Page<Post> readAll(PostDto postDto, Pageable pageable);
     Page<Post>readByUserNo(Pageable pageable, int userNo);
     Page<Post> findAll(Pageable pageable);
