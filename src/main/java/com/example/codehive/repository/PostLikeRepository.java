@@ -15,7 +15,7 @@ import java.util.Optional;
 @Repository
 public interface PostLikeRepository extends JpaRepository<PostLike, Integer> {
     Optional<PostLike> findByPostAndUser(Post post, User user);
-
+    
     @Transactional
     @Modifying
     @Query("DELETE FROM PostLike pl WHERE pl.postNo = :postNo")

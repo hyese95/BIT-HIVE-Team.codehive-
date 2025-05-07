@@ -28,4 +28,5 @@ public interface CommentLikeRepository extends JpaRepository<CommentLike, Commen
             "FROM CommentLike c WHERE c.commentNo.id = :commentNo GROUP BY c.commentNo.id")
     CommentLikeCountDTO getCommentLikeCount(@Param("commentNo") Integer commentNo);
 
+    void deleteByIdAndLikeType(CommentLikeId id, boolean likeType);
 }

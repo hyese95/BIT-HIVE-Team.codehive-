@@ -83,14 +83,17 @@ class CommentServiceImpTest {
     }
 
     @Test
+    @Transactional
     void modifyComment() {
+        Comment existingComment = commentService.readComment(62);
+        System.out.println(existingComment);
         Comment comment = new Comment();
         User user = entityManager.find(User.class, 1);
         Hibernate.initialize(user);
         comment.setCommentCont("쉬바라");
         comment.setCommentCreatedAt(LocalDateTime.now());
         comment.setUserNo(user);
-        comment.setId(94);
+        comment.setId(62);
         commentService.modifyComment(comment);
         System.out.println(comment);
     }
@@ -120,4 +123,9 @@ class CommentServiceImpTest {
         System.out.println(commentService.readCommentDtoByPostNo(1));
     }
 
+
+    @Test
+    void modifyCommentDto() {
+
+    }
 }
