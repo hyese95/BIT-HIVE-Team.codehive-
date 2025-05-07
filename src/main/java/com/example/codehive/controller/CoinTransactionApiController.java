@@ -4,9 +4,12 @@ import com.example.codehive.dto.AssetDto;
 import com.example.codehive.dto.CoinTransactionResponseDto;
 import com.example.codehive.entity.CoinTransaction;
 import com.example.codehive.repository.UserRepository;
+import com.example.codehive.security.CustomUserDetails;
 import com.example.codehive.service.CoinTransactionService;
 import com.example.codehive.service.MyAssetService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -30,6 +33,7 @@ import java.util.Map;
 @RequestMapping("/api/transaction")
 @CrossOrigin("http://localhost:5173")
 public class CoinTransactionApiController {
+
     private final UserRepository userRepository;
     private final CoinTransactionService coinTransactionService;
     private final MyAssetService myAssetService;
@@ -37,7 +41,7 @@ public class CoinTransactionApiController {
 
     @GetMapping("")
     public Page<CoinTransactionResponseDto> getFilteredTransactions(
-            @RequestParam(required = false, defaultValue = "1") int userNo,
+            Authentication authentication,
             @RequestParam(required = false) String transactionType,
             @RequestParam(required = false) String transactionState,
             @RequestParam(required = false) String market,
@@ -45,6 +49,11 @@ public class CoinTransactionApiController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
             @PageableDefault(size = 20, sort = "transactionDate", direction = Sort.Direction.DESC) Pageable pageable
     ) {
+        if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
+            throw new IllegalArgumentException("인증되지 않은 사용자입니다.");
+        }
+
+        int userNo = ((CustomUserDetails) authentication.getPrincipal()).getUserNo();
         Instant start = startDate != null ? startDate.atZone(ZoneId.of("Asia/Seoul")).toInstant() : null;
         Instant end = endDate != null ? endDate.atZone(ZoneId.of("Asia/Seoul")).toInstant() : null;
 
@@ -54,49 +63,49 @@ public class CoinTransactionApiController {
     // 선택 삭제
     @DeleteMapping("/openOrder/{id}")
     public ResponseEntity<Void> remove(@PathVariable int id) {
-        try{
+        try {
             coinTransactionService.remove(id);
-        }catch (IllegalArgumentException e){
-            logger.error(e.getMessage());
-            return ResponseEntity.internalServerError().build();
-        }catch (Exception e){
-            logger.error(e.getMessage());
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            logger.error("삭제 실패: {}", e.getMessage());
             return ResponseEntity.internalServerError().build();
         }
-        return ResponseEntity.ok().build();
     }
 
-    // 미체결 전체 삭제
-    @DeleteMapping("/openOrder/user/{userNo}")
-    public ResponseEntity<Void> removeAllPending(@PathVariable int userNo) {
-        try{
+    // ✅ 로그인 유저의 미체결 전체 삭제
+    @DeleteMapping("/openOrder/user")
+    public ResponseEntity<Void> removeAllPending(Authentication authentication) {
+        int userNo = extractUserNo(authentication);
+        try {
             coinTransactionService.removeTransactionPendingByUserNo(userNo);
-        }catch (IllegalArgumentException e){
-            logger.error(e.getMessage());
-            return ResponseEntity.internalServerError().build();
-        }catch (Exception e){
-            logger.error(e.getMessage());
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            logger.error("미체결 삭제 실패: {}", e.getMessage());
             return ResponseEntity.internalServerError().build();
         }
-        return ResponseEntity.ok().build();
     }
 
-    @GetMapping("{userNo}")
-    public ResponseEntity<List<AssetDto>> getUserAssets(@PathVariable int userNo) {
+    @GetMapping("/me")
+    public ResponseEntity<List<AssetDto>> getUserAssets(Authentication authentication) {
+        if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        int userNo = userDetails.getUserNo();
         List<AssetDto> assetDtoList = myAssetService.readHoldingCoinListByUserNo(userNo);
         return ResponseEntity.ok(assetDtoList);
     }
 
-//    @GetMapping("/me")
-//    public ResponseEntity<List<AssetDto>> getUserAssets() {
-//        int userNo = 1;
-//        List<AssetDto> assetDtoList = myAssetService.readHoldingCoinListByUserNo(userNo);
-//        return ResponseEntity.ok(assetDtoList);
-//    }
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> clearUserAssets(Authentication authentication) {
+        if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
-    // 보유 자산 초기화
-    @DeleteMapping("/{userNo}")
-    public ResponseEntity<Void> clearUserAssets(@PathVariable int userNo) {
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        int userNo = userDetails.getUserNo();
+
         try {
             coinTransactionService.removeAllTransactionsByUserNo(userNo);
             return ResponseEntity.ok().build();
@@ -107,14 +116,19 @@ public class CoinTransactionApiController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> registerInitialAsset(@RequestBody CoinTransaction coinTransaction) {
-        logger.info("자산 등록 요청: {}", coinTransaction);
-
-        if (!userRepository.existsById(coinTransaction.getUserNo())) {
-            logger.warn("user_no={} 은 존재하지 않습니다", coinTransaction.getUserNo());
-            return ResponseEntity.badRequest().build();
+    public ResponseEntity<Void> registerInitialAsset(
+            @RequestBody CoinTransaction coinTransaction,
+            Authentication authentication
+    ) {
+        if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        int userNo = userDetails.getUserNo();
+
+        coinTransaction.setUserNo(userNo);
+        logger.info("자산 등록 요청: {}", coinTransaction);
         try {
             coinTransactionService.register(coinTransaction);
             return ResponseEntity.ok().build();
@@ -122,6 +136,14 @@ public class CoinTransactionApiController {
             logger.error("자산 등록 중 오류 발생: {}", e.getMessage());
             return ResponseEntity.internalServerError().build();
         }
+    }
+
+    // 🔐 유저 번호 추출 공통 함수
+    private int extractUserNo(Authentication authentication) {
+        if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
+            throw new IllegalArgumentException("인증되지 않은 사용자입니다.");
+        }
+        return ((CustomUserDetails) authentication.getPrincipal()).getUserNo();
     }
 
 }
