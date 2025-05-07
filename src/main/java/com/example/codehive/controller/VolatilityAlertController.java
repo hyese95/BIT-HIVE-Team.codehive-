@@ -20,7 +20,7 @@ public class VolatilityAlertController {
     // HTML 렌더링용 GET 요청
     @GetMapping("/volatility_alerts.do")
     public String listVolatilityAlerts(Model model) {
-        int userId = 2; // 테스트용
+        int userId = 1; // 테스트용
         List<VolatilityAlert> alerts = service.getAlertsForUser(userId);
         model.addAttribute("volatilityAlerts", alerts);
         return "setting/support/notifications/volatility_alerts";
