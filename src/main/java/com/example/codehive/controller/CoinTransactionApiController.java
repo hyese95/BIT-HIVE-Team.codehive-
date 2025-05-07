@@ -56,7 +56,6 @@ public class CoinTransactionApiController {
         int userNo = ((CustomUserDetails) authentication.getPrincipal()).getUserNo();
         Instant start = startDate != null ? startDate.atZone(ZoneId.of("Asia/Seoul")).toInstant() : null;
         Instant end = endDate != null ? endDate.atZone(ZoneId.of("Asia/Seoul")).toInstant() : null;
-
         return coinTransactionService.getFilteredTransactionDtos(userNo, transactionType, transactionState, market, start, end, pageable);
     }
 
@@ -72,7 +71,7 @@ public class CoinTransactionApiController {
         }
     }
 
-    // ✅ 로그인 유저의 미체결 전체 삭제
+    // 미체결 전체 삭제
     @DeleteMapping("/openOrder/user")
     public ResponseEntity<Void> removeAllPending(Authentication authentication) {
         int userNo = extractUserNo(authentication);
@@ -87,12 +86,7 @@ public class CoinTransactionApiController {
 
     @GetMapping("/me")
     public ResponseEntity<List<AssetDto>> getUserAssets(Authentication authentication) {
-        if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        int userNo = userDetails.getUserNo();
+        int userNo = extractUserNo(authentication);
         List<AssetDto> assetDtoList = myAssetService.readHoldingCoinListByUserNo(userNo);
         return ResponseEntity.ok(assetDtoList);
     }
@@ -126,8 +120,28 @@ public class CoinTransactionApiController {
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         int userNo = userDetails.getUserNo();
-
         coinTransaction.setUserNo(userNo);
+
+        // 유효성 검사
+        String market = coinTransaction.getMarket();
+        double price = coinTransaction.getPrice();
+        double cnt = coinTransaction.getTransactionCnt();
+
+        if ("KRW-KRW".equals(market)) {
+            // KRW 입금 등록일 경우
+            if (cnt < 1_000_000 || cnt > 100_000_000) {
+                return ResponseEntity.badRequest().body(null);
+            }
+            if (price != 1.0) {
+                return ResponseEntity.badRequest().body(null);
+            }
+        } else {
+            // 일반 코인 거래일 경우
+            if (price <= 0 || cnt <= 0) {
+                return ResponseEntity.badRequest().body(null);
+            }
+        }
+
         logger.info("자산 등록 요청: {}", coinTransaction);
         try {
             coinTransactionService.register(coinTransaction);
