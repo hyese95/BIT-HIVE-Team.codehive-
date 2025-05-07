@@ -27,6 +27,6 @@ public interface CommentLikeRepository extends JpaRepository<CommentLike, Commen
             "CAST(SUM(CASE WHEN c.likeType = false THEN 1 ELSE 0 END) AS int)) " +
             "FROM CommentLike c WHERE c.commentNo.id = :commentNo GROUP BY c.commentNo.id")
     CommentLikeCountDTO getCommentLikeCount(@Param("commentNo") Integer commentNo);
-
+    List<CommentLike> findByIdUserNoAndIdCommentNoIn(Integer userNo, List<Integer> commentNos);
     void deleteByIdAndLikeType(CommentLikeId id, boolean likeType);
 }

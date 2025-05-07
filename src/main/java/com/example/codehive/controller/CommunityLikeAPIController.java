@@ -37,6 +37,7 @@ public class CommunityLikeAPIController {
     ) {
         userNo=1;//하드코딩상태
         List<CommentDto.CommentDtoRequest> request=commentService.getCommentsWithLikes(postNo,userNo);
+//        List<CommentDto.CommentDtoRequest> request=commentService.getCommentsWithLikes(postNo,loginUserNo);
         return ResponseEntity.ok(request);
     }
     @PostMapping("/comments/{commentNo}")

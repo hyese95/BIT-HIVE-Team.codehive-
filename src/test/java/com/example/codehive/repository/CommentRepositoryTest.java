@@ -34,4 +34,5 @@ class CommentRepositoryTest {
         List<Comment> list=commentRepository.findByParent_ParentNo(1);
         System.out.println(list);
     }
+
 }

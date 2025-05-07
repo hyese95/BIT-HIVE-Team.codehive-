@@ -128,4 +128,10 @@ class CommentServiceImpTest {
     void modifyCommentDto() {
 
     }
+
+    @Test
+    @Transactional
+    void getCommentsWithLikes() {
+        System.out.println(commentService.getCommentsWithLikes(1,1));
+    }
 }
