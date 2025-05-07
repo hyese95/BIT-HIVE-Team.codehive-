@@ -3,12 +3,12 @@ package com.example.codehive.controller;
 import com.example.codehive.dto.CommentDto;
 import com.example.codehive.dto.CommentLikeDto;
 import com.example.codehive.entity.PostLike;
-import com.example.codehive.service.CommentLikeService;
-import com.example.codehive.service.CommentService;
-import com.example.codehive.service.PostLikeService;
-import com.example.codehive.service.PostService;
+import com.example.codehive.entity.User;
+import com.example.codehive.security.CustomUserDetails;
+import com.example.codehive.service.*;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,36 +22,30 @@ public class CommunityLikeAPIController {
     private CommentLikeService commentLikeService;
     private CommentService commentService;
     private PostLikeService postLikeService;
-    private PostService postService;
+    private UserService userService;
+
     @GetMapping("/posts/{postNo}/comments")
     public ResponseEntity<List<CommentDto.CommentDtoRequest>> getCommentLikeTypeStatus(
             @PathVariable int postNo
-            ,@RequestParam int userNo
-            //           ,@AuthenticationPrincipal CustomUserDetails userDetails
-//    ) {
-//        User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
-//        if(loginUser==null){
-//            return ResponseEntity.badRequest().build();
-//        }int loginUserNo=loginUser.getId();
-//         const userNo=loginUserNo
+           ,@AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        userNo=1;//하드코딩상태
-        List<CommentDto.CommentDtoRequest> request=commentService.getCommentsWithLikes(postNo,userNo);
-//        List<CommentDto.CommentDtoRequest> request=commentService.getCommentsWithLikes(postNo,loginUserNo);
+        User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
+        if(loginUser==null){
+            return ResponseEntity.badRequest().build();
+        }int loginUserNo=loginUser.getId();
+        List<CommentDto.CommentDtoRequest> request=commentService.getCommentsWithLikes(postNo,loginUserNo);
         return ResponseEntity.ok(request);
     }
     @PostMapping("/comments/{commentNo}")
     public ResponseEntity<?> toggleCommentLike(
             @PathVariable int commentNo,
             @RequestBody CommentLikeDto.LikeRequest request
-            //           ,@AuthenticationPrincipal CustomUserDetails userDetails
-//    ) {
-//        User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
-//        if(loginUser==null){
-//            return ResponseEntity.badRequest().build();
-//        }int loginUserNo=loginUser.getId();
+           ,@AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        int loginUserNo=1; //임시 하드코딩
+        User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
+        if(loginUser==null){
+            return ResponseEntity.badRequest().build();
+        }int loginUserNo=loginUser.getId();
         // 1. likeType이 null 이면 삭제 (토글시 삭제)
         if(request.getLikeType()==null){
             return commentLikeService.deleteCommentLike(loginUserNo, commentNo,null);
@@ -62,17 +56,13 @@ public class CommunityLikeAPIController {
     @GetMapping("/posts/{postNo}")
     public ResponseEntity<?> getPostLikeTypeStatus(
              @PathVariable int postNo
-            ,@RequestParam int userNo
-            //           ,@AuthenticationPrincipal CustomUserDetails userDetails
-//    ) {
-//        User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
-//        if(loginUser==null){
-//            return ResponseEntity.badRequest().build();
-//        }int loginUserNo=loginUser.getId();
+            ,@AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        userNo=1;//하드코딩
-        PostLike postLike=postLikeService.GetPostLike(userNo, postNo);
-//        PostLike postLike=postLikeService.GetPostLike(loginUserNo, postNo);
+        User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
+        if(loginUser==null){
+            return ResponseEntity.badRequest().build();
+        }int loginUserNo=loginUser.getId();
+        PostLike postLike=postLikeService.GetPostLike(loginUserNo, postNo);
         if (postLike == null) {
             return ResponseEntity.noContent().build();
         }
@@ -82,23 +72,19 @@ public class CommunityLikeAPIController {
     public ResponseEntity<?> togglePostLike(
             @PathVariable int postNo,
             @RequestBody PostLike postLike
-            //           ,@AuthenticationPrincipal CustomUserDetails userDetails
-//    ) {
-//        User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
-//        if(loginUser==null){
-//            return ResponseEntity.badRequest().build();
-//        }int loginUserNo=loginUser.getId();
+           ,@AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        int userNo=1;//임시 하드코딩
+        User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
+        if(loginUser==null){
+            return ResponseEntity.badRequest().build();
+        }int loginUserNo=loginUser.getId();
         // request.getLikeType() 이 null 이면 삭제 코드 추가
         // Body에 담긴 postLike가 같아도 삭제 -> 완벽한 토글
         if(postLike.getLikeType()==null){
-           return postLikeService.DeletePostLike(userNo, postNo, null);
-//            postLikeService.DeletePostLike(loginUserNo, postNo);
+           return postLikeService.DeletePostLike(loginUserNo, postNo, null);
         }
         // 그후에 다시 생성, 서비스 코드에 필요한거 다 해뒀다고 생각함
-        postLikeService.CreatePostLike(userNo, postNo, postLike.getLikeType());
-//        postLikeService.CreatePostLike(loginUserNo, postNo, postLike.getLikeType());
+        postLikeService.CreatePostLike(loginUserNo, postNo, postLike.getLikeType());
         return ResponseEntity.ok(postLike);
     }
 }
