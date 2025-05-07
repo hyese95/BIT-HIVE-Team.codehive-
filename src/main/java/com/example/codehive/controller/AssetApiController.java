@@ -5,6 +5,7 @@ import com.example.codehive.dto.AssetDto;
 import com.example.codehive.dto.CoinTransactionDto;
 import com.example.codehive.dto.MyAssetDto;
 import com.example.codehive.entity.CoinTransaction;
+import com.example.codehive.entity.User;
 import com.example.codehive.service.CoinNameService;
 import com.example.codehive.service.CoinTransactionService;
 import com.example.codehive.service.MyAssetService;
@@ -13,6 +14,8 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -27,6 +30,7 @@ import java.util.Map;
 public class AssetApiController {
 
     private MyAssetService myAssetService;
+    private final UserService userService;
 
     /*
     {
@@ -49,8 +53,12 @@ public class AssetApiController {
      */
 
     @GetMapping("/me")
-    public List<AssetDto> me() {
-        List<AssetDto> assetDtoList = myAssetService.readHoldingCoinListByUserNo(1);
+    public List<AssetDto> me(@AuthenticationPrincipal UserDetails loginUser) {
+        String userId = loginUser.getUsername(); // 로그인한 사용자 ID 가져오기
+        User user = userService.readByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("로그인된 유저를 찾을 수 없습니다."));
+        int userNo = user.getId();
+        List<AssetDto> assetDtoList = myAssetService.readHoldingCoinListByUserNo(userNo);
         return  assetDtoList;
     }
 }

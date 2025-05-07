@@ -1,9 +1,13 @@
 package com.example.codehive.controller;
 
 import com.example.codehive.dto.TradeRequestDto;
+import com.example.codehive.entity.User;
 import com.example.codehive.service.CoinTransactionService;
+import com.example.codehive.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,17 +17,26 @@ import org.springframework.web.bind.annotation.*;
 public class TradeApiController {
 
     private final CoinTransactionService coinTransactionService;
+    private final UserService userService;
 
     @GetMapping("/me/deposit")
-    public double getRemainDeposit() {
-        int userNo=1;//하드코딩
+    public double getRemainDeposit(@AuthenticationPrincipal UserDetails loginUser) {
+        String userId = loginUser.getUsername(); // 로그인한 사용자 ID 가져오기
+        User user = userService.readByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("로그인된 유저를 찾을 수 없습니다."));
+        int userNo = user.getId();
+//        int userNo=1;//하드코딩
         double deposit = 0;
         deposit=coinTransactionService.getAvailableDeposit(userNo);
         return deposit;
     }
     @GetMapping("/me/remainCnt")
-    public double getRemainCnt(@RequestParam String market) {
-        int userNo=1;
+    public double getRemainCnt(@RequestParam String market,@AuthenticationPrincipal UserDetails loginUser) {
+        String userId = loginUser.getUsername(); // 로그인한 사용자 ID 가져오기
+        User user = userService.readByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("로그인된 유저를 찾을 수 없습니다."));
+        int userNo = user.getId();
+//        int userNo=1;
         double remainCnt = 0;
         remainCnt=coinTransactionService.getAvailableCoinQuantity(userNo,market);
         return remainCnt;

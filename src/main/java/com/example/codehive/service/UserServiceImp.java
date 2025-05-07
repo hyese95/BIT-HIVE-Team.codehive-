@@ -115,6 +115,7 @@ public class UserServiceImp implements UserService {
         followId.setFollowerUserNo(followerUserNo);
         followId.setFollowingUserNo(followingUserNo);
         Follow exsistFollow = entityManager.find(Follow.class, followId);
+        System.out.println("팔로우서비스시작팔로우서비스시작팔로우서비스시작팔로우서비스시작팔로우서비스시작팔로우서비스시작팔로우서비스시작팔로우서비스시작");
         if (exsistFollow != null) {
             throw new IllegalArgumentException("이미 팔로우 중입니다.");
         }
