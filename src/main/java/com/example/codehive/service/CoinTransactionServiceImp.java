@@ -269,6 +269,8 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
         Double transactionCnt = tradeRequestDto.getTransactionCnt();
         Instant now = Instant.now();
 
+
+
         //코인거래요청처리
         CoinTransaction coinTransaction = new CoinTransaction();
         coinTransaction.setUserNo(userNo);
@@ -280,13 +282,14 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
         coinTransaction.setTransactionState("PENDING");
         coinTransactionRepository.save(coinTransaction);
 
+
         //디파짓처리,즉시처리
         CoinTransaction depositTransaction = new CoinTransaction();
         depositTransaction.setUserNo(userNo);
         depositTransaction.setMarket("KRW-KRW");
         depositTransaction.setTransactionType("SELL");
         depositTransaction.setPrice(1.0);
-        depositTransaction.setTransactionCnt(transactionCnt*price);
+        depositTransaction.setTransactionCnt(transactionCnt * price);
         depositTransaction.setTransactionDate(now);
         depositTransaction.setTransactionState("COMPLETED");
         coinTransactionRepository.save(depositTransaction);
@@ -317,9 +320,84 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
         depositTransaction.setMarket("KRW-KRW");
         depositTransaction.setTransactionType("BUY");
         depositTransaction.setPrice(1.0);
-        depositTransaction.setTransactionCnt(transactionCnt*price);
+        depositTransaction.setTransactionCnt(transactionCnt * price);
         depositTransaction.setTransactionDate(now);
         depositTransaction.setTransactionState("PENDING");
         coinTransactionRepository.save(depositTransaction);
+    }
+
+    @Override
+    public double getAvailableCoinQuantity(int userNo, String market) {
+        // "KRW-KRW"가 아닌 코인에 대해서만 적용
+        if ("KRW-KRW".equals(market)) {
+            throw new IllegalArgumentException("KRW 디파짓 조회는 getAvailableDeposit() 메서드를 사용하세요.");
+        }
+        
+        try {
+            // 매수 완료된 수량 조회
+            List<CoinTransactionDto> buyList = coinTransactionRepository.findSumCoinTransactionsByConditions(
+                    userNo, market, "BUY", "COMPLETED");
+            
+            // 매도 완료된 수량 조회
+            List<CoinTransactionDto> sellCompletedList = coinTransactionRepository.findSumCoinTransactionsByConditions(
+                    userNo, market, "SELL", "COMPLETED");
+            
+            // 매도 대기중인 수량 조회 (PENDING)
+            List<CoinTransactionDto> sellPendingList = coinTransactionRepository.findSumCoinTransactionsByConditions(
+                    userNo, market, "SELL", "PENDING");
+            
+            // 매수량 합계 (없으면 0)
+            double buySum = (buyList.isEmpty() || buyList.get(0).getQuantity() == null) ? 0.0 : buyList.get(0).getQuantity();
+            
+            // 매도 완료 합계 (없으면 0) 
+            double sellCompletedSum = (sellCompletedList.isEmpty() || sellCompletedList.get(0).getQuantity() == null) ? 
+                    0.0 : sellCompletedList.get(0).getQuantity();
+            
+            // 매도 대기 합계 (없으면 0)
+            double sellPendingSum = (sellPendingList.isEmpty() || sellPendingList.get(0).getQuantity() == null) ? 
+                    0.0 : sellPendingList.get(0).getQuantity();
+            
+            // 가용 수량 = 매수 완료 - (매도 완료 + 매도 대기)
+            return Math.max(0, buySum - (sellCompletedSum + sellPendingSum));  // 음수 방지
+        } catch (Exception e) {
+            // 예외 발생 시 로그를 남기고 0 반환
+            System.err.println("거래 내역 조회 중 오류 발생: " + e.getMessage());
+            return 0.0;
+        }
+    }
+    
+    @Override
+    public double getAvailableDeposit(int userNo) {
+        try {
+            // KRW-KRW 마켓의 COMPLETED BUY 조회 (입금 완료)
+            List<CoinTransactionDto> buyList = coinTransactionRepository.findSumCoinTransactionsByConditions(
+                    userNo, "KRW-KRW", "BUY", "COMPLETED");
+            
+            // KRW-KRW 마켓의 COMPLETED SELL 조회 (사용 완료)
+            List<CoinTransactionDto> completedSellList = coinTransactionRepository.findSumCoinTransactionsByConditions(
+                    userNo, "KRW-KRW", "SELL", "COMPLETED");
+            
+            // KRW-KRW 마켓의 PENDING SELL 조회 (사용 예정)
+            List<CoinTransactionDto> pendingSellList = coinTransactionRepository.findSumCoinTransactionsByConditions(
+                    userNo, "KRW-KRW", "SELL", "PENDING");
+            
+            // 입금 완료 합계 (없으면 0)
+            double buySum = (buyList.isEmpty() || buyList.get(0).getQuantity() == null) ? 0.0 : buyList.get(0).getQuantity();
+            
+            // 사용 완료 합계 (없으면 0)
+            double completedSellSum = (completedSellList.isEmpty() || completedSellList.get(0).getQuantity() == null) ? 
+                    0.0 : completedSellList.get(0).getQuantity();
+            
+            // 사용 예정 합계 (없으면 0)
+            double pendingSellSum = (pendingSellList.isEmpty() || pendingSellList.get(0).getQuantity() == null) ? 
+                    0.0 : pendingSellList.get(0).getQuantity();
+            
+            // 가용 디파짓 = 입금 완료 - (사용 완료 + 사용 예정)
+            return Math.max(0, buySum - (completedSellSum + pendingSellSum));  // 음수 방지
+        } catch (Exception e) {
+            // 예외 발생 시 로그를 남기고 0 반환
+            System.err.println("디파짓 조회 중 오류 발생: " + e.getMessage());
+            return 0.0;
+        }
     }
 }

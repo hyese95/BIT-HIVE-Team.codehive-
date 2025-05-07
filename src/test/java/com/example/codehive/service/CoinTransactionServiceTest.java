@@ -17,4 +17,16 @@ class CoinTransactionServiceTest {
     void findTransactionStateByUserNo() {
         System.out.println(coinTransactionService.findTransactionStateByUserNo(1));
     }
+
+    @Test
+    @Transactional
+    void getAvailableCoinQuantity() {
+        System.out.println(coinTransactionService.getAvailableCoinQuantity(1,"KRW-BTC"));
+    }
+
+    @Test
+    @Transactional
+    void getAvailableDeposit() {
+        System.out.println(coinTransactionService.getAvailableDeposit(1));
+    }
 }
