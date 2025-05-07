@@ -20,7 +20,7 @@ public class VolatilityAlertApiController {
 
     @GetMapping("/volatility_alerts/me")
     public Map<String, Object> getVolatilityAlerts() {
-        int userId = 2; // 예시용
+        int userId = 1; // 예시용
         List<VolatilityAlert> alerts = service.getAlertsForUser(userId);
 
         Map<String, Object> response = new HashMap<>();
