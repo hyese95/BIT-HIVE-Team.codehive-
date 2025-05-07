@@ -87,6 +87,13 @@ public class CoinTransactionApiController {
         return ResponseEntity.ok(assetDtoList);
     }
 
+//    @GetMapping("/me")
+//    public ResponseEntity<List<AssetDto>> getUserAssets() {
+//        int userNo = 1;
+//        List<AssetDto> assetDtoList = myAssetService.readHoldingCoinListByUserNo(userNo);
+//        return ResponseEntity.ok(assetDtoList);
+//    }
+
     // 보유 자산 초기화
     @DeleteMapping("/{userNo}")
     public ResponseEntity<Void> clearUserAssets(@PathVariable int userNo) {
