@@ -36,6 +36,9 @@ public class SecurityConfig {
                                 "/assets/**",
                                 "/images/**",
                                 "/",                     // 홈
+                                "/community/**",
+                                "/trade/**",
+                                "/news/**",
                                 "/user/jwt/login.do",    // 로그인 요청
                                 "/user/jwt/signup.do", // 회원가입 요철
                                 "/favicon.ico",
