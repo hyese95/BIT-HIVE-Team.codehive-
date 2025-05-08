@@ -6,7 +6,7 @@ target/
 
 ### yaml ###
 src/main/resources/application-dev_db.yaml
-
+src/main/resources/.env.properties
 ### STS ###
 .apt_generated
 .classpath
