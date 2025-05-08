@@ -100,4 +100,32 @@ public interface CoinTransactionRepository extends JpaRepository<CoinTransaction
     List<CoinTransaction> findByUserNoAndMarketNotOrderByTransactionDateDesc(int userNo, String market);
 
     int user(User user);
+
+    /**
+     * 특정 마켓과 상태에 해당하는 거래 내역 조회
+     */
+    List<CoinTransaction> findByMarketAndTransactionState(String market, String transactionState);
+    
+    /**
+     * 특정 상태에 해당하는 모든 거래 내역 조회
+     */
+    List<CoinTransaction> findByTransactionState(String transactionState);
+    
+    /**
+     * 매도 거래와 연관된 디파짓 트랜잭션 찾기
+     */
+    @Query("SELECT ct FROM CoinTransaction ct WHERE ct.userNo = :userNo " +
+           "AND ct.market = :market AND ct.transactionType = :transactionType " +
+           "AND ct.transactionState = :transactionState " +
+           "AND ct.transactionCnt = :amount " +
+           "AND ct.transactionDate BETWEEN :startTime AND :endTime")
+    List<CoinTransaction> findRelatedDeposits(
+            @Param("userNo") int userNo,
+            @Param("market") String market,
+            @Param("transactionType") String transactionType,
+            @Param("transactionState") String transactionState,
+            @Param("amount") double amount,
+            @Param("startTime") Instant startTime,
+            @Param("endTime") Instant endTime
+    );
 }

@@ -269,8 +269,6 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
         Double transactionCnt = tradeRequestDto.getTransactionCnt();
         Instant now = Instant.now();
 
-
-
         //코인거래요청처리
         CoinTransaction coinTransaction = new CoinTransaction();
         coinTransaction.setUserNo(userNo);
@@ -281,7 +279,6 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
         coinTransaction.setTransactionDate(now);
         coinTransaction.setTransactionState("PENDING");
         coinTransactionRepository.save(coinTransaction);
-
 
         //디파짓처리,즉시처리
         CoinTransaction depositTransaction = new CoinTransaction();
@@ -398,6 +395,65 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
             // 예외 발생 시 로그를 남기고 0 반환
             System.err.println("디파짓 조회 중 오류 발생: " + e.getMessage());
             return 0.0;
+        }
+    }
+    
+    /**
+     * PENDING 주문 상태를 COMPLETED로 업데이트하는 메서드
+     * @param transaction 업데이트할 트랜잭션
+     */
+    @Transactional
+    public void updateTransactionToCompleted(CoinTransaction transaction) {
+        transaction.setTransactionState("COMPLETED");
+        coinTransactionRepository.save(transaction);
+    }
+    
+    /**
+     * 특정 마켓의 PENDING 상태인 거래 내역을 조회하는 메서드
+     * @param market 마켓 코드 (예: KRW-BTC)
+     * @return PENDING 상태인 거래 내역 목록
+     */
+    public List<CoinTransaction> findPendingTransactionsByMarket(String market) {
+        return coinTransactionRepository.findByMarketAndTransactionState(market, "PENDING");
+    }
+    
+    /**
+     * 모든 PENDING 상태인 거래 내역을 조회하는 메서드
+     * @return PENDING 상태인 거래 내역 목록
+     */
+    public List<CoinTransaction> findAllPendingTransactions() {
+        return coinTransactionRepository.findByTransactionState("PENDING");
+    }
+    
+    /**
+     * 매도 거래가 체결되었을 때 관련된 KRW-KRW 디파짓 요청도 체결 상태로 변경
+     * @param sellTransaction 체결된 매도 거래
+     */
+    @Transactional
+    public void completeRelatedDeposit(CoinTransaction sellTransaction) {
+        if (!"SELL".equals(sellTransaction.getTransactionType()) || !"COMPLETED".equals(sellTransaction.getTransactionState())) {
+            return;
+        }
+        
+        // 매도 거래와 연관된 디파짓 트랜잭션 찾기 (동일한 시간대 근처, 동일한 사용자, 금액 일치)
+        Instant txTime = sellTransaction.getTransactionDate();
+        Instant startTime = txTime.minusSeconds(5); // 5초 전
+        Instant endTime = txTime.plusSeconds(5);    // 5초 후
+        
+        List<CoinTransaction> relatedDeposits = coinTransactionRepository.findRelatedDeposits(
+                sellTransaction.getUserNo(),
+                "KRW-KRW",
+                "BUY",
+                "PENDING",
+                sellTransaction.getPrice() * sellTransaction.getTransactionCnt(),
+                startTime,
+                endTime
+        );
+        
+        // 일치하는 디파짓 트랜잭션을 COMPLETED로 업데이트
+        for (CoinTransaction deposit : relatedDeposits) {
+            deposit.setTransactionState("COMPLETED");
+            coinTransactionRepository.save(deposit);
         }
     }
 }

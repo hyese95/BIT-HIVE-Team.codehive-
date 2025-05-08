@@ -21,6 +21,7 @@ import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -67,16 +68,16 @@ public class UserApiController {
 
     @GetMapping("/me/summary")
     public UserDto meSummary(
-//            @AuthenticationPrincipal UserDetails loginUser
+            @AuthenticationPrincipal UserDetails loginUser
     ) {
-//        String userId = loginUser.getUsername(); // 로그인한 사용자 ID 가져오기
-        User user = userService.readByUserId("user1")
+        String userId = loginUser.getUsername(); // 로그인한 사용자 ID 가져오기
+        User user = userService.readByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("로그인된 유저를 찾을 수 없습니다."));
-//        int userNo = user.getId();
+        int userNo = user.getId();
 
 
-        //하드코딩
-        int userNo = 1;
+//        //하드코딩
+//        int userNo = 1;
         UserDto userDto = UserDto.from(user);
         userDto.setPostCount(userService.readPostsCount(userNo));
         userDto.setFollowingCount(userService.readFollowingCount(userNo));
@@ -115,14 +116,19 @@ public class UserApiController {
             @AuthenticationPrincipal UserDetails loginUser,
             @PathVariable int followingUserNo
     ) {
+
         try {
             int userNo = userService.readByUserId(loginUser.getUsername())
                     .orElseThrow(() -> new RuntimeException("유저 없음")).getId();
             userService.follow(userNo, followingUserNo);
+
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {
+
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -175,6 +181,78 @@ public class UserApiController {
         Page<Post> posts = postService.readByUserNo(pageable, userNo);
 
         return posts.getContent().stream().map(PostDto::new).collect(Collectors.toList());
+    }
 
+    /**
+     * 특정 유저의 프로필 정보를 조회하는 API
+     */
+    @GetMapping("/{userNo}")
+    public ResponseEntity<UserDto> getUserProfile(@PathVariable("userNo") Integer userNo, @AuthenticationPrincipal UserDetails loginUser) {
+        try {
+            Optional<User> userOpt = userService.readByUserNo(userNo);
+            User user = userOpt.orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+            UserDto userDto = UserDto.from(user);
+            userDto.setPostCount(userService.readPostsCount(userNo));
+            userDto.setFollowingCount(userService.readFollowingCount(userNo));
+            userDto.setFollowerCount(userService.readFollowersCount(userNo));
+            return ResponseEntity.ok(userDto);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    
+    /**
+     * 로그인한 유저의 팔로우 목록을 조회하는 API
+     */
+    @GetMapping("/me/follow-list")
+    public ResponseEntity<Object> getMyFollowList(
+            @AuthenticationPrincipal UserDetails loginUser,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        try {
+            int userNo = userService.readByUserId(loginUser.getUsername())
+                    .orElseThrow(() -> new RuntimeException("유저 정보를 찾을 수 없습니다.")).getId();
+            
+            Pageable pageable = PageRequest.of(page, size);
+            List<FollowDto.Following> followings = userService.readFollowingsByUserNo(userNo, pageable);
+            List<FollowDto.Follower> followers = userService.readFollowersByUserNo(userNo, pageable);
+            
+            return ResponseEntity.ok(Map.of(
+                    "followings", followings,
+                    "followers", followers
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+    
+    /**
+     * 특정 유저의 팔로우 목록을 조회하는 API
+     */
+    @GetMapping("/{userNo}/follow-list")
+    public ResponseEntity<Object> getUserFollowList(
+            @PathVariable Integer userNo,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        try {
+            Optional<User> userOpt = userService.readByUserNo(userNo);
+            if (userOpt.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            Pageable pageable = PageRequest.of(page, size);
+            List<FollowDto.Following> followings = userService.readFollowingsByUserNo(userNo, pageable);
+            List<FollowDto.Follower> followers = userService.readFollowersByUserNo(userNo, pageable);
+            
+            return ResponseEntity.ok(Map.of(
+                    "user", UserDto.from(userOpt.get()),
+                    "followings", followings,
+                    "followers", followers
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }
