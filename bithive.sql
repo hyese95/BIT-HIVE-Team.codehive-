@@ -9,19 +9,22 @@ CREATE ROLE 'dev_role';
 CREATE ROLE 'user_role';
 
 GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, DROP, TRIGGER, REFERENCES ON bithive.* TO 'dev_role';
-GRANT SELECT, INSERT, UPDATE, DELETE, TRIGGER ON bithive.* TO 'user_role';
+GRANT SELECT, INSERT, UPDATE, DELETE, TRIGGER, REFERENCES ON bithive.* TO 'user_role';
 
 DROP USER IF EXISTS 'bithive_dev'@'localhost';
 DROP USER IF EXISTS 'bithive_user'@'localhost';
+DROP USER IF EXISTS 'bithive_dev'@'%';
+DROP USER IF EXISTS 'bithive_user'@'%';
 
-CREATE USER 'bithive_dev'@'localhost' IDENTIFIED BY 'bithive';
-CREATE USER 'bithive_user'@'localhost' IDENTIFIED BY 'bithive';
+CREATE USER 'bithive_dev'@'%' IDENTIFIED BY 'bithive';
+CREATE USER 'bithive_user'@'%' IDENTIFIED BY 'bithive';
 
-GRANT 'dev_role' TO 'bithive_dev'@'localhost';
-SET DEFAULT ROLE 'dev_role' TO 'bithive_dev'@'localhost';
+GRANT 'dev_role' TO 'bithive_dev'@'%';
+SET DEFAULT ROLE 'dev_role' TO 'bithive_dev'@'%';
+GRANT 'user_role' TO 'bithive_user'@'%';
+SET DEFAULT ROLE 'user_role' TO 'bithive_user'@'%';
+
 FLUSH PRIVILEGES;
-GRANT 'user_role' TO 'bithive_user'@'localhost';
-
 USE bithive;
 
 SELECT 'CREATING DATABASE STRUCTURE' as 'INFO';
