@@ -3,10 +3,12 @@ package com.example.codehive.service;
 import com.example.codehive.dto.CommentDto;
 import com.example.codehive.entity.Comment;
 import com.example.codehive.entity.CommentLike;
+import com.example.codehive.entity.CommentLikeId;
 import com.example.codehive.entity.Post;
 import com.example.codehive.repository.CommentLikeRepository;
 import com.example.codehive.repository.CommentRepository;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -171,4 +173,48 @@ public class CommentServiceImp implements CommentService {
                 })
                 .collect(Collectors.toList());
     }
+
+    @Override
+    @Transactional
+    public CommentDto.CommentDtoRequest toggleCommentLike(int commentNo, int userNo, Boolean likeType) {
+        CommentLikeId id = new CommentLikeId();
+        id.setCommentNo(commentNo);
+        id.setUserNo(userNo);
+        Optional<CommentLike> existing = commentLikeRepository.findById(id);
+        if (existing.isPresent()) {
+            // 토글 해제 -> 원래 있던 좋아요 삭제
+            if (existing.get().getLikeType().equals(likeType)) {
+                commentLikeRepository.deleteById(id);
+            } else {
+                // 타입 변경 (like ↔ dislike)
+                existing.get().setLikeType(likeType);
+            }
+        } else {
+            // 새로 추가
+            CommentLike newLike = new CommentLike();
+            newLike.setId(id);
+            newLike.setLikeType(likeType);
+            commentLikeRepository.save(newLike);
+        }
+        // 토글 후 최신 상태 반환
+        Comment comment = commentRepository.findById(commentNo);
+        int likeCount = (int) comment.getCommentLikes().stream().filter(CommentLike::getLikeType).count();
+        int dislikeCount = (int) comment.getCommentLikes().stream().filter(cl -> !cl.getLikeType()).count();
+
+        Boolean userLike = commentLikeRepository.findById(id)
+                .map(CommentLike::getLikeType)
+                .orElse(null);
+
+        CommentDto.CommentDtoS dto = new CommentDto.CommentDtoS(
+                comment.getId(),
+                comment.getParentNo(),
+                comment.getCommentCont(),
+                likeCount,
+                dislikeCount
+        );
+
+        return new CommentDto.CommentDtoRequest(dto, userLike);
+    }
+
 }
+

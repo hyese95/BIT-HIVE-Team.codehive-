@@ -37,22 +37,31 @@ public class CommunityLikeAPIController {
         return ResponseEntity.ok(request);
     }
     @PostMapping("/comments/{commentNo}")
-    public ResponseEntity<?> toggleCommentLike(
-            @PathVariable int commentNo,
-            @RequestBody CommentLikeDto.LikeRequest request
-           ,@AuthenticationPrincipal CustomUserDetails userDetails
-    ) {
+    public ResponseEntity<CommentDto.CommentDtoRequest> toggleCommentLike(
+            @PathVariable int commentNo
+            ,@AuthenticationPrincipal CustomUserDetails userDetails
+            ,@RequestBody CommentLikeDto commentLikeDto) {
         User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
         if(loginUser==null){
             return ResponseEntity.badRequest().build();
-        }int loginUserNo=loginUser.getId();
-        // 1. likeType이 null 이면 삭제 (토글시 삭제)
-        if(request.getLikeType()==null){
-            return commentLikeService.deleteCommentLike(loginUserNo, commentNo,null);
+        }if(commentLikeDto.getLikeType()!=null){
+            deleteCommentLike(commentNo, loginUser.getId());
+        }if(commentLikeDto.getLikeType()!=null){
+            deleteCommentLike(commentNo, loginUser.getId());
         }
-        // 2. likeType이 null 이 아니면 새로 설정
-        return commentLikeService.setCommentLike(loginUserNo, commentNo, request.getLikeType());
+            CommentDto.CommentDtoRequest updatedComment =
+                    commentService.toggleCommentLike(commentNo, commentLikeDto.getUserNo(), commentLikeDto.getLikeType());
+            return ResponseEntity.ok(updatedComment);
+        }
+
+    @DeleteMapping("/{commentNo}")
+    public ResponseEntity<Void> deleteCommentLike(
+            @PathVariable int commentNo,
+            @RequestParam int userNo) {
+        commentLikeService.deleteCommentLike(commentNo, userNo,null);
+        return ResponseEntity.noContent().build();
     }
+
     @GetMapping("/posts/{postNo}")
     public ResponseEntity<?> getPostLikeTypeStatus(
              @PathVariable int postNo

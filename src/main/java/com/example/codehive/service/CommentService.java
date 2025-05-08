@@ -24,4 +24,5 @@ public interface CommentService {
     List<CommentDto> readCommentDtoByPostNo(int postNo);
     CommentDto modifyCommentDto(Comment comment);
     public List<CommentDto.CommentDtoRequest> getCommentsWithLikes(int postNo,int userNo);
+    public CommentDto.CommentDtoRequest toggleCommentLike(int commentNo, int userNo, Boolean likeType);
 }
