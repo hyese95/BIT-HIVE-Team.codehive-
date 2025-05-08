@@ -4,7 +4,7 @@ INSERT INTO users (user_id, password, nickname, email, phone, privacy_agreements
                    gender, birth_date, name, self_introduction, role, profile_img_url, oauth)
 VALUES ('user1', '$2a$10$53qEoRhbGAbFOdBQOJQ7/.Kr./BTRkiVSSHy5Qni2syy8MtCtSON.', '비트맨', 'user1@example.com', '010-2222-0001', true, true, 'MALE', '1990-01-01', '김철수',
         '비트코인 장기투자자', 'USER', '/images/user_icon_default.png', NULL),
-       ('user2', 'pass123', '코인女', 'user2@example.com', '010-2222-0002', true, false,  'FEMALE', '1992-02-02',
+       ('user2', '$2a$10$53qEoRhbGAbFOdBQOJQ7/.Kr./BTRkiVSSHy5Qni2syy8MtCtSON.', '코인女', 'user2@example.com', '010-2222-0002', true, false,  'FEMALE', '1992-02-02',
         '이영희', '알트코인 단타 전문', 'USER', '/images/user_icon_default.png', NULL),
        ('user3', 'pass123', '투자의신', 'user3@example.com', '010-2222-0003', true, true,  'MALE', '1988-03-03', '박민수',
         '3년차 존버중', 'USER', '/images/user_icon_default.png', NULL),
