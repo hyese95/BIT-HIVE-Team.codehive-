@@ -2,5 +2,5 @@ spring:
   application:
     name: bit_hive
   profiles:
-    include: dev_db
-    # include: deploy_db
+#    include: deploy_db
+     include: dev_db
