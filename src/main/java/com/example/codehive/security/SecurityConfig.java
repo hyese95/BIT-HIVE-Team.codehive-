@@ -32,6 +32,9 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
+                                "index.html",
+                                "/assets/**",
+                                "/images/**",
                                 "/",                     // 홈
                                 "/user/jwt/login.do",    // 로그인 요청
                                 "/user/jwt/signup.do", // 회원가입 요철
