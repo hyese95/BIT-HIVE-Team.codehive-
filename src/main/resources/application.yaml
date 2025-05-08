@@ -4,5 +4,3 @@ spring:
   profiles:
     include: deploy_db
     # include: dev_db
-server:
-  port: 8801
