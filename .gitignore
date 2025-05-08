@@ -1,3 +1,5 @@
+src/main/resources/env.properties
+#git rm --cache -f src/main/resources/env.properties
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
