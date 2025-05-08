@@ -4,6 +4,10 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### pem ###
+/Users/hyese/Desktop/workspace/teamProject/BIT-HIVE-Team.codehive-/pem
+.pem
+
 ### yaml ###
 src/main/resources/application-dev_db.yaml
 
