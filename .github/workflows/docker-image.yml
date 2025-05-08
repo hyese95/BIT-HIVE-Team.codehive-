@@ -1,0 +1,51 @@
+name: Docker Image CI
+
+
+on:
+ push:
+   branches: [ "deploy" ]
+
+jobs:
+ build:
+   runs-on: ubuntu-latest
+   steps:
+   - uses: actions/checkout@v4
+#현재 리포지토리를 체크아웃(복사)해서 GitHub Actions 러너에 가져옵니다. 즉, .github/workflows 외의 프로젝트 소스코드도 사용할 수 있게 됩니다.
+   - name: 프로퍼티스 생성
+     run : |
+       echo "mysql.url=${{secrets.MYSQL_URL}}" >> ./src/main/resources/env.properties
+       echo "mysql.user=${{secrets.MYSQL_USER}}" >> ./src/main/resources/env.properties
+       echo "mysql.pw=${{secrets.MYSQL_PW}}" >> ./src/main/resources/env.properties
+
+
+   - name: Set image tag
+     run: echo "IMAGE_TAG=${{secrets.DOCKER_USERNAME}}/action-app:$(date +%s)" >> $GITHUB_ENV
+
+
+   - name: Build the Docker image
+     run: docker build  --platform linux/amd64 -t ${{env.IMAGE_TAG}} .
+
+
+   - name: 도커 로그인
+     run: docker login -u ${{secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PW}}
+   - name: 도커 푸시
+     run: docker push ${{env.IMAGE_TAG}}
+   - name : 시크릿으로 저장된 pem을 파일로 작성 및 읽기 권한만 주기
+     run : |
+       echo "${{secrets.EC2_KEY}}" > key.pem
+       chmod 400 key.pem
+
+
+   - name: ssh ec2 서버 로그인 및 도커 실행
+     run: |
+       ssh -o StrictHostKeyChecking=no -i key.pem ${{secrets.EC2_HOST}} << 'EOF'
+       if ! command -v docker; then
+         sudo apt update -y
+         sudo apt install docker.io -y
+       fi
+       sudo docker stop app || true
+       sudo docker rm app ||true
+       sudo docker run -d --rm --name app -p 80:80 ${{env.IMAGE_TAG}}
+#-o StrictHostKeyChecking=no  : 처음 접속하는 서버여도 '신뢰할 수 있습니까?' 라는 질문을 건너뜀.
+# << 'EOF' : 여러 줄 명령어를 한꺼번에 SSH로 실행할 때 사용.
+#docker build --platform linux/amd64 -t
