@@ -46,6 +46,7 @@ public class LoginApiController {
         loginDto.setJwt(jwt); // LoginDto에 jwt 추가
 
         // 유저정보 담기
+
         Optional<User> loginUserOpt = userService.readByUserId(userDetails.getUsername());
         if (loginUserOpt.isPresent()) {
             loginDto.setUser(loginUserOpt.get());
