@@ -269,8 +269,6 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
         Double transactionCnt = tradeRequestDto.getTransactionCnt();
         Instant now = Instant.now();
 
-
-
         //코인거래요청처리
         CoinTransaction coinTransaction = new CoinTransaction();
         coinTransaction.setUserNo(userNo);
@@ -281,7 +279,6 @@ public class CoinTransactionServiceImp implements CoinTransactionService {
         coinTransaction.setTransactionDate(now);
         coinTransaction.setTransactionState("PENDING");
         coinTransactionRepository.save(coinTransaction);
-
 
         //디파짓처리,즉시처리
         CoinTransaction depositTransaction = new CoinTransaction();

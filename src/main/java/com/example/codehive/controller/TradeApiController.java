@@ -36,7 +36,6 @@ public class TradeApiController {
         User user = userService.readByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("로그인된 유저를 찾을 수 없습니다."));
         int userNo = user.getId();
-//        int userNo=1;
         double remainCnt = 0;
         remainCnt=coinTransactionService.getAvailableCoinQuantity(userNo,market);
         return remainCnt;
@@ -44,16 +43,29 @@ public class TradeApiController {
 
 
     @PostMapping("/me")
-    public ResponseEntity<Void> me(@RequestBody TradeRequestDto tradeRequestDto) {
-        Integer userNo = 1;
+    public ResponseEntity<Void> me(
+            @RequestBody TradeRequestDto tradeRequestDto,
+            @AuthenticationPrincipal UserDetails loginUser
+    ) {
+        String userId = loginUser.getUsername(); // 로그인한 사용자 ID 가져오기
+        User user = userService.readByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("로그인된 유저를 찾을 수 없습니다."));
+        int userNo = user.getId();
         tradeRequestDto.setUserNo(userNo);
         double deposit=0.0;
+        double remainCnt = 0.0;
+        String market= tradeRequestDto.getMarket();
         deposit=coinTransactionService.getAvailableDeposit(userNo);
+        remainCnt=coinTransactionService.getAvailableCoinQuantity(userNo,market);
+
         if(tradeRequestDto.transactionType.equals("BUY") && deposit<tradeRequestDto.getTransactionCnt()*tradeRequestDto.getPrice()){
             throw new RuntimeException("잔액부족");
         }
-        coinTransactionService.submitTrade(tradeRequestDto);
+        if(tradeRequestDto.transactionType.equals("SELL") && remainCnt<tradeRequestDto.getTransactionCnt() ){
+            throw new RuntimeException("남은코인 부족");
+        }
 
+        coinTransactionService.submitTrade(tradeRequestDto);
         return ResponseEntity.ok().build();
     }
 
