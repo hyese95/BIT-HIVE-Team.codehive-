@@ -34,8 +34,32 @@ public class UpbitProxyController {
     }
 
     @GetMapping("/ticker")
-    public ResponseEntity<String> getTicker(@RequestParam String markets) {
+    public ResponseEntity<String> getTicker(@RequestParam(required = false) String markets) {
         String url = "https://api.upbit.com/v1/ticker?markets=" + markets;
         return restTemplate.getForEntity(url, String.class);
     }
+    @GetMapping("/orderbook")
+    public ResponseEntity<String> getOrderBook(@RequestParam(required = false) String markets) {
+        String url = "https://api.upbit.com/v1/orderbook?markets=" + markets;
+        return restTemplate.getForEntity(url, String.class);
+    }
+
+    @GetMapping("/candles/seconds")
+    public ResponseEntity<String> getCandles(@RequestParam(required = false) String markets, @RequestParam(required = false) String count) {
+        String url = "https://api.upbit.com/v1/candles/seconds?markets=" + markets + "&count=" + count;
+        return restTemplate.getForEntity(url, String.class);
+    }
+    @GetMapping("/candles/days")
+    public ResponseEntity<String> getcandlesdays(@RequestParam(required = false) String markets, @RequestParam(required = false) String count) {
+        String url= "https://api.upbit.com/v1/candles/days?markets=" + markets + "&count=" + count;
+        return restTemplate.getForEntity(url, String.class);
+    }
+
+    @GetMapping("/trades/ticks")
+    public ResponseEntity<String> getTrades(@RequestParam(required = false) String markets, @RequestParam(required = false) String count) {
+        String url="https://api.upbit.com/v1/trades/ticks?markets=" + markets + "&count=" + count;
+        return restTemplate.getForEntity(url, String.class);
+    }
+
+
 }
