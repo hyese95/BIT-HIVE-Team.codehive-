@@ -1,15 +1,15 @@
 FROM --platform=linux/amd64 eclipse-temurin:21-jdk AS builder
 WORKDIR /app
 COPY . .
-RUN chmod +x ./gradlew
-RUN ./gradlew clean
-RUN ./gradlew build -x test
+RUN chmod +x ./mvnw
+RUN ./mvnw clean
+RUN ./mvnw -Dmaven.test.skip=true install
 
 
 
 
 FROM eclipse-temurin:21-jdk
-COPY --from=builder /app/build/libs/*.jar /app.jar
+COPY --from=builder /app/target/*.jar /app.jar
 VOLUME /temp
 #RUN java -jar /app.jar
 ENTRYPOINT ["java","-jar","/app.jar"]
