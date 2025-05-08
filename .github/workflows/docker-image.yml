@@ -16,6 +16,7 @@ jobs:
        echo "mysql.url=${{secrets.MYSQL_URL}}" >> ./src/main/resources/env.properties
        echo "mysql.user=${{secrets.MYSQL_USER}}" >> ./src/main/resources/env.properties
        echo "mysql.pw=${{secrets.MYSQL_PW}}" >> ./src/main/resources/env.properties
+       echo "ssl.pw=${{secrets.SSL_PW}}" >> ./src/main/resources/env.properties
 
 
    - name: Set image tag
@@ -45,7 +46,7 @@ jobs:
        fi
        sudo docker stop app || true
        sudo docker rm app ||true
-       sudo docker run -d --rm --name app -p 80:80 ${{env.IMAGE_TAG}}
+       sudo docker run -d --rm --name app -p 443:443 ${{env.IMAGE_TAG}}
 #-o StrictHostKeyChecking=no  : 처음 접속하는 서버여도 '신뢰할 수 있습니까?' 라는 질문을 건너뜀.
 # << 'EOF' : 여러 줄 명령어를 한꺼번에 SSH로 실행할 때 사용.
 #docker build --platform linux/amd64 -t
