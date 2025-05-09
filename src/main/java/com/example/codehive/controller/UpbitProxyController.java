@@ -54,6 +54,29 @@ public class UpbitProxyController {
         String url= "https://api.upbit.com/v1/candles/days?market=" + market + "&count=" + count;
         return restTemplate.getForEntity(url, String.class);
     }
+    @GetMapping("/candles/minutes")
+    public ResponseEntity<String> getcandlesminutes(@RequestParam(required = false) String market, @RequestParam(required = false) String count) {
+        String url= "https://api.upbit.com/v1/candles/minutes?market=" + market + "&count=" + count;
+        return restTemplate.getForEntity(url, String.class);
+    }
+    @GetMapping("/candles/weeks")
+    public ResponseEntity<String> getcandlesweeks(@RequestParam(required = false) String market, @RequestParam(required = false) String count) {
+        String url= "https://api.upbit.com/v1/candles/weeks?market=" + market + "&count=" + count;
+        return restTemplate.getForEntity(url, String.class);
+    }
+
+    @GetMapping("/candles/months")
+    public ResponseEntity<String> getcandlesmonths(@RequestParam(required = false) String market, @RequestParam(required = false) String count) {
+        String url= "https://api.upbit.com/v1/candles/months?market=" + market + "&count=" + count;
+        return restTemplate.getForEntity(url, String.class);
+    }
+
+    @GetMapping("/candles/years")
+    public ResponseEntity<String> getcandlesyears(@RequestParam(required = false) String market, @RequestParam(required = false) String count) {
+        String url= "https://api.upbit.com/v1/candles/years?market=" + market + "&count=" + count;
+        return restTemplate.getForEntity(url, String.class);
+    }
+
 
 
 
