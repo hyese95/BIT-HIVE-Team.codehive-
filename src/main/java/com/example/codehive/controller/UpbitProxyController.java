@@ -1,10 +1,7 @@
 package com.example.codehive.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 @RestController
@@ -54,11 +51,27 @@ public class UpbitProxyController {
         String url= "https://api.upbit.com/v1/candles/days?market=" + market + "&count=" + count;
         return restTemplate.getForEntity(url, String.class);
     }
-    @GetMapping("/candles/minutes")
-    public ResponseEntity<String> getcandlesminutes(@RequestParam(required = false) String market, @RequestParam(required = false) String count) {
-        String url= "https://api.upbit.com/v1/candles/minutes?market=" + market + "&count=" + count;
+//    @GetMapping("/candles/minutes")
+//    public ResponseEntity<String> getcandlesminutes(@RequestParam(required = false) String market, @RequestParam(required = false) String count) {
+//        String url= "https://api.upbit.com/v1/candles/minutes?market=" + market + "&count=" + count;
+//        return restTemplate.getForEntity(url, String.class);
+//    }
+//    @GetMapping("/candles/minutes/1")
+//    public ResponseEntity<String> getcandlesminutes1(@RequestParam(required = false) String market, @RequestParam(required = false) String count) {
+//        String url= "https://api.upbit.com/v1/candles/minutes/1?market=" + market + "&count=" + count;
+//        return restTemplate.getForEntity(url, String.class);
+//    }
+//    @GetMapping("/candles/minutes/3")
+//    public ResponseEntity<String> getcandlesminutes3(@RequestParam(required = false) String market, @RequestParam(required = false) String count) {
+//        String url= "https://api.upbit.com/v1/candles/minutes/3?market=" + market + "&count=" + count;
+//        return restTemplate.getForEntity(url, String.class);
+//    }
+    @GetMapping("/candles/minutes/{time}")
+    public ResponseEntity<String> getcandlesminutes5(@RequestParam(required = false) String market, @RequestParam(required = false) String count, @PathVariable(required = false) String time) {
+        String url= "https://api.upbit.com/v1/candles/minutes/"+time+"/?market=" + market + "&count=" + count;
         return restTemplate.getForEntity(url, String.class);
     }
+
     @GetMapping("/candles/weeks")
     public ResponseEntity<String> getcandlesweeks(@RequestParam(required = false) String market, @RequestParam(required = false) String count) {
         String url= "https://api.upbit.com/v1/candles/weeks?market=" + market + "&count=" + count;
