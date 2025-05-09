@@ -46,7 +46,7 @@ public class UpbitProxyController {
 
     @GetMapping("/candles/seconds")
     public ResponseEntity<String> getCandles(@RequestParam(required = false) String market, @RequestParam(required = false) String count) {
-        String url = "https://api.upbit.com/v1/candles/seconds?markets=" + market + "&count=" + count;
+        String url = "https://api.upbit.com/v1/candles/seconds?market=" + market + "&count=" + count;
         return restTemplate.getForEntity(url, String.class);
     }
     @GetMapping("/candles/days")
