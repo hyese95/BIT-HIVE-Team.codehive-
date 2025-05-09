@@ -14,7 +14,13 @@ public class HomeController {
             },
             produces = MediaType.TEXT_HTML_VALUE
     )
+    public String fowardSpa() {
+        return "forward:/index.html";
+    }
+
+    @GetMapping("/")
     public String home() {
         return "forward:/index.html";
     }
+
 }
