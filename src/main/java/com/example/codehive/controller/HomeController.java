@@ -18,9 +18,14 @@ public class HomeController {
 //        return "forward:/index.html";
 //    }
 
-    @GetMapping("/")
+//    @GetMapping("/")
+@GetMapping({
+        "/",                             // ①
+        "/{path:[^\\.]+}",               // ②  (점이 없는 1단)
+        "/**/{path:[^\\.]+}"             // ③  (점이 없는 다단)
+})
     public String home() {
-        return "forward:/index.html";
+        return "forward:index.html";
     }
 
 }
