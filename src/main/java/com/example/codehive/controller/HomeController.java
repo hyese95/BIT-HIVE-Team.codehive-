@@ -9,12 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class HomeController {
 
 
-//    @GetMapping("/")
-@GetMapping({
-        "/",                             // ①
-        "/{path:[^\\.]+}",               // ②  (점이 없는 1단)
-        "/**/{path:[^\\.]+}"             // ③  (점이 없는 다단)
-})
+@GetMapping("/")
     public String home() {
         return "forward:index.html";
     }
