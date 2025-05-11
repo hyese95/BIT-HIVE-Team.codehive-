@@ -1,5 +1,6 @@
 package com.example.codehive.controller;
 
+import com.example.codehive.dto.CommentAndUserLikeDto;
 import com.example.codehive.dto.CommentDto;
 import com.example.codehive.dto.CommentLikeDto;
 import com.example.codehive.entity.PostLike;
@@ -12,7 +13,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/community/LikeStatus")
@@ -25,19 +25,20 @@ public class CommunityLikeAPIController {
     private UserService userService;
 
     @GetMapping("/posts/{postNo}/comments")
-    public ResponseEntity<List<CommentDto.CommentDtoRequest>> getCommentLikeTypeStatus(
+    public ResponseEntity<List<CommentAndUserLikeDto>> getCommentLikeTypeStatus(
             @PathVariable int postNo
            ,@AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
-        if(loginUser==null){
-            return ResponseEntity.badRequest().build();
-        }int loginUserNo=loginUser.getId();
-        List<CommentDto.CommentDtoRequest> request=commentService.getCommentsWithLikes(postNo,loginUserNo);
+        if (userDetails != null) {
+            Integer loginUserNo = userDetails.getUser().getId();
+            List<CommentAndUserLikeDto> request=commentService.getCommentsWithUserLikeType(postNo,loginUserNo);
+            return ResponseEntity.ok(request);
+        }
+        List<CommentAndUserLikeDto> request=commentService.getCommentsWithUserLikeType(postNo,null);
         return ResponseEntity.ok(request);
     }
     @PostMapping("/comments/{commentNo}")
-    public ResponseEntity<CommentDto.CommentDtoRequest> toggleCommentLike(
+    public ResponseEntity<?> toggleCommentLike(
             @PathVariable int commentNo
             ,@AuthenticationPrincipal CustomUserDetails userDetails
             ,@RequestBody CommentLikeDto commentLikeDto) {
@@ -49,7 +50,7 @@ public class CommunityLikeAPIController {
         }if(commentLikeDto.getLikeType()!=null){
             deleteCommentLike(commentNo, loginUser.getId());
         }
-            CommentDto.CommentDtoRequest updatedComment =
+        CommentAndUserLikeDto updatedComment =
                     commentService.toggleCommentLike(commentNo, commentLikeDto.getUserNo(), commentLikeDto.getLikeType());
             return ResponseEntity.ok(updatedComment);
         }

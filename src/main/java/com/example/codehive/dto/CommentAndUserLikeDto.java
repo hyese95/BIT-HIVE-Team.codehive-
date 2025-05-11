@@ -1,9 +1,15 @@
 package com.example.codehive.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class CommentAndUserLikeDto {
     private Integer id;
     private Integer parentNo;

@@ -131,7 +131,21 @@ class CommentServiceImpTest {
 
     @Test
     @Transactional
-    void getCommentsWithLikes() {
-        System.out.println(commentService.getCommentsWithLikes(1,1));
+    void getCommentsWithUserLikeType() {
+        System.out.print(commentService.getCommentsWithUserLikeType(5,null).toString());
+    }
+
+    @Test
+    @Transactional
+    void toggleCommentLike() {
+        entityManager.flush();
+        entityManager.clear();
+        System.out.println(commentService.toggleCommentLike(1,1,false));
+        entityManager.flush();
+        entityManager.clear();
+        System.out.println(commentService.toggleCommentLike(1,1,false));
+        entityManager.flush();
+        entityManager.clear();
+        System.out.println(commentService.toggleCommentLike(1,1,false));
     }
 }

@@ -17,7 +17,6 @@ public class CommentLike {
     @EmbeddedId
     private CommentLikeId id;
 
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_no", nullable = false,insertable = false, updatable = false)
     @JsonBackReference

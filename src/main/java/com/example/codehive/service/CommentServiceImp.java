@@ -1,5 +1,6 @@
 package com.example.codehive.service;
 
+import com.example.codehive.dto.CommentAndUserLikeDto;
 import com.example.codehive.dto.CommentDto;
 import com.example.codehive.entity.Comment;
 import com.example.codehive.entity.CommentLike;
@@ -140,43 +141,37 @@ public class CommentServiceImp implements CommentService {
 
     @Override
     @Transactional
-    public List<CommentDto.CommentDtoRequest> getCommentsWithLikes(int postNo, int userNo) {
-        // 1. 댓글 목록 조회 (like/dislike 수는 entity 관계에서 계산)
+    public List<CommentAndUserLikeDto> getCommentsWithUserLikeType(int postNo, Integer userNo) {
         List<Comment> comments = commentRepository.findByPostNo(postNo);
-        // 2. 댓글 ID 목록 추출
         List<Integer> commentIds = comments.stream()
                 .map(Comment::getId)
                 .collect(Collectors.toList());
-        // 3. 로그인한 유저가 눌렀던 좋아요/싫어요 정보 조회
-        List<CommentLike> userLikes = commentLikeRepository.findByIdUserNoAndIdCommentNoIn(userNo, commentIds);
-        // 4. commentId -> userLikeType(Boolean) 매핑
-        Map<Integer, Boolean> userLikeMap = userLikes.stream()
-                .collect(Collectors.toMap(
-                        cl -> cl.getId().getCommentNo(),
-                        CommentLike::getLikeType
-                ));
-        // 5. 최종 DTO 조합
+
+        Map<Integer, Boolean> commentLikeMap;
+
+        if (userNo != null) {
+            List<CommentLike> userLikes = commentLikeRepository.findByIdUserNoAndIdCommentNoIn(userNo, commentIds);
+            commentLikeMap = userLikes.stream()
+                    .collect(Collectors.toMap(
+                            cl -> cl.getId().getCommentNo(),
+                            CommentLike::getLikeType
+                    ));
+        } else {
+            commentLikeMap = new HashMap<>();
+        }
+
         return comments.stream()
                 .map(comment -> {
-                    int likeCount = (int) comment.getCommentLikes().stream().filter(l -> l.getLikeType()).count();
-                    int dislikeCount = (int) comment.getCommentLikes().stream().filter(l -> !l.getLikeType()).count();
-
-                    CommentDto.CommentDtoS dto = new CommentDto.CommentDtoS(
-                            comment.getId(),
-                            comment.getParentNo(),
-                            comment.getCommentCont(),
-                            likeCount,
-                            dislikeCount
-                    );
-                    Boolean userLikeType = userLikeMap.get(comment.getId());
-                    return new CommentDto.CommentDtoRequest(dto, userLikeType);
+                    CommentDto commentDto = new CommentDto(comment);
+                    Boolean userLikeType = commentLikeMap.get(comment.getId()); // null이면 무반응 처리
+                    return new CommentAndUserLikeDto(commentDto, userLikeType);
                 })
                 .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public CommentDto.CommentDtoRequest toggleCommentLike(int commentNo, int userNo, Boolean likeType) {
+    public CommentAndUserLikeDto toggleCommentLike(int commentNo, int userNo, Boolean likeType) {
         CommentLikeId id = new CommentLikeId();
         id.setCommentNo(commentNo);
         id.setUserNo(userNo);
@@ -185,9 +180,13 @@ public class CommentServiceImp implements CommentService {
             // 토글 해제 -> 원래 있던 좋아요 삭제
             if (existing.get().getLikeType().equals(likeType)) {
                 commentLikeRepository.deleteById(id);
+                commentLikeRepository.flush();
+                entityManager.clear();
             } else {
                 // 타입 변경 (like ↔ dislike)
-                existing.get().setLikeType(likeType);
+               CommentLike commentLike=existing.get();
+               commentLike.setLikeType(likeType);
+               commentLikeRepository.save(commentLike);
             }
         } else {
             // 새로 추가
@@ -197,23 +196,16 @@ public class CommentServiceImp implements CommentService {
             commentLikeRepository.save(newLike);
         }
         // 토글 후 최신 상태 반환
+        // 댓글 번호로 - 댓글 조회 - 그걸로 CommentDto 조회, 그 CommentDto를 userLike와 합쳐서
+        // 새로 정의된 commentAndUserLikeDto를 return 한다!(새로 정의된 Dto는 오로지 userLike 만을 추가로 가져오는게 목적)
+        // 기존 정의된 Dto는 이미 쓰는 객체들이 많고, 이 Dto는 오로지 그 데이터만을 추가하기 위함
         Comment comment = commentRepository.findById(commentNo);
-        int likeCount = (int) comment.getCommentLikes().stream().filter(CommentLike::getLikeType).count();
-        int dislikeCount = (int) comment.getCommentLikes().stream().filter(cl -> !cl.getLikeType()).count();
-
+        CommentDto commentDto = new CommentDto(comment);
         Boolean userLike = commentLikeRepository.findById(id)
                 .map(CommentLike::getLikeType)
                 .orElse(null);
-
-        CommentDto.CommentDtoS dto = new CommentDto.CommentDtoS(
-                comment.getId(),
-                comment.getParentNo(),
-                comment.getCommentCont(),
-                likeCount,
-                dislikeCount
-        );
-
-        return new CommentDto.CommentDtoRequest(dto, userLike);
+        CommentAndUserLikeDto commentAndUserLikeDto=new CommentAndUserLikeDto(commentDto,userLike);
+        return commentAndUserLikeDto;
     }
 
 }

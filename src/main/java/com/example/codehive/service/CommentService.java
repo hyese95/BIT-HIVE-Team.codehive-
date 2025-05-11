@@ -1,11 +1,10 @@
 package com.example.codehive.service;
 
+import com.example.codehive.dto.CommentAndUserLikeDto;
 import com.example.codehive.dto.CommentDto;
-import com.example.codehive.dto.CommentLikeCountDTO;
 import com.example.codehive.entity.Comment;
 
 import java.util.List;
-import java.util.Map;
 
 public interface CommentService {
     Comment readComment(int id);
@@ -23,6 +22,6 @@ public interface CommentService {
     public List<Comment> readAll();
     List<CommentDto> readCommentDtoByPostNo(int postNo);
     CommentDto modifyCommentDto(Comment comment);
-    public List<CommentDto.CommentDtoRequest> getCommentsWithLikes(int postNo,int userNo);
-    public CommentDto.CommentDtoRequest toggleCommentLike(int commentNo, int userNo, Boolean likeType);
+    List<CommentAndUserLikeDto> getCommentsWithUserLikeType(int postNo, Integer userNo);
+    public CommentAndUserLikeDto toggleCommentLike(int commentNo, int userNo, Boolean likeType);
 }
