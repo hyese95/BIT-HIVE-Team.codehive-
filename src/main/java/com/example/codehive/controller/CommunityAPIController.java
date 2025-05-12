@@ -1,5 +1,6 @@
 package com.example.codehive.controller;
 
+import com.example.codehive.dto.CommentAndUserLikeDto;
 import com.example.codehive.dto.CommentDto;
 import com.example.codehive.dto.PostDto;
 import com.example.codehive.entity.Comment;
@@ -61,11 +62,17 @@ public class CommunityAPIController {
 
     @GetMapping("/comments")
     public ResponseEntity<?> readComment(
-            @RequestParam int postNo
+            @RequestParam int postNo,
+            @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        Post post=postService.getPostByPostId(postNo);
-        List<CommentDto> commentDto=commentService.readCommentDtoByPostNo(postNo);
-        return ResponseEntity.ok().body(commentDto);
+        User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
+        if(loginUser==null){
+            List<CommentAndUserLikeDto> userLikeDtos=commentService.getCommentsWithUserLikeType(postNo,null);
+            return ResponseEntity.ok().body(userLikeDtos);
+        }
+        Integer loginUserNo=loginUser.getId();
+        List<CommentAndUserLikeDto> userLikeDtos=commentService.getCommentsWithUserLikeType(postNo,loginUserNo);
+        return ResponseEntity.ok().body(userLikeDtos);
     }
 
     @DeleteMapping("/posts")

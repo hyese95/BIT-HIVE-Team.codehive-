@@ -25,8 +25,13 @@ public class CommentAndUserLikeDto {
     private int dislikeCount;
     private Integer replyCount;
     private Boolean userLikeType;
+    private Boolean isAuthor;      // 댓글 작성자 여부, null 가능
 
-    public CommentAndUserLikeDto(CommentDto commentDto,Boolean userLikeType) {
+    public Boolean getIsAuthor() {
+        return isAuthor != null ? isAuthor : false;
+    }
+
+    public CommentAndUserLikeDto(CommentDto commentDto,Boolean userLikeType,Boolean isAuthor) {
         this.id=commentDto.getId();
         this.parentNo=commentDto.getParentNo();
         this.postNo=commentDto.getPostNo();
@@ -40,5 +45,6 @@ public class CommentAndUserLikeDto {
         this.dislikeCount=commentDto.getDislikeCount();
         this.replyCount=commentDto.getReplyCount();
         this.userLikeType=userLikeType;
+        this.isAuthor=isAuthor;
     }
 }

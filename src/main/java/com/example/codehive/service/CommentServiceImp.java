@@ -164,7 +164,7 @@ public class CommentServiceImp implements CommentService {
                 .map(comment -> {
                     CommentDto commentDto = new CommentDto(comment);
                     Boolean userLikeType = commentLikeMap.get(comment.getId()); // null이면 무반응 처리
-                    return new CommentAndUserLikeDto(commentDto, userLikeType);
+                    return new CommentAndUserLikeDto(commentDto, userLikeType,null);
                 })
                 .collect(Collectors.toList());
     }
@@ -180,7 +180,8 @@ public class CommentServiceImp implements CommentService {
             // 토글 해제 -> 원래 있던 좋아요 삭제
             if (existing.get().getLikeType().equals(likeType)) {
                 commentLikeRepository.deleteById(id);
-                commentLikeRepository.flush();
+                commentLikeRepository.flush();//강제 레포지토리 초기화 후 변한 데이터 반영
+                // 안할시 delete가 실행되기 전으로 인식하여 함수 구조가 실행되지 않는다.
                 entityManager.clear();
             } else {
                 // 타입 변경 (like ↔ dislike)
@@ -204,7 +205,7 @@ public class CommentServiceImp implements CommentService {
         Boolean userLike = commentLikeRepository.findById(id)
                 .map(CommentLike::getLikeType)
                 .orElse(null);
-        CommentAndUserLikeDto commentAndUserLikeDto=new CommentAndUserLikeDto(commentDto,userLike);
+        CommentAndUserLikeDto commentAndUserLikeDto=new CommentAndUserLikeDto(commentDto,userLike,null);
         return commentAndUserLikeDto;
     }
 

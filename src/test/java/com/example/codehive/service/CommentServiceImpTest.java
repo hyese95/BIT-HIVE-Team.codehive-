@@ -143,7 +143,7 @@ class CommentServiceImpTest {
         System.out.println(commentService.toggleCommentLike(1,1,false));
         entityManager.flush();
         entityManager.clear();
-        System.out.println(commentService.toggleCommentLike(1,1,false));
+        System.out.println(commentService.toggleCommentLike(1,1,true));
         entityManager.flush();
         entityManager.clear();
         System.out.println(commentService.toggleCommentLike(1,1,false));
