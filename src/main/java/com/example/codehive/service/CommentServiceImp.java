@@ -180,8 +180,9 @@ public class CommentServiceImp implements CommentService {
         if (existing.isPresent()) {
             CommentLike like = existing.get();
             // 같은 타입 누른 경우 → 취소
-            if (Objects.equals(like.getLikeType(), userLikeType)) {
+            if (Objects.equals(like.getLikeType(), userLikeType) || userLikeType==null) {
                 commentLikeRepository.delete(like);
+                entityManager.flush();
             } else {
                 like.setLikeType(userLikeType);
                 commentLikeRepository.save(like);
