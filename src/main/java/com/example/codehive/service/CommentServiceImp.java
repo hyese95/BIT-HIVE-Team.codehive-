@@ -142,7 +142,7 @@ public class CommentServiceImp implements CommentService {
     @Override
     @Transactional
     public List<CommentAndUserLikeDto> getCommentsWithUserLikeType(int postNo, Integer userNo) {
-        List<Comment> comments = commentRepository.findByPostNo(postNo);
+        List<Comment> comments = commentRepository.findByPostNoOrderByCommentCreatedAtDesc(postNo);
         List<Integer> commentIds = comments.stream()
                 .map(Comment::getId)
                 .collect(Collectors.toList());
@@ -159,7 +159,6 @@ public class CommentServiceImp implements CommentService {
         } else {
             commentLikeMap = new HashMap<>();
         }
-
         return comments.stream()
                 .map(comment -> {
                     CommentDto commentDto = new CommentDto(comment);
@@ -171,43 +170,42 @@ public class CommentServiceImp implements CommentService {
 
     @Override
     @Transactional
-    public CommentAndUserLikeDto toggleCommentLike(int commentNo, int userNo, Boolean likeType) {
+    public CommentAndUserLikeDto.responseToggle toggleCommentLikeStatus(int commentNo, int userNo, Boolean userLikeType) {
         CommentLikeId id = new CommentLikeId();
         id.setCommentNo(commentNo);
         id.setUserNo(userNo);
+        // 1. 기존 상태 확인
         Optional<CommentLike> existing = commentLikeRepository.findById(id);
+        CommentLike userLike;
         if (existing.isPresent()) {
-            // 토글 해제 -> 원래 있던 좋아요 삭제
-            if (existing.get().getLikeType().equals(likeType)) {
-                commentLikeRepository.deleteById(id);
-                commentLikeRepository.flush();//강제 레포지토리 초기화 후 변한 데이터 반영
-                // 안할시 delete가 실행되기 전으로 인식하여 함수 구조가 실행되지 않는다.
-                entityManager.clear();
+            CommentLike like = existing.get();
+            // 같은 타입 누른 경우 → 취소
+            if (Objects.equals(like.getLikeType(), userLikeType)) {
+                commentLikeRepository.delete(like);
             } else {
-                // 타입 변경 (like ↔ dislike)
-               CommentLike commentLike=existing.get();
-               commentLike.setLikeType(likeType);
-               commentLikeRepository.save(commentLike);
+                like.setLikeType(userLikeType);
+                commentLikeRepository.save(like);
             }
-        } else {
-            // 새로 추가
+        } else if (userLikeType != null) {
+            // 처음 누르는 경우
             CommentLike newLike = new CommentLike();
             newLike.setId(id);
-            newLike.setLikeType(likeType);
+            newLike.setLikeType(userLikeType);
             commentLikeRepository.save(newLike);
         }
-        // 토글 후 최신 상태 반환
-        // 댓글 번호로 - 댓글 조회 - 그걸로 CommentDto 조회, 그 CommentDto를 userLike와 합쳐서
-        // 새로 정의된 commentAndUserLikeDto를 return 한다!(새로 정의된 Dto는 오로지 userLike 만을 추가로 가져오는게 목적)
-        // 기존 정의된 Dto는 이미 쓰는 객체들이 많고, 이 Dto는 오로지 그 데이터만을 추가하기 위함
+
+        // Comment와 User의 likeType을 합친 새로운 DTO 반환
+//        -> 에러로 최소한의 변수만 받는 request 와 response
+        // 여기부터는 CommentDto로부터 바로 응답 생성
         Comment comment = commentRepository.findById(commentNo);
         CommentDto commentDto = new CommentDto(comment);
-        Boolean userLike = commentLikeRepository.findById(id)
-                .map(CommentLike::getLikeType)
-                .orElse(null);
-        CommentAndUserLikeDto commentAndUserLikeDto=new CommentAndUserLikeDto(commentDto,userLike,null);
-        return commentAndUserLikeDto;
+        return new CommentAndUserLikeDto.responseToggle(
+                commentDto.getLikeCount(),
+                commentDto.getDislikeCount(),
+                userLikeType
+        );
     }
+
 
 }
 

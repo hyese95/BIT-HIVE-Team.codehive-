@@ -5,8 +5,10 @@ import com.example.codehive.dto.CommentDto;
 import com.example.codehive.dto.CommentLikeDto;
 import com.example.codehive.entity.PostLike;
 import com.example.codehive.entity.User;
+import com.example.codehive.jwt.JwtUtil;
 import com.example.codehive.security.CustomUserDetails;
 import com.example.codehive.service.*;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,42 +26,25 @@ public class CommunityLikeAPIController {
     private CommentService commentService;
     private PostLikeService postLikeService;
     private UserService userService;
+    private JwtUtil jwtUtil;
 
-    @GetMapping("/posts/{postNo}/comments")
-    public ResponseEntity<List<CommentAndUserLikeDto>> getCommentLikeTypeStatus(
-            @PathVariable int postNo
-           ,@AuthenticationPrincipal CustomUserDetails userDetails
-    ) {
-        if (userDetails != null) {
-            User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElseThrow();
-            Integer loginUserNo = loginUser.getId();
-            List<CommentAndUserLikeDto> request=commentService.getCommentsWithUserLikeType(postNo,loginUserNo);
-            return ResponseEntity.ok(request);
-        }
-        List<CommentAndUserLikeDto> request=commentService.getCommentsWithUserLikeType(postNo,null);
-        return ResponseEntity.ok(request);
-    }
     @PostMapping("/comments/{commentNo}")
     public ResponseEntity<?> toggleCommentLike(
             @PathVariable int commentNo
             ,@AuthenticationPrincipal CustomUserDetails userDetails
-            ,@RequestBody CommentAndUserLikeDto commentAndUserLikeDto) {
+            ,@RequestBody CommentAndUserLikeDto.requestToggle requestToggle) {
         User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
         if (loginUser==null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
         int loginUserNo=loginUser.getId();
-        CommentAndUserLikeDto newcommentAndUserLikeDto=commentService.toggleCommentLike(commentNo,loginUserNo,commentAndUserLikeDto.getUserLikeType());
-            return ResponseEntity.ok(newcommentAndUserLikeDto);
+        CommentAndUserLikeDto.responseToggle result = commentService.toggleCommentLikeStatus(
+                commentNo,
+                loginUserNo,
+                requestToggle.getUserLikeType()
+        );
+        return ResponseEntity.ok(result);
         }
-
-    @DeleteMapping("/{commentNo}")
-    public ResponseEntity<Void> deleteCommentLike(
-            @PathVariable int commentNo,
-            @RequestParam int userNo) {
-        commentLikeService.deleteCommentLike(commentNo, userNo,null);
-        return ResponseEntity.noContent().build();
-    }
 
     @GetMapping("/posts/{postNo}")
     public ResponseEntity<?> getPostLikeTypeStatus(

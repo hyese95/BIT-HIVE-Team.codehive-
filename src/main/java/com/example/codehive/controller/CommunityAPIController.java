@@ -6,6 +6,7 @@ import com.example.codehive.dto.PostDto;
 import com.example.codehive.entity.Comment;
 import com.example.codehive.entity.Post;
 import com.example.codehive.entity.User;
+import com.example.codehive.jwt.JwtUtil;
 import com.example.codehive.repository.CommentRepository;
 import com.example.codehive.repository.PostRepository;
 import com.example.codehive.security.CustomUserDetails;
@@ -13,6 +14,7 @@ import com.example.codehive.service.CommentLikeService;
 import com.example.codehive.service.CommentService;
 import com.example.codehive.service.PostService;
 import com.example.codehive.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +39,7 @@ public class CommunityAPIController {
     private final PostRepository postRepository;
     private final Logger logger= LoggerFactory.getLogger(CommunityAPIController.class);
     private final CommentRepository commentRepository;
+    private final JwtUtil jwtUtil;
 
     @GetMapping("/posts")
     public ResponseEntity<Page<PostDto>> readPost(
@@ -63,16 +66,18 @@ public class CommunityAPIController {
     @GetMapping("/comments")
     public ResponseEntity<?> readComment(
             @RequestParam int postNo,
-            @AuthenticationPrincipal CustomUserDetails userDetails
+            HttpServletRequest request
     ) {
-        User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
-        if(loginUser==null){
+        String token= jwtUtil.resolveToken(request);
+        if(token==null){
             List<CommentAndUserLikeDto> userLikeDtos=commentService.getCommentsWithUserLikeType(postNo,null);
-            return ResponseEntity.ok().body(userLikeDtos);
+            return ResponseEntity.ok(userLikeDtos);
         }
+        String userId= jwtUtil.getUsername(token);
+        User loginUser=userService.readByUserId(userId).orElseThrow();
         Integer loginUserNo=loginUser.getId();
         List<CommentAndUserLikeDto> userLikeDtos=commentService.getCommentsWithUserLikeType(postNo,loginUserNo);
-        return ResponseEntity.ok().body(userLikeDtos);
+        return ResponseEntity.ok(userLikeDtos);
     }
 
     @DeleteMapping("/posts")

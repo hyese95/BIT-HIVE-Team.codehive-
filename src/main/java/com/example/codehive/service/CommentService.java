@@ -23,5 +23,5 @@ public interface CommentService {
     List<CommentDto> readCommentDtoByPostNo(int postNo);
     CommentDto modifyCommentDto(Comment comment);
     List<CommentAndUserLikeDto> getCommentsWithUserLikeType(int postNo, Integer userNo);
-    public CommentAndUserLikeDto toggleCommentLike(int commentNo, int userNo, Boolean likeType);
+    public CommentAndUserLikeDto.responseToggle toggleCommentLikeStatus(int commentNo, int userNo, Boolean userLikeType);
 }

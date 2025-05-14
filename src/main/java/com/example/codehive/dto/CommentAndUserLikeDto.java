@@ -1,5 +1,6 @@
 package com.example.codehive.dto;
 
+import com.example.codehive.entity.CommentLike;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
@@ -46,5 +47,21 @@ public class CommentAndUserLikeDto {
         this.replyCount=commentDto.getReplyCount();
         this.userLikeType=userLikeType;
         this.isAuthor=isAuthor;
+    }
+
+    @Getter
+    @Setter
+    @ToString
+    public static class requestToggle {
+        Boolean userLikeType;
+    }
+    @Getter
+    @Setter
+    @ToString
+    @AllArgsConstructor
+    public static class responseToggle {
+        private int likeCount;
+        private int dislikeCount;
+        private Boolean userLikeType;
     }
 }

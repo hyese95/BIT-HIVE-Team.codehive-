@@ -34,6 +34,8 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
     void deleteCommentByPostNo(@Param("commentNo") int commentNo);
     int countByParentNo(int parentNo);
 
+    List<Comment> findByPostNoOrderByCommentCreatedAtDesc(int postNo);
+
     //유저 별로 누른 like 추출하기 위해 만듬
 //    @Modifying
 //    @Query("INSERT INTO Comment (postNo,userNo,commentCreatedAt,parentNo,commentCont) values (?,?,?,?,?)")

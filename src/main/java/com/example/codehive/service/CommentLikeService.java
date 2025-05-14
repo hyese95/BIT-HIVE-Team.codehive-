@@ -9,7 +9,6 @@ import java.util.Map;
 
 public interface CommentLikeService {
     List<CommentLikeCountDTO> getLikesAndDislikesCount();
-    CommentLikeCountDTO toggleLike(Integer userNo, Integer commentNo, Boolean likeType);
     Map<Integer, CommentLikeCountDTO> countCommentLikes();
     public ResponseEntity<?> setCommentLike(Integer userNo, Integer commentNo, Boolean likeType);
     public ResponseEntity<?> deleteCommentLike(Integer userNo, Integer commentNo,Boolean likeType);

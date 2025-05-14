@@ -132,7 +132,7 @@ class CommentServiceImpTest {
     @Test
     @Transactional
     void getCommentsWithUserLikeType() {
-        System.out.print(commentService.getCommentsWithUserLikeType(5,null).toString());
+        System.out.print(commentService.getCommentsWithUserLikeType(5,1).toString());
     }
 
     @Test
@@ -140,12 +140,24 @@ class CommentServiceImpTest {
     void toggleCommentLike() {
         entityManager.flush();
         entityManager.clear();
-        System.out.println(commentService.toggleCommentLike(1,1,false));
+        System.out.println(commentService.toggleCommentLikeStatus(1,1,null));
         entityManager.flush();
         entityManager.clear();
-        System.out.println(commentService.toggleCommentLike(1,1,true));
+        System.out.println(commentService.toggleCommentLikeStatus(1,1,false));
         entityManager.flush();
         entityManager.clear();
-        System.out.println(commentService.toggleCommentLike(1,1,false));
+        System.out.println(commentService.toggleCommentLikeStatus(1,1,false));
+        entityManager.flush();
+        entityManager.clear();
+        System.out.println(commentService.toggleCommentLikeStatus(1,1,true));
+        entityManager.flush();
+        entityManager.clear();
+        System.out.println(commentService.toggleCommentLikeStatus(1,1,true));
+        entityManager.flush();
+        entityManager.clear();
+        System.out.println(commentService.toggleCommentLikeStatus(1,1,true));
+        entityManager.flush();
+        entityManager.clear();
+        System.out.println(commentService.toggleCommentLikeStatus(1,1,false));
     }
 }

@@ -243,7 +243,7 @@ public class CommunityController {
         List<Comment> comments=commentService.readCommentByPostNo(postNo);
         int cntComment=commentService.getCommentCountByPostNo(postNo);
         Map<Integer, CommentLikeCountDTO> cntCommentLike = new HashMap<>();
-        for (CommentLikeCountDTO dto : commentLikeService.  getLikesAndDislikesCount()) {
+        for (CommentLikeCountDTO dto : commentLikeService.getLikesAndDislikesCount()) {
             cntCommentLike.put(dto.getCommentNo(), dto);
         }
         Map<Integer, Integer> replyCounts = new HashMap<>();
