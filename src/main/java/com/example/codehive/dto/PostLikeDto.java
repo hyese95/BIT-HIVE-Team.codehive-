@@ -12,12 +12,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostLikeDto {
-
     @JsonProperty("postNo")
     private Integer postNo;// 댓글 번호
-
-    private int likeCount;       // 좋아요 갯수
-    private int dislikeCount;
+    private Integer likeCount;       // 좋아요 갯수
+    private Integer dislikeCount;
     private Integer userNo;
     private boolean likeType;
 
@@ -41,5 +39,29 @@ public class PostLikeDto {
         }
         this.dislikeCount = postLike.getPost().getPostLikes().size()-this.likeCount;
         this.likeType=postLike.getLikeType();
+    }
+
+    public static class PostLikeDtoStaus{
+
+        @Getter
+        @Setter
+        @ToString
+        @NoArgsConstructor
+        @AllArgsConstructor
+        public static class RequestToggle{
+            private Boolean userLikeType; //로그인한 유저의 좋아요 값을 받아오는 request
+        }
+
+        @Getter
+        @Setter
+        @ToString
+        @AllArgsConstructor
+        @NoArgsConstructor
+        public static class ResponseToggle{
+            private Integer postNo;
+            private Boolean userLikeType;
+            private int likeCount;
+            private int dislikeCount;
+        }
     }
 }

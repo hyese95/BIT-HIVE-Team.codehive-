@@ -8,6 +8,7 @@ import com.example.codehive.entity.User;
 import com.example.codehive.repository.PostLikeRepository;
 import com.example.codehive.repository.PostRepository;
 import com.example.codehive.repository.UserRepository;
+import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,7 @@ public class PostLikeServiceImp implements PostLikeService{
     PostLikeRepository postLikeRepository;
     PostRepository postRepository;
     UserRepository userRepository;
+    EntityManager entityManager;
     @Override
     public Map<Integer, PostLikeDto> countPostLikes() {
         List<PostLikeDto> postLikeDto =postLikeRepository.getPostLikeAndDislike();
@@ -74,11 +76,26 @@ public class PostLikeServiceImp implements PostLikeService{
 
     @Override
     @Transactional
-    public PostLike GetPostLike(Integer userNo, Integer postNo) {
-        User user=userRepository.findById(userNo).orElseThrow();
-        Post post=postRepository.findPostById(postNo);
-        PostLike postLike=postLikeRepository.findByPostAndUser(post,user).orElse(null);
-        return postLike;
+    public PostLikeDto.PostLikeDtoStaus.ResponseToggle getPostLike(Integer userNo, Integer postNo){
+        Post post = postRepository.findPostById(postNo);
+        if (post == null) return null;
+
+        List<PostLike> likes = postLikeRepository.findAllByPostNo(postNo);
+        long likeCount = likes.stream().filter(pl -> Boolean.TRUE.equals(pl.getLikeType())).count();
+        long dislikeCount = likes.stream().filter(pl -> Boolean.FALSE.equals(pl.getLikeType())).count();
+
+        PostLikeDto.PostLikeDtoStaus.ResponseToggle response = new PostLikeDto.PostLikeDtoStaus.ResponseToggle();
+        response.setPostNo(postNo);
+        response.setLikeCount((int) likeCount);
+        response.setDislikeCount((int) dislikeCount);
+
+        if (userNo != null) {
+            Optional<PostLike> optionalPostLike = postLikeRepository.findByPostNoAndUserNo(postNo, userNo);
+            Boolean userLikeType = optionalPostLike.map(PostLike::getLikeType).orElse(null);
+            response.setUserLikeType(userLikeType);
+        }
+
+        return response;
     }
 
     @Override
@@ -103,23 +120,44 @@ public class PostLikeServiceImp implements PostLikeService{
 
     @Override
     @Transactional
-    public PostLike CreatePostLike(Integer userNo, Integer postNo, Boolean likeType) {
-        User user=userRepository.findById(userNo).orElseThrow();
-        Post post=postRepository.findPostById(postNo);
-        Optional<PostLike> existingPostLike=postLikeRepository.findByPostAndUser(post,user);
-        if(existingPostLike.isPresent()){
-            postLikeRepository.delete(existingPostLike.orElse(null));
+    public PostLikeDto.PostLikeDtoStaus.ResponseToggle togglePostLike(Integer userNo, Integer postNo, Boolean likeType) {
+        User user = userRepository.findById(userNo).orElseThrow();
+        Post post = postRepository.findPostById(postNo);
+        Optional<PostLike> existingPostLike = postLikeRepository.findByPostAndUser(post, user);
+        if (existingPostLike.isPresent()) {
+            PostLike postLike = existingPostLike.get();
+            if (postLike.getLikeType() == likeType || likeType == null) {
+                postLikeRepository.delete(postLike);
+                entityManager.flush();
+            } else {
+                postLike.setLikeType(likeType);
+                postLikeRepository.save(postLike);
+            }
+        } else if (likeType != null) {
+            PostLike postLike = new PostLike();
+            postLike.setLikeType(likeType);
+            postLike.setPostNo(postNo);
+            postLike.setUserNo(userNo);
+            postLike.setPost(post);
+            postLike.setUser(user);
+            postLikeRepository.save(postLike);
         }
-        PostLike postLike=new PostLike();
-        postLike.setLikeType(likeType);
-        postLike.setPostNo(postNo);
-        postLike.setUserNo(userNo);
-        postLike.setPost(post);
-        postLike.setUser(user);
-        postLikeRepository.save(postLike);
-        return postLike;
-    }
+        // 최신 상태 반영
+        List<PostLike> likes = postLikeRepository.findAllByPostNo(postNo);
+        long likeCount = likes.stream().filter(pl -> Boolean.TRUE.equals(pl.getLikeType())).count();
+        long dislikeCount = likes.stream().filter(pl -> Boolean.FALSE.equals(pl.getLikeType())).count();
 
+        PostLikeDto.PostLikeDtoStaus.ResponseToggle response = new PostLikeDto.PostLikeDtoStaus.ResponseToggle();
+        response.setPostNo(postNo);
+        response.setLikeCount((int) likeCount);
+        response.setDislikeCount((int) dislikeCount);
+
+        Optional<PostLike> optionalPostLike = postLikeRepository.findByPostAndUser(post, user);
+        Boolean userLikeType = optionalPostLike.map(PostLike::getLikeType).orElse(null);
+        response.setUserLikeType(userLikeType);
+
+        return response;
+    }
     @Override
     public ResponseEntity<?> DeletePostLike(Integer userNo, Integer postNo,Boolean likeType) {
         Post post=postRepository.findPostById(postNo);

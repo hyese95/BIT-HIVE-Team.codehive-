@@ -1,8 +1,7 @@
 package com.example.codehive.controller;
 
 import com.example.codehive.dto.CommentAndUserLikeDto;
-import com.example.codehive.dto.CommentDto;
-import com.example.codehive.dto.CommentLikeDto;
+import com.example.codehive.dto.PostLikeDto;
 import com.example.codehive.entity.PostLike;
 import com.example.codehive.entity.User;
 import com.example.codehive.jwt.JwtUtil;
@@ -49,35 +48,32 @@ public class CommunityLikeAPIController {
     @GetMapping("/posts/{postNo}")
     public ResponseEntity<?> getPostLikeTypeStatus(
              @PathVariable int postNo
-            ,@AuthenticationPrincipal CustomUserDetails userDetails
+            ,HttpServletRequest request
     ) {
-        User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
-        if(loginUser==null){
-            return ResponseEntity.badRequest().build();
-        }int loginUserNo=loginUser.getId();
-        PostLike postLike=postLikeService.GetPostLike(loginUserNo, postNo);
-        if (postLike == null) {
-            return ResponseEntity.noContent().build();
+        String token= jwtUtil.resolveToken(request);
+        if(token==null){
+            PostLikeDto.PostLikeDtoStaus.ResponseToggle postLike=postLikeService.getPostLike(null, postNo);
+            return ResponseEntity.ok(postLike);
         }
+        String userId= jwtUtil.getUsername(token);
+        User loginUser=userService.readByUserId(userId).orElseThrow();
+        Integer loginUserNo=loginUser.getId();
+        PostLikeDto.PostLikeDtoStaus.ResponseToggle postLike=postLikeService.getPostLike(loginUserNo, postNo);
         return ResponseEntity.ok(postLike);
     }
     @PostMapping("/posts/{postNo}")
     public ResponseEntity<?> togglePostLike(
             @PathVariable int postNo,
-            @RequestBody PostLike postLike
+            @RequestBody PostLikeDto.PostLikeDtoStaus.RequestToggle request
            ,@AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
         if(loginUser==null){
             return ResponseEntity.badRequest().build();
         }int loginUserNo=loginUser.getId();
-        // request.getLikeType() 이 null 이면 삭제 코드 추가
-        // Body에 담긴 postLike가 같아도 삭제 -> 완벽한 토글
-        if(postLike.getLikeType()==null){
-           return postLikeService.DeletePostLike(loginUserNo, postNo, null);
-        }
         // 그후에 다시 생성, 서비스 코드에 필요한거 다 해뒀다고 생각함
-        postLikeService.CreatePostLike(loginUserNo, postNo, postLike.getLikeType());
-        return ResponseEntity.ok(postLike);
+        PostLikeDto.PostLikeDtoStaus.ResponseToggle response =
+                postLikeService.togglePostLike(loginUserNo, postNo, request.getUserLikeType());
+        return ResponseEntity.ok(response);
     }
 }

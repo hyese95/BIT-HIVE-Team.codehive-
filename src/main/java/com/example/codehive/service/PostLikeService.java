@@ -11,8 +11,8 @@ public interface PostLikeService {
     Map<Integer, PostLikeDto> countPostLikes();
     public PostDto modifyLike(Integer userNo, Integer commentNo, Boolean likeType);
     public PostLikeDto getPostLikeById(Integer postNo);
-    public PostLike GetPostLike(Integer userNo, Integer postNo);
+    public PostLikeDto.PostLikeDtoStaus.ResponseToggle getPostLike(Integer userNo, Integer postNo);
     public ResponseEntity<?> setPostLike(Integer userNo, Integer postNo, Boolean likeType);
-    public PostLike CreatePostLike(Integer userNo, Integer postNo, Boolean likeType);
+    public PostLikeDto.PostLikeDtoStaus.ResponseToggle togglePostLike(Integer userNo, Integer postNo, Boolean likeType);
     public ResponseEntity<?> DeletePostLike(Integer userNo, Integer postNo,Boolean likeType);
 }

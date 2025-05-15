@@ -22,9 +22,9 @@ public interface PostLikeRepository extends JpaRepository<PostLike, Integer> {
     void deletePostLikeByPostNo(@Param("postNo") int postNo);
 
     @Query("SELECT (p.postNo," +
-            "CAST(SUM(CASE WHEN p.likeType = true THEN 1 ELSE 0 END)AS int), " +
-            "CAST(SUM(CASE WHEN p.likeType = false THEN 1 ELSE 0 END)AS int)) " +
-            "FROM PostLike p WHERE p.postNo = :postNo GROUP BY p.postNo")
+            "CAST(SUM(CASE WHEN p.likeType = true THEN 1 ELSE 0 END)AS INTEGER), " +
+            "CAST(SUM(CASE WHEN p.likeType = false THEN 1 ELSE 0 END)AS INTEGER))  " +
+            "FROM PostLike p WHERE p.postNo = :postNo GROUP BY p.postNo ORDER BY p.postNo ")
     PostLikeDto getPostLikeAndDislikeCount(@Param("postNo") Integer postNo);
 
     @Query("SELECT new com.example.codehive.dto.PostLikeDto (" +
@@ -38,4 +38,8 @@ public interface PostLikeRepository extends JpaRepository<PostLike, Integer> {
     List<PostLikeDto> getPostLikeAndDislike();
 
     int countByPostAndLikeType(Post post, boolean likeType);
+
+    Optional<PostLike> findByPostNoAndUserNo(Integer postNo, Integer userNo);
+
+    List<PostLike> findAllByPostNo(Integer postNo);
 }
