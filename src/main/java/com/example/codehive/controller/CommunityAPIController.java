@@ -168,27 +168,24 @@ public class CommunityAPIController {
     }
 
     @PutMapping("/comments")
-    public ResponseEntity<?> modifyComment(@RequestBody CommentDto commentDto
+    public ResponseEntity<?> modifyComment(@RequestBody CommentDto.ModifyRequest request
             ,@AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         User loginUser=userService.readByUserId(userDetails.getUser().getUserId()).orElse(null);
         if(loginUser==null){
             return ResponseEntity.badRequest().build();
-        }int loginUserNo=loginUser.getId();
-        if(loginUserNo!= commentDto.getUserNo()){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 접근입니다.");
         }
         try {
             // 댓글이 존재하는지 확인
-            Comment existingComment=commentService.readComment(commentDto.getId());
+            Comment existingComment=commentService.readComment(request.getId());
             if (existingComment==null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 댓글을 찾을 수 없습니다.");
             }
             // 기존 내용과 비교하여 변경된 것이 없는 경우
-            if (existingComment.getCommentCont().equals(commentDto.getCommentCont())) {
+            if (existingComment.getCommentCont().equals(request.getCommentCont())) {
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).body("댓글 내용이 변경되지 않았습니다.");
             }
-            existingComment.setCommentCont(commentDto.getCommentCont());
+            existingComment.setCommentCont(request.getCommentCont());
             Comment modifiedComment=commentRepository.save(existingComment);
             System.out.println(modifiedComment);
             return ResponseEntity.ok().body(new CommentDto(modifiedComment));

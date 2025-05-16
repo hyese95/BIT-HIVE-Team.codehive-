@@ -4,8 +4,6 @@ import com.example.codehive.entity.Comment;
 import com.example.codehive.entity.CommentLike;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.SortDefault;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -70,21 +68,14 @@ public class CommentDto {
     }
     @Getter
     @Setter
-    public static class CommentDtoRequest {
-        private int id;
-        private Integer parentNo;
+    public static class ModifyRequest {
+        private Integer id;
         private String commentCont;
-        private Integer likeCount;
-        private Integer dislikeCount;
-        private Boolean userLikeType; // ← 로그인 유저의 좋아요 상태
 
-        public CommentDtoRequest(CommentDtoS dto, Boolean userLikeType) {
-            this.id = dto.getId();
-            this.parentNo = dto.getParentNo();
-            this.commentCont = dto.getCommentCont();
-            this.likeCount = dto.getLikeCount();
-            this.dislikeCount = dto.getDislikeCount();
-            this.userLikeType = userLikeType;
+        public ModifyRequest(Integer id,String commentCont) {
+            this.id = id;
+            this.commentCont = commentCont;
+
         }
     }
 }

@@ -2,12 +2,12 @@ spring:
   application:
     name: bit_hive
   profiles:
-    include: deploy_db
-#     include: dev_db
-server:
-  ssl:
-    enabled: true
-    key-store: classpath:keystore.p12
-    key-store-type: PKCS12
-    key-store-password: ${ssl.pw}
-    key-alias: myssl
+#    include: deploy_db
+     include: dev_db
+#server:
+#  ssl:
+#    enabled: true
+#    key-store: classpath:keystore.p12
+#    key-store-type: PKCS12
+#    key-store-password: ${ssl.pw}
+#    key-alias: myssl
